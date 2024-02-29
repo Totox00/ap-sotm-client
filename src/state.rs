@@ -1,3 +1,5 @@
+use std::{env::var, sync::Arc};
+
 use strum::IntoEnumIterator;
 
 use crate::{
@@ -7,39 +9,39 @@ use crate::{
     logic::can_unlock,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct State {
     pub items: Items,
     pub checked_locations: Locations,
-    pub idmap: IdMap,
+    pub idmap: Arc<IdMap>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Items {
     pub scions: u8,
-    pub villains: u32,
+    pub villains: u64,
     pub team_villains: u16,
     pub heroes: [u8; Hero::variant_count()],
-    pub environments: u32,
+    pub environments: u64,
     pub filler: u8,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Locations {
     pub victory: bool,
     pub villains: [u8; Villain::variant_count()],
     pub team_villains: [u8; TeamVillain::variant_count()],
     pub variants: u128,
-    pub environments: u32,
+    pub environments: u64,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct AvailableLocations {
-    victory: bool,
-    villains: Vec<(Villain, u8)>,
-    team_villains: Vec<(TeamVillain, u8)>,
-    variants: Vec<Variant>,
-    environments: Vec<Environment>,
+    pub victory: bool,
+    pub villains: Vec<(Villain, u8)>,
+    pub team_villains: Vec<(TeamVillain, u8)>,
+    pub variants: Vec<Variant>,
+    pub environments: Vec<Environment>,
 }
 
 impl State {
@@ -47,7 +49,7 @@ impl State {
         State {
             items: Items::new(),
             checked_locations: Locations::new(),
-            idmap: IdMap::new(datapackage),
+            idmap: Arc::new(IdMap::new(datapackage)),
         }
     }
 
@@ -145,11 +147,11 @@ impl Items {
     }
 
     pub fn has_villain(&self, villain: Villain) -> bool {
-        self.villains & 1 << villain as u32 > 0
+        self.villains & 1 << villain as u64 > 0
     }
 
     pub fn has_team_villain(&self, team_villain: TeamVillain) -> bool {
-        self.team_villains & 1 << team_villain as u32 > 0
+        self.team_villains & 1 << team_villain as u16 > 0
     }
 
     pub fn has_hero(&self, hero: Hero) -> bool {
@@ -169,15 +171,15 @@ impl Items {
     }
 
     pub fn has_environment(&self, environment: Environment) -> bool {
-        self.environments & 1 << environment as u32 > 0
+        self.environments & 1 << environment as u64 > 0
     }
 
     pub fn set_villain(&mut self, villain: Villain) {
-        self.villains |= 1 << villain as u32
+        self.villains |= 1 << villain as u64
     }
 
     pub fn set_team_villain(&mut self, team_villain: TeamVillain) {
-        self.team_villains |= 1 << team_villain as u32
+        self.team_villains |= 1 << team_villain as u16
     }
 
     pub fn set_hero(&mut self, hero: Hero) {
@@ -191,7 +193,7 @@ impl Items {
     }
 
     pub fn set_environment(&mut self, environment: Environment) {
-        self.environments |= 1 << environment as u32
+        self.environments |= 1 << environment as u64
     }
 }
 
@@ -215,11 +217,14 @@ impl Locations {
     }
 
     pub fn has_unchecked_variant(&self, variant: Variant) -> bool {
-        self.variants & 1 << variant as u64 == 0
+        if variant as usize >= Variant::BaccaratAceOfSwords as usize {
+            return false;
+        }
+        self.variants & 1 << variant as u128 == 0
     }
 
     pub fn has_unchecked_environment(&self, environment: Environment) -> bool {
-        self.environments & 1 << environment as u32 == 0
+        self.environments & 1 << environment as u64 == 0
     }
 
     pub fn mark_villain(&mut self, villain: Villain, difficulty: u8) {
@@ -231,10 +236,13 @@ impl Locations {
     }
 
     pub fn mark_variant(&mut self, variant: Variant) {
+        if variant as usize >= Variant::BaccaratAceOfSwords as usize {
+            return;
+        }
         self.variants |= 1 << variant as u128
     }
 
     pub fn mark_environment(&mut self, environment: Environment) {
-        self.environments |= 1 << environment as u32
+        self.environments |= 1 << environment as u64
     }
 }

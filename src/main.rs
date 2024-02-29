@@ -1,19 +1,24 @@
+mod ap_thread;
 mod archipelago_rs;
 mod cli;
 mod data;
 mod idmap;
+mod input_thread;
 mod logic;
 mod state;
 
+use ap_thread::ap_thread;
 use archipelago_rs::{client::ArchipelagoClient, protocol::Connected};
 use clap::Parser;
-use cli::print_state;
-use console::{Key, Term};
+use cli::{print, DisplayUpdate};
+use console::Term;
+use input_thread::input_thread;
 use state::State;
 use std::{
     io::{self, BufRead, Write},
     process::exit,
 };
+use tokio::{spawn, sync::mpsc::channel};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -30,7 +35,10 @@ struct Args {
 
 #[tokio::main(flavor = "current_thread")]
 pub async fn main() {
-    let (mut client, mut state) = if let Ok((mut client, connected)) = connect().await {
+    let (client_sender, mut receiver) = channel::<DisplayUpdate>(16);
+    let cli_sender = client_sender.clone();
+
+    let (client, mut state) = if let Ok((mut client, connected)) = connect().await {
         let mut state = State::new(client.data_package().expect("No datapackage was received"));
         state.sync(connected, client.sync().await.expect("Failed to sync items"));
         (client, state)
@@ -40,14 +48,34 @@ pub async fn main() {
     };
 
     println!("Connected!");
+    let (ap_sender, ap_receiver) = client.split();
+
+    let _ = spawn(ap_thread(state.clone(), client_sender, ap_receiver));
+    let _ = spawn(input_thread(cli_sender));
+
     let term = Term::stdout();
+    let _ = term.hide_cursor();
+    let mut filter = String::new();
+    let mut cursor_x = 0;
+    let mut cursor_y = 0;
 
     loop {
-        let _ = term.clear_screen();
-        print_state(&state);
-        let key = term.read_key_raw().unwrap();
-        if key == Key::Char('\u{4}') {
-            exit(0);
+        print(&term, &state, &filter, cursor_x, cursor_y);
+        if let Some(update) = receiver.recv().await {
+            match update {
+                DisplayUpdate::Msg(_) => (),
+                DisplayUpdate::State(new_state) => state = new_state,
+                DisplayUpdate::Filter(new_filter) => filter = new_filter,
+                DisplayUpdate::CursorLeft => cursor_x -= 1,
+                DisplayUpdate::CursorRight => cursor_x += 1,
+                DisplayUpdate::CursorUp => cursor_y -= 1,
+                DisplayUpdate::CursorDown => cursor_y += 1,
+                DisplayUpdate::CursorHome => (cursor_x, cursor_y) = (0, 0),
+                DisplayUpdate::Select => (),
+                DisplayUpdate::Send => (),
+            }
+        } else {
+            exit(1);
         }
     }
 }
@@ -93,9 +121,9 @@ pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected)> {
     let mut client = ArchipelagoClient::with_data_package(&url, None).await?;
 
     let connected = if let Some(pass) = password {
-        client.connect("Manual_manualsotm_toto00", &slot, Some(&*pass), Some(7), vec!["AP".to_string()]).await?
+        client.connect("Manual_sotm_toto00", &slot, Some(&*pass), Some(7), vec!["AP".to_string()]).await?
     } else {
-        client.connect("Manual_manualsotm_toto00", &slot, None, Some(7), vec!["AP".to_string()]).await?
+        client.connect("Manual_sotm_toto00", &slot, None, Some(7), vec!["AP".to_string()]).await?
     };
 
     Ok((client, connected))

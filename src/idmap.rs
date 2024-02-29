@@ -22,7 +22,7 @@ impl IdMap {
             locations_to_id: HashMap::new(),
         };
 
-        let data = datapackage.games.get("Manual_manualsotm_toto00").expect("Datapackage for Sentinels of the Multiverse was not found");
+        let data = datapackage.games.get("Manual_sotm_toto00").expect("Datapackage for Sentinels of the Multiverse was not found");
 
         for (item, id) in &data.item_name_to_id {
             if let Some(item) = Item::from_str(item.as_str()) {
