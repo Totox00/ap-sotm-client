@@ -103,6 +103,7 @@ impl State {
                         (v, d & 0b11)
                     }
                 })
+                .flat_map(|(v, b)| [0, 1, 2, 3].iter().filter(move |d| b & 1 << *d > 0).map(move |d| (v, *d)))
                 .collect(),
             team_villains: if self.items.team_villains.count_ones() < 3 {
                 vec![]
@@ -120,6 +121,7 @@ impl State {
                         )
                     })
                     .filter(|(_, d)| *d > 0)
+                    .flat_map(|(v, b)| [0, 1, 2, 3].iter().filter(move |d| b & 1 << *d > 0).map(move |d| (v, *d)))
                     .collect()
             },
             variants: Variant::iter()

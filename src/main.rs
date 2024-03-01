@@ -10,8 +10,9 @@ mod state;
 use ap_thread::ap_thread;
 use archipelago_rs::{client::ArchipelagoClient, protocol::Connected};
 use clap::Parser;
-use cli::{print, DisplayUpdate};
+use cli::{print, send_location, DisplayUpdate};
 use console::Term;
+use data::Item;
 use input_thread::input_thread;
 use state::State;
 use std::{
@@ -36,7 +37,6 @@ struct Args {
 #[tokio::main(flavor = "current_thread")]
 pub async fn main() {
     let (client_sender, mut receiver) = channel::<DisplayUpdate>(16);
-    let cli_sender = client_sender.clone();
 
     let (client, mut state) = if let Ok((mut client, connected)) = connect().await {
         let mut state = State::new(client.data_package().expect("No datapackage was received"));
@@ -48,10 +48,10 @@ pub async fn main() {
     };
 
     println!("Connected!");
-    let (ap_sender, ap_receiver) = client.split();
+    let (mut ap_sender, ap_receiver) = client.split();
 
-    let _ = spawn(ap_thread(state.clone(), client_sender, ap_receiver));
-    let _ = spawn(input_thread(cli_sender));
+    let _ = spawn(ap_thread(state.idmap.clone(), client_sender.clone(), ap_receiver));
+    let _ = spawn(input_thread(client_sender));
 
     let term = Term::stdout();
     let _ = term.hide_cursor();
@@ -64,15 +64,41 @@ pub async fn main() {
         if let Some(update) = receiver.recv().await {
             match update {
                 DisplayUpdate::Msg(_) => (),
-                DisplayUpdate::State(new_state) => state = new_state,
+                DisplayUpdate::Items(items) => {
+                    for item in items {
+                        match item {
+                            Item::Hero(hero) => state.items.set_hero(hero),
+                            Item::Variant(variant) => state.items.set_hero_variant(variant),
+                            Item::Villain(villain) => state.items.set_villain(villain),
+                            Item::TeamVillain(teamvillain) => state.items.set_team_villain(teamvillain),
+                            Item::Environment(environment) => state.items.set_environment(environment),
+                            Item::Scion => state.items.scions += 1,
+                            Item::Filler => (),
+                        }
+                    }
+                }
                 DisplayUpdate::Filter(new_filter) => filter = new_filter,
-                DisplayUpdate::CursorLeft => cursor_x -= 1,
-                DisplayUpdate::CursorRight => cursor_x += 1,
-                DisplayUpdate::CursorUp => cursor_y -= 1,
+                DisplayUpdate::CursorLeft => {
+                    if cursor_x > 0 {
+                        cursor_x -= 1
+                    }
+                }
+                DisplayUpdate::CursorRight => {
+                    if cursor_x < 5 {
+                        cursor_x += 1
+                    }
+                }
+                DisplayUpdate::CursorUp => {
+                    if cursor_y > 0 {
+                        cursor_y -= 1
+                    }
+                }
                 DisplayUpdate::CursorDown => cursor_y += 1,
                 DisplayUpdate::CursorHome => (cursor_x, cursor_y) = (0, 0),
                 DisplayUpdate::Select => (),
-                DisplayUpdate::Send => (),
+                DisplayUpdate::Send => {
+                    send_location(&mut ap_sender, &mut state, &filter, cursor_x, cursor_y).await;
+                }
             }
         } else {
             exit(1);

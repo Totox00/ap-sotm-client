@@ -1,48 +1,39 @@
-use tokio::sync::mpsc::Sender;
+use std::sync::Arc;
+
+use tokio::{sync::mpsc::Sender, task::yield_now};
 
 use crate::{
     archipelago_rs::{self, client::ArchipelagoClientReceiver},
     cli::DisplayUpdate,
-    data::Item,
-    state::State,
+    idmap::IdMap,
 };
 
-pub async fn ap_thread(mut state: State, client_sender: Sender<DisplayUpdate>, mut ap_receiver: ArchipelagoClientReceiver) {
-    let id_map = state.idmap.clone();
-    let _ = client_sender.send(DisplayUpdate::State(state.clone())).await;
-
+pub async fn ap_thread(id_map: Arc<IdMap>, client_sender: Sender<DisplayUpdate>, mut ap_receiver: ArchipelagoClientReceiver) {
     loop {
-        if let Some(res) = ap_receiver.recv().await.unwrap() {
-            match res {
-                archipelago_rs::protocol::ServerMessage::RoomInfo(_) => (),
-                archipelago_rs::protocol::ServerMessage::ConnectionRefused(_) => (),
-                archipelago_rs::protocol::ServerMessage::Connected(_) => (),
-                archipelago_rs::protocol::ServerMessage::ReceivedItems(packet) => {
-                    for item in packet.items {
-                        if let Some(item) = id_map.items_from_id.get(&item.item) {
-                            match item {
-                                Item::Hero(hero) => state.items.set_hero(*hero),
-                                Item::Variant(variant) => state.items.set_hero_variant(*variant),
-                                Item::Villain(villain) => state.items.set_villain(*villain),
-                                Item::TeamVillain(teamvillain) => state.items.set_team_villain(*teamvillain),
-                                Item::Environment(environment) => state.items.set_environment(*environment),
-                                Item::Scion => state.items.scions += 1,
-                                Item::Filler => (),
-                            }
-                        }
+        let res = ap_receiver.recv().await;
+        if let Ok(res) = res {
+            if let Some(res) = res {
+                match res {
+                    archipelago_rs::protocol::ServerMessage::RoomInfo(_) => (),
+                    archipelago_rs::protocol::ServerMessage::ConnectionRefused(_) => (),
+                    archipelago_rs::protocol::ServerMessage::Connected(_) => (),
+                    archipelago_rs::protocol::ServerMessage::ReceivedItems(packet) => {
+                        let _ = client_sender
+                            .send(DisplayUpdate::Items(packet.items.iter().filter_map(|item| id_map.items_from_id.get(&item.item)).copied().collect()))
+                            .await;
                     }
-                    let _ = client_sender.send(DisplayUpdate::State(state.clone())).await;
+                    archipelago_rs::protocol::ServerMessage::LocationInfo(_) => (),
+                    archipelago_rs::protocol::ServerMessage::RoomUpdate(_) => (),
+                    archipelago_rs::protocol::ServerMessage::Print(_) => (),
+                    archipelago_rs::protocol::ServerMessage::PrintJSON(_) => (),
+                    archipelago_rs::protocol::ServerMessage::DataPackage(_) => (),
+                    archipelago_rs::protocol::ServerMessage::Bounced(_) => (),
+                    archipelago_rs::protocol::ServerMessage::InvalidPacket(_) => (),
+                    archipelago_rs::protocol::ServerMessage::Retrieved(_) => (),
+                    archipelago_rs::protocol::ServerMessage::SetReply(_) => (),
                 }
-                archipelago_rs::protocol::ServerMessage::LocationInfo(_) => (),
-                archipelago_rs::protocol::ServerMessage::RoomUpdate(_) => (),
-                archipelago_rs::protocol::ServerMessage::Print(_) => (),
-                archipelago_rs::protocol::ServerMessage::PrintJSON(_) => (),
-                archipelago_rs::protocol::ServerMessage::DataPackage(_) => (),
-                archipelago_rs::protocol::ServerMessage::Bounced(_) => (),
-                archipelago_rs::protocol::ServerMessage::InvalidPacket(_) => (),
-                archipelago_rs::protocol::ServerMessage::Retrieved(_) => (),
-                archipelago_rs::protocol::ServerMessage::SetReply(_) => (),
             }
         }
+        yield_now().await;
     }
 }
