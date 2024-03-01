@@ -98,7 +98,11 @@ pub async fn main() {
                 DisplayUpdate::Select => (),
                 DisplayUpdate::Send => {
                     send_location(&mut ap_sender, &mut state, &filter, cursor_x, cursor_y).await;
-                    cursor_y -= 1;
+                    if cursor_y > 0 {
+                        cursor_y -= 1;
+                    } else {
+                        cursor_x -= 1;
+                    }
                 }
             }
         } else {
