@@ -1,4 +1,4 @@
-use std::io::{stdout, Write};
+use std::io::{stdout, StdoutLock, Write};
 
 use crate::{
     archipelago_rs::client::ArchipelagoClientSender,
@@ -149,6 +149,7 @@ pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y
         let _ = term.move_cursor_to(COLUMN_OFFSETS[5], y);
         if cursor_x == 5 && cursor_y == y - 1 {
             let _ = write!(lock, "{}", style(trunc(v.to_str(), 30)).bold());
+            write_variant_desc(term, &mut lock, *v);
         } else {
             let _ = write!(lock, "{}", trunc(v.to_str(), 30));
         }
@@ -235,4 +236,35 @@ fn filter_match(filter: &str, item: &str) -> bool {
     }
 
     filter_iter.next().is_none()
+}
+
+fn write_variant_desc(term: &Term, lock: &mut StdoutLock, v: Variant) {
+    let desc = v.to_desc();
+    if desc.is_empty() {
+        return;
+    }
+
+    let mut lines = vec![String::new()];
+    for word in desc.split(' ') {
+        let word: String = word.chars().map(|c| if c == '_' { ' ' } else { c }).collect();
+        if let Some((a, b)) = word.split_once('\\') {
+            if lines.last().unwrap().len() + a.len() > 50 {
+                lines.push(String::new());
+            }
+
+            lines.last_mut().unwrap().push_str(a);
+            lines.push(String::from(b));
+        } else {
+            if lines.last().unwrap().len() + word.len() > 50 {
+                lines.push(String::new());
+            }
+            lines.last_mut().unwrap().push_str(&word);
+        }
+        lines.last_mut().unwrap().push(' ');
+    }
+
+    for (line, y) in lines.iter().zip(1..) {
+        let _ = term.move_cursor_to(COLUMN_OFFSETS[6], y);
+        let _ = write!(lock, "{line}");
+    }
 }
