@@ -23,7 +23,9 @@ pub enum DisplayUpdate {
     Send,
 }
 
-const COLUMN_OFFSETS: [usize; 7] = [0, 30, 60, 100, 140, 170, 200];
+const COLUMN_SIZES: [usize; 7] = [20, 20, 30, 30, 20, 30, 50];
+const COLUMN_OFFSETS: [usize; 7] = [0, 20, 40, 70, 100, 120, 150];
+
 // Search
 // Villains  Environments Heroes     | Villains Environments Variants | Variant desc.
 //                        > Variants |
@@ -38,9 +40,9 @@ pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y
     for (v, y) in Villain::iter().filter(|v| state.items.has_villain(*v)).filter(|v| filter_match(&filter, v.to_str())).zip(1..) {
         let _ = term.move_cursor_to(COLUMN_OFFSETS[0], y);
         if cursor_x == 0 && cursor_y == y - 1 {
-            let _ = write!(lock, "{}", style(trunc(v.to_str(), 30)).bold());
+            let _ = write!(lock, "{}", style(trunc(v.to_str(), COLUMN_SIZES[0])).bold());
         } else {
-            let _ = write!(lock, "{}", trunc(v.to_str(), 30));
+            let _ = write!(lock, "{}", trunc(v.to_str(), COLUMN_SIZES[0]));
         }
         offset += 1;
     }
@@ -52,18 +54,18 @@ pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y
     {
         let _ = term.move_cursor_to(COLUMN_OFFSETS[0], y);
         if cursor_x == 0 && cursor_y == y - 1 {
-            let _ = write!(lock, "{}", style(trunc(v.to_str(), 30)).bold());
+            let _ = write!(lock, "{}", style(trunc(v.to_str(), COLUMN_SIZES[0])).bold());
         } else {
-            let _ = write!(lock, "{}", trunc(v.to_str(), 30));
+            let _ = write!(lock, "{}", trunc(v.to_str(), COLUMN_SIZES[0]));
         }
     }
 
     for (e, y) in Environment::iter().filter(|e| state.items.has_environment(*e)).filter(|e| filter_match(&filter, e.to_str())).zip(1..) {
         let _ = term.move_cursor_to(COLUMN_OFFSETS[1], y);
         if cursor_x == 1 && cursor_y == y - 1 {
-            let _ = write!(lock, "{}", style(trunc(e.to_str(), 30)).bold());
+            let _ = write!(lock, "{}", style(trunc(e.to_str(), COLUMN_SIZES[1])).bold());
         } else {
-            let _ = write!(lock, "{}", trunc(e.to_str(), 30));
+            let _ = write!(lock, "{}", trunc(e.to_str(), COLUMN_SIZES[1]));
         }
     }
 
@@ -88,30 +90,30 @@ pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y
         let _ = term.move_cursor_to(COLUMN_OFFSETS[2], y);
         if *bitfield == 1 {
             if cursor_x == 2 && cursor_y == y - 1 {
-                let _ = write!(lock, "{}", style(trunc(hero.to_str(), 40)).bold());
+                let _ = write!(lock, "{}", style(trunc(hero.to_str(), COLUMN_SIZES[2])).bold());
             } else {
-                let _ = write!(lock, "{}", trunc(hero.to_str(), 40));
+                let _ = write!(lock, "{}", trunc(hero.to_str(), COLUMN_SIZES[2]));
             }
         } else if bitfield.count_ones() == 1 {
             if let Some(variant) = Variant::from_hero(hero, bitfield.trailing_zeros()) {
                 if cursor_x == 2 && cursor_y == y - 1 {
-                    let _ = write!(lock, "{}", style(trunc(variant.to_str(), 40)).bold());
+                    let _ = write!(lock, "{}", style(trunc(variant.to_str(), COLUMN_SIZES[2])).bold());
                 } else {
-                    let _ = write!(lock, "{}", trunc(variant.to_str(), 40));
+                    let _ = write!(lock, "{}", trunc(variant.to_str(), COLUMN_SIZES[2]));
                 }
             }
         } else {
             if cursor_x == 2 && cursor_y == y - 1 {
-                let _ = write!(lock, "{}{}", if bitfield & 1 == 1 { "" } else { "!! " }, style(trunc(hero.to_str(), 37)).bold());
+                let _ = write!(lock, "{}{}", if bitfield & 1 == 1 { "++ " } else { "!! " }, style(trunc(hero.to_str(), COLUMN_SIZES[2] - 3)).bold());
                 for (variant, v_offset) in (1..7).filter(|o| bitfield & 1 << o > 1).zip(1..) {
                     if let Some(variant) = Variant::from_hero(hero, variant) {
                         let _ = term.move_cursor_to(COLUMN_OFFSETS[2], y + v_offset);
-                        let _ = write!(lock, " - {}", trunc(variant.to_str(), 37));
+                        let _ = write!(lock, " - {}", trunc(variant.to_str(), COLUMN_SIZES[2] - 3));
                         offset += 1;
                     }
                 }
             } else {
-                let _ = write!(lock, "{}{}", if bitfield & 1 == 1 { "" } else { "!! " }, trunc(hero.to_str(), 37));
+                let _ = write!(lock, "{}{}", if bitfield & 1 == 1 { "++ " } else { "!! " }, trunc(hero.to_str(), COLUMN_SIZES[2] - 3));
             }
         }
     }
@@ -120,9 +122,9 @@ pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y
     for ((v, d), y) in available.villains.iter().filter(|(v, _)| filter_match(&filter, v.to_str())).zip(1..) {
         let _ = term.move_cursor_to(COLUMN_OFFSETS[3], y);
         if cursor_x == 3 && cursor_y == y - 1 {
-            let _ = write!(lock, "{} - {}", style(trunc(v.to_str(), 30)).bold(), to_dif(*d));
+            let _ = write!(lock, "{} - {}", style(trunc(v.to_str(), COLUMN_SIZES[3])).bold(), to_dif(*d));
         } else {
-            let _ = write!(lock, "{} - {}", trunc(v.to_str(), 30), to_dif(*d));
+            let _ = write!(lock, "{} - {}", trunc(v.to_str(), COLUMN_SIZES[3]), to_dif(*d));
         }
         offset += 1;
     }
@@ -130,28 +132,28 @@ pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y
     for ((v, d), y) in available.team_villains.iter().filter(|(v, _)| filter_match(&filter, v.to_str())).zip(offset..) {
         let _ = term.move_cursor_to(COLUMN_OFFSETS[3], y);
         if cursor_x == 3 && cursor_y == y - 1 {
-            let _ = write!(lock, "{} - {}", style(trunc(v.to_str(), 30)).bold(), to_dif(*d));
+            let _ = write!(lock, "{} - {}", style(trunc(v.to_str(), COLUMN_SIZES[3])).bold(), to_dif(*d));
         } else {
-            let _ = write!(lock, "{} - {}", trunc(v.to_str(), 30), to_dif(*d));
+            let _ = write!(lock, "{} - {}", trunc(v.to_str(), COLUMN_SIZES[3]), to_dif(*d));
         }
     }
 
     for (e, y) in available.environments.iter().filter(|e| filter_match(&filter, e.to_str())).zip(1..) {
         let _ = term.move_cursor_to(COLUMN_OFFSETS[4], y);
         if cursor_x == 4 && cursor_y == y - 1 {
-            let _ = write!(lock, "{}", style(trunc(e.to_str(), 30)).bold());
+            let _ = write!(lock, "{}", style(trunc(e.to_str(), COLUMN_SIZES[4])).bold());
         } else {
-            let _ = write!(lock, "{}", trunc(e.to_str(), 30));
+            let _ = write!(lock, "{}", trunc(e.to_str(), COLUMN_SIZES[4]));
         }
     }
 
     for (v, y) in available.variants.iter().filter(|v| filter_match(&filter, v.to_str())).zip(1..) {
         let _ = term.move_cursor_to(COLUMN_OFFSETS[5], y);
         if cursor_x == 5 && cursor_y == y - 1 {
-            let _ = write!(lock, "{}", style(trunc(v.to_str(), 30)).bold());
+            let _ = write!(lock, "{}", style(trunc(v.to_str(), COLUMN_SIZES[5])).bold());
             write_variant_desc(term, &mut lock, *v);
         } else {
-            let _ = write!(lock, "{}", trunc(v.to_str(), 30));
+            let _ = write!(lock, "{}", trunc(v.to_str(), COLUMN_SIZES[5]));
         }
     }
 
@@ -248,14 +250,14 @@ fn write_variant_desc(term: &Term, lock: &mut StdoutLock, v: Variant) {
     for word in desc.split(' ') {
         let word: String = word.chars().map(|c| if c == '_' { ' ' } else { c }).collect();
         if let Some((a, b)) = word.split_once('\\') {
-            if lines.last().unwrap().len() + a.len() > 50 {
+            if lines.last().unwrap().len() + a.len() > COLUMN_SIZES[6] {
                 lines.push(String::new());
             }
 
             lines.last_mut().unwrap().push_str(a);
             lines.push(String::from(b));
         } else {
-            if lines.last().unwrap().len() + word.len() > 50 {
+            if lines.last().unwrap().len() + word.len() > COLUMN_SIZES[6] {
                 lines.push(String::new());
             }
             lines.last_mut().unwrap().push_str(&word);
