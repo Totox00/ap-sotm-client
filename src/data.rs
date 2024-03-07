@@ -122,7 +122,7 @@ pub enum Hero {
     CaptainCosmic,
     SkyScraper,
     Guise,
-    KNYFE,
+    Knyfe,
     TheNaturalist,
     Parse,
     TheSentiels,
@@ -233,7 +233,7 @@ pub enum Variant {
     AkashThriyaSpiritOfTheVoid,
     BenchmarkSupplyAndDemand,
     HeroicLuminary,
-    KNYFERogueAgent,
+    KnyfeRogueAgent,
     LaComodoraCurseOfTheBlackSpot,
     LifelineBloodMage,
     ParseFugueState,
@@ -350,7 +350,7 @@ impl Variant {
         133
     }
 
-    pub fn to_i(&self) -> u8 {
+    pub fn as_i(&self) -> u8 {
         match self {
             Variant::Base => 0,
             Variant::AmericasGreatestLegacy => 1,
@@ -375,7 +375,7 @@ impl Variant {
             Variant::AkashThriyaSpiritOfTheVoid => 1,
             Variant::BenchmarkSupplyAndDemand => 1,
             Variant::HeroicLuminary => 1,
-            Variant::KNYFERogueAgent => 1,
+            Variant::KnyfeRogueAgent => 1,
             Variant::LaComodoraCurseOfTheBlackSpot => 1,
             Variant::LifelineBloodMage => 1,
             Variant::ParseFugueState => 1,
@@ -488,7 +488,7 @@ impl Variant {
         }
     }
 
-    pub fn to_normal(&self) -> Option<Hero> {
+    pub fn as_normal(&self) -> Option<Hero> {
         match self {
             Variant::Base => None,
             Variant::AmericasGreatestLegacy => Some(Hero::Legacy),
@@ -513,7 +513,7 @@ impl Variant {
             Variant::AkashThriyaSpiritOfTheVoid => Some(Hero::AkashThriya),
             Variant::BenchmarkSupplyAndDemand => Some(Hero::Benchmark),
             Variant::HeroicLuminary => Some(Hero::Luminary),
-            Variant::KNYFERogueAgent => Some(Hero::KNYFE),
+            Variant::KnyfeRogueAgent => Some(Hero::Knyfe),
             Variant::LaComodoraCurseOfTheBlackSpot => Some(Hero::LaComodora),
             Variant::LifelineBloodMage => Some(Hero::Lifeline),
             Variant::ParseFugueState => Some(Hero::Parse),
@@ -626,7 +626,7 @@ impl Variant {
         }
     }
 
-    pub fn to_str(&self) -> &str {
+    pub fn as_str(&self) -> &str {
         match self {
             Variant::Base => "Base",
             Variant::AmericasGreatestLegacy => "America's Greatest Legacy",
@@ -651,7 +651,7 @@ impl Variant {
             Variant::AkashThriyaSpiritOfTheVoid => "Akash'Thriya: Spirit of the Void",
             Variant::BenchmarkSupplyAndDemand => "Benchmark Supply and Demand",
             Variant::HeroicLuminary => "Heroic Luminary",
-            Variant::KNYFERogueAgent => "K.N.Y.F.E. Rogue Agent",
+            Variant::KnyfeRogueAgent => "K.N.Y.F.E. Rogue Agent",
             Variant::LaComodoraCurseOfTheBlackSpot => "La Comodora: Curse of the Black Spot",
             Variant::LifelineBloodMage => "Lifeline Blood Mage",
             Variant::ParseFugueState => "Parse: Fugue State",
@@ -764,7 +764,7 @@ impl Variant {
         }
     }
 
-    pub fn to_desc(&self) -> &str {
+    pub fn as_desc(&self) -> &str {
         match self {
             Variant::Base => "",
             Variant::AmericasGreatestLegacy => "Defeat standard Baron Blade. Then, while fighting Citizen Dawn, destroy Citizens Blood, Sweat, and Tears in the same round.",
@@ -789,7 +789,7 @@ impl Variant {
             Variant::AkashThriyaSpiritOfTheVoid => "Win a game in Nexus of the Void with Akash'Thriya on the team. Each unique primordial seed must enter the environment deck. Akash'Thriya must be reduced to 9_or less HP, then recover back to full HP. Akash'Flora must be in play at the end of the game without ever having left play.",
             Variant::BenchmarkSupplyAndDemand => "First, win a team mode game wherein you play at least (100_-_10*X) equipment cards and destroy at least (50_-_5*X) devices, where X is the number of RevoCorp related decks in the game. Then, play an equipment card. The list of RevoCorp related decks is: Ambuscade, Baron Blade, Benchmark, Expatriette, Friction, Fright Train, Luminary, Parse, Plague Rat, and Setback.",
             Variant::HeroicLuminary => "First, defeat Baron Blade in the Realm of Discord without Luminary on the team. Then, win a game in Freedom Tower with the Freedom Five (any variants). Then, in a game in Megalopolis with Luminary on the team, use the power on each Doomsday Device while at least 15_cards are in Luminary's trash.",
-            Variant::KNYFERogueAgent => "In a game with regular K.N.Y.F.E. in The Block, have K.N.Y.F.E. destroy 5_Agents other than Warden Hoefle. K.N.Y.F.E. may not destroy Warden Hoefle.",
+            Variant::KnyfeRogueAgent => "In a game with regular K.N.Y.F.E. in The Block, have K.N.Y.F.E. destroy 5_Agents other than Warden Hoefle. K.N.Y.F.E. may not destroy Warden Hoefle.",
             Variant::LaComodoraCurseOfTheBlackSpot => "Win a game in Time Cataclysm with La Comodora on the team. Each of La Comodora's unique equipment cards must be in play at one time. After that, each of her unique equipment cards must be in her trash at once. La Comodora must deal the final blow with at least 10_damage using Run Aground.",
             Variant::LifelineBloodMage => "Win a game in the Court of Blood with Lifeline on the team. Play each of Lifeline's unique one-shots while both copies of Cosmic Immolation are in play. Lifeline must be incapacitated by Blood Countess Bathory. No other heroes may be incapacitated.",
             Variant::ParseFugueState => "Defeat Progeny with regular Parse on the team. At the end of the game, Parse must have at least 10 ongoing cards in play, and must be at exactly 1_HP.",
@@ -926,7 +926,7 @@ impl Variant {
             (Hero::AkashThriya, 1) => Some(Variant::AkashThriyaSpiritOfTheVoid),
             (Hero::Benchmark, 1) => Some(Variant::BenchmarkSupplyAndDemand),
             (Hero::Luminary, 1) => Some(Variant::HeroicLuminary),
-            (Hero::KNYFE, 1) => Some(Variant::KNYFERogueAgent),
+            (Hero::Knyfe, 1) => Some(Variant::KnyfeRogueAgent),
             (Hero::LaComodora, 1) => Some(Variant::LaComodoraCurseOfTheBlackSpot),
             (Hero::Lifeline, 1) => Some(Variant::LifelineBloodMage),
             (Hero::Parse, 1) => Some(Variant::ParseFugueState),
@@ -1040,7 +1040,7 @@ impl Hero {
         59
     }
 
-    pub fn to_str(&self) -> &str {
+    pub fn as_str(&self) -> &str {
         match self {
             Hero::AbsoluteZero => "Absolute Zero",
             Hero::Bunker => "Bunker",
@@ -1063,7 +1063,7 @@ impl Hero {
             Hero::CaptainCosmic => "Captain Cosmic",
             Hero::SkyScraper => "Sky-Scraper",
             Hero::Guise => "Guise",
-            Hero::KNYFE => "K.N.Y.F.E.",
+            Hero::Knyfe => "K.N.Y.F.E.",
             Hero::TheNaturalist => "The Naturalist",
             Hero::Parse => "Parse",
             Hero::TheSentiels => "The Sentinels",
@@ -1110,7 +1110,7 @@ impl Villain {
         53
     }
 
-    pub fn to_str(&self) -> &str {
+    pub fn as_str(&self) -> &str {
         match self {
             Villain::BaronBlade => "Baron Blade",
             Villain::MadBomberBaronBlade => "Mad Bomber Baron Blade",
@@ -1174,7 +1174,7 @@ impl TeamVillain {
         15
     }
 
-    pub fn to_str(&self) -> &str {
+    pub fn as_str(&self) -> &str {
         match self {
             TeamVillain::BaronBlade => "Baron Blade (Team)",
             TeamVillain::Ermine => "Ermine",
@@ -1200,7 +1200,7 @@ impl Environment {
         42
     }
 
-    pub fn to_str(&self) -> &str {
+    pub fn as_str(&self) -> &str {
         match self {
             Environment::InsulaPrimalis => "Insula Primalis",
             Environment::Megalopolis => "Megalopolis",
@@ -1272,7 +1272,7 @@ impl Item {
             "Captain Cosmic" => Some(Item::Hero(Hero::CaptainCosmic)),
             "Sky-Scraper" => Some(Item::Hero(Hero::SkyScraper)),
             "Guise" => Some(Item::Hero(Hero::Guise)),
-            "K.N.Y.F.E." => Some(Item::Hero(Hero::KNYFE)),
+            "K.N.Y.F.E." => Some(Item::Hero(Hero::Knyfe)),
             "The Naturalist" => Some(Item::Hero(Hero::TheNaturalist)),
             "Parse" => Some(Item::Hero(Hero::Parse)),
             "The Sentinels" => Some(Item::Hero(Hero::TheSentiels)),
@@ -1383,7 +1383,7 @@ impl Item {
             "Akash'Thriya - Spirit of the Void" => Some(Item::Variant(Variant::AkashThriyaSpiritOfTheVoid)),
             "Benchmark Supply & Demand" => Some(Item::Variant(Variant::BenchmarkSupplyAndDemand)),
             "Heroic Luminary" => Some(Item::Variant(Variant::HeroicLuminary)),
-            "K.N.Y.F.E. - Rogue Agent" => Some(Item::Variant(Variant::KNYFERogueAgent)),
+            "K.N.Y.F.E. - Rogue Agent" => Some(Item::Variant(Variant::KnyfeRogueAgent)),
             "La Comodora - Curse of the Black Spot" => Some(Item::Variant(Variant::LaComodoraCurseOfTheBlackSpot)),
             "Lifeline Blood Mage" => Some(Item::Variant(Variant::LifelineBloodMage)),
             "Parse - Fugue State" => Some(Item::Variant(Variant::ParseFugueState)),
@@ -1762,7 +1762,7 @@ impl Location {
             "Akash'Thriya - Spirit of the Void - Unlock" => Some(Location::Variant(Variant::AkashThriyaSpiritOfTheVoid)),
             "Benchmark Supply & Demand - Unlock" => Some(Location::Variant(Variant::BenchmarkSupplyAndDemand)),
             "Heroic Luminary - Unlock" => Some(Location::Variant(Variant::HeroicLuminary)),
-            "K.N.Y.F.E. Rogue Agent - Unlock" => Some(Location::Variant(Variant::KNYFERogueAgent)),
+            "K.N.Y.F.E. Rogue Agent - Unlock" => Some(Location::Variant(Variant::KnyfeRogueAgent)),
             "La Comodora - Curse of the Black Spot - Unlock" => Some(Location::Variant(Variant::LaComodoraCurseOfTheBlackSpot)),
             "Lifeline Blood Mage - Unlock" => Some(Location::Variant(Variant::LifelineBloodMage)),
             "Parse - Fugue State - Unlock" => Some(Location::Variant(Variant::ParseFugueState)),

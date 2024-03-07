@@ -53,8 +53,8 @@ pub async fn main() {
     println!("Connected!");
     let (mut ap_sender, ap_receiver) = client.split();
 
-    let _ = spawn(ap_thread(state.idmap.clone(), client_sender.clone(), ap_receiver));
-    let _ = spawn(input_thread(client_sender));
+    let _ = spawn(ap_thread(state.idmap.clone(), client_sender.clone(), ap_receiver)).await;
+    let _ = spawn(input_thread(client_sender)).await;
 
     let term = Term::stdout();
     let _ = term.hide_cursor();
@@ -81,21 +81,13 @@ pub async fn main() {
                     }
                 }
                 DisplayUpdate::Filter(new_filter) => filter = new_filter,
-                DisplayUpdate::CursorLeft => {
-                    if cursor_x > 0 {
-                        cursor_x -= 1
-                    }
-                }
+                DisplayUpdate::CursorLeft => cursor_x = cursor_x.saturating_sub(1),
                 DisplayUpdate::CursorRight => {
                     if cursor_x < 5 {
                         cursor_x += 1
                     }
                 }
-                DisplayUpdate::CursorUp => {
-                    if cursor_y > 0 {
-                        cursor_y -= 1
-                    }
-                }
+                DisplayUpdate::CursorUp => cursor_y = cursor_y.saturating_sub(1),
                 DisplayUpdate::CursorDown => cursor_y += 1,
                 DisplayUpdate::CursorHome => (cursor_x, cursor_y) = (0, 0),
                 DisplayUpdate::Select => (),

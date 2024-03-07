@@ -60,7 +60,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
                 && items.has_hero(Hero::Tachyon)
                 && items.has_hero(Hero::Wraith)
         }
-        Variant::KNYFERogueAgent => items.has_base_hero(Hero::KNYFE) && items.has_environment(Environment::TheBlock),
+        Variant::KnyfeRogueAgent => items.has_base_hero(Hero::Knyfe) && items.has_environment(Environment::TheBlock),
         Variant::LaComodoraCurseOfTheBlackSpot => items.has_hero(Hero::LaComodora) && items.has_environment(Environment::TimeCataclysm),
         Variant::LifelineBloodMage => items.has_hero(Hero::Lifeline) && items.has_environment(Environment::TheCourtOfBlood),
         Variant::ParseFugueState => items.has_base_hero(Hero::Parse) && items.has_villain(Villain::Progeny),
@@ -131,7 +131,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
             items.has_villain(Villain::Spite) && items.has_villain(Villain::Gloomweaver) && items.has_villain(Villain::SpiteAgentOfGloom) && items.has_environment(Environment::RookCity)
         }
         Variant::TricksterKismet => {
-            items.has_villain(Villain::Kismet) && items.has_environment(Environment::TheBlock) && items.has_hero(Hero::KNYFE) && items.has_hero(Hero::ArgentAdept) && items.has_hero(Hero::Fanatic)
+            items.has_villain(Villain::Kismet) && items.has_environment(Environment::TheBlock) && items.has_hero(Hero::Knyfe) && items.has_hero(Hero::ArgentAdept) && items.has_hero(Hero::Fanatic)
         }
         Variant::HeroicInfinitor => (items.has_villain(Villain::Infinitor) || items.has_villain(Villain::HeroicInfinitor)) && items.has_hero(Hero::CaptainCosmic),
         Variant::BaccaratAceOfSwords => false,

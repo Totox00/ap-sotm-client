@@ -1,4 +1,4 @@
-use std::{env::var, sync::Arc};
+use std::sync::Arc;
 
 use strum::IntoEnumIterator;
 
@@ -165,8 +165,8 @@ impl Items {
     }
 
     pub fn has_hero_variant(&self, variant: Variant) -> bool {
-        if let Some(normal) = variant.to_normal() {
-            self.heroes[normal as usize] & 1 << variant.to_i() > 0
+        if let Some(normal) = variant.as_normal() {
+            self.heroes[normal as usize] & 1 << variant.as_i() > 0
         } else {
             false
         }
@@ -189,8 +189,8 @@ impl Items {
     }
 
     pub fn set_hero_variant(&mut self, variant: Variant) {
-        if let Some(normal) = variant.to_normal() {
-            self.heroes[normal as usize] |= 1 << variant.to_i()
+        if let Some(normal) = variant.as_normal() {
+            self.heroes[normal as usize] |= 1 << variant.as_i()
         }
     }
 
