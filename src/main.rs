@@ -38,13 +38,16 @@ struct Args {
 pub async fn main() {
     let (client_sender, mut receiver) = channel::<DisplayUpdate>(16);
 
-    let (client, mut state) = if let Ok((mut client, connected)) = connect().await {
-        let mut state = State::new(client.data_package().expect("No datapackage was received"));
-        state.sync(connected, client.sync().await.expect("Failed to sync items"));
-        (client, state)
-    } else {
-        println!("Failed to connect to Archipelago server");
-        exit(1);
+    let (client, mut state) = match connect().await {
+        Ok((mut client, connected)) => {
+            let mut state = State::new(client.data_package().expect("No datapackage was received"));
+            state.sync(connected, client.sync().await.expect("Failed to sync items"));
+            (client, state)
+        }
+        Err(err) => {
+            println!("Failed to connect to Archipelago server with reason: {err}");
+            exit(1);
+        }
     };
 
     println!("Connected!");
@@ -143,13 +146,10 @@ pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected)> {
         slot = String::from("Player");
     }
 
-    let mut url = String::new();
-    url.push_str("ws://");
-    url.push_str(&server);
-    url.push(':');
-    url.push_str(&port);
+    let url = format!("wss://{server}:{port}");
+    dbg!(&url);
 
-    let mut client = ArchipelagoClient::with_data_package(&url, None).await?;
+    let mut client = ArchipelagoClient::with_data_package(&url, Some(vec![String::from("Manual_sotm_toto00")])).await?;
 
     let connected = if let Some(pass) = password {
         client.connect("Manual_sotm_toto00", &slot, Some(&*pass), Some(7), vec!["AP".to_string()]).await?
