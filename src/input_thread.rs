@@ -35,6 +35,7 @@ pub async fn input_thread(sender: Sender<DisplayUpdate>) {
             }
             Key::Char(char) => {
                 if char == '\u{4}' {
+                    let _ = term.show_cursor();
                     exit(0);
                 }
                 filter.push(char);
