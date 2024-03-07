@@ -53,8 +53,8 @@ pub async fn main() {
     println!("Connected!");
     let (mut ap_sender, ap_receiver) = client.split();
 
-    let _ = spawn(ap_thread(state.idmap.clone(), client_sender.clone(), ap_receiver)).await;
-    let _ = spawn(input_thread(client_sender)).await;
+    drop(spawn(ap_thread(state.idmap.clone(), client_sender.clone(), ap_receiver)));
+    drop(spawn(input_thread(client_sender)));
 
     let term = Term::stdout();
     let _ = term.hide_cursor();
@@ -139,7 +139,6 @@ pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected)> {
     }
 
     let url = format!("wss://{server}:{port}");
-    dbg!(&url);
 
     let mut client = ArchipelagoClient::with_data_package(&url, Some(vec![String::from("Manual_sotm_toto00")])).await?;
 
