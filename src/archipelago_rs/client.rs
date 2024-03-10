@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use futures_util::{
     stream::{SplitSink, SplitStream},
     SinkExt, Stream, StreamExt,
@@ -29,9 +31,9 @@ pub enum ArchipelagoError {
 #[derive(Debug)]
 pub struct ArchipelagoClient {
     ws: WebSocketStream<MaybeTlsStream<TcpStream>>,
-    room_info: RoomInfo,
+    pub room_info: RoomInfo,
     message_buffer: Vec<ServerMessage>,
-    data_package: Option<DataPackageObject>,
+    pub data_package: DataPackageObject,
 }
 
 impl ArchipelagoClient {
@@ -57,7 +59,7 @@ impl ArchipelagoClient {
             ws,
             room_info,
             message_buffer: iter.collect(),
-            data_package: None,
+            data_package: DataPackageObject {games: HashMap::new()},
         })
     }
 
@@ -70,7 +72,7 @@ impl ArchipelagoClient {
         client.send(ClientMessage::GetDataPackage(GetDataPackage { games })).await?;
         let response = client.recv().await?;
         match response {
-            Some(ServerMessage::DataPackage(pkg)) => client.data_package = Some(pkg.data),
+            Some(ServerMessage::DataPackage(pkg)) => client.data_package = pkg.data,
             Some(received) => return Err(ArchipelagoError::IllegalResponse { received, expected: "DataPackage" }),
             None => return Err(ArchipelagoError::ConnectionClosed),
         }
@@ -78,12 +80,16 @@ impl ArchipelagoClient {
         Ok(client)
     }
 
-    pub fn room_info(&self) -> &RoomInfo {
-        &self.room_info
-    }
+    pub async fn get_data_package(&mut self, games: Option<Vec<String>>) -> Result<(), ArchipelagoError> {
+        self.send(ClientMessage::GetDataPackage(GetDataPackage { games })).await?;
+        let response = self.recv().await?;
+        match response {
+            Some(ServerMessage::DataPackage(pkg)) => self.data_package = pkg.data,
+            Some(received) => return Err(ArchipelagoError::IllegalResponse { received, expected: "DataPackage" }),
+            None => return Err(ArchipelagoError::ConnectionClosed),
+        }
 
-    pub fn data_package(&self) -> Option<&DataPackageObject> {
-        self.data_package.as_ref()
+        Ok(())
     }
 
     pub async fn send(&mut self, message: ClientMessage) -> Result<(), ArchipelagoError> {
@@ -315,7 +321,7 @@ pub struct ArchipelagoClientReceiver {
     ws: SplitStream<WebSocketStream<MaybeTlsStream<TcpStream>>>,
     room_info: RoomInfo,
     message_buffer: Vec<ServerMessage>,
-    data_package: Option<DataPackageObject>,
+    pub data_package: DataPackageObject,
 }
 
 impl ArchipelagoClientReceiver {
@@ -337,10 +343,6 @@ impl ArchipelagoClientReceiver {
 
     pub fn room_info(&self) -> &RoomInfo {
         &self.room_info
-    }
-
-    pub fn data_package(&self) -> Option<&DataPackageObject> {
-        self.data_package.as_ref()
     }
 }
 

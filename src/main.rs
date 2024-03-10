@@ -14,10 +14,13 @@ use cli::{print, send_location, DisplayUpdate};
 use console::Term;
 use data::Item;
 use input_thread::input_thread;
+use serde_json::{from_reader, to_writer};
 use state::State;
 use std::{
-    collections::VecDeque,
-    io::{self, BufRead, Write},
+    collections::{HashMap, VecDeque},
+    fs::{create_dir, create_dir_all, remove_file, File},
+    io::{self, stdout, BufRead, Write},
+    path::Path,
     process::exit,
 };
 use tokio::{spawn, sync::mpsc::channel};
@@ -41,7 +44,7 @@ pub async fn main() {
 
     let (client, mut state, connected, slot) = match connect().await {
         Ok((mut client, connected, slot)) => {
-            let mut state = State::new(client.data_package().expect("No datapackage was received"));
+            let mut state = State::new(&client.data_package);
             state.sync(&connected, client.sync().await.expect("Failed to sync items"));
             (client, state, connected, slot)
         }
@@ -147,7 +150,44 @@ pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected, String)>
 
     let url = format!("wss://{server}:{port}");
 
-    let mut client = ArchipelagoClient::with_data_package(&url, None).await?;
+    let mut client = ArchipelagoClient::new(&url).await?;
+
+    create_dir_all("./datapackage").expect("Failed to create datapackage cache");
+
+    let mut missing_games = vec![];
+    let mut cached = HashMap::new();
+    for (game, checksum) in &client.room_info.datapackage_checksums {
+        if let Ok(reader) = File::open(Path::new("./datapackage").join(game).join(checksum)) {
+            if let Ok(data) = from_reader(reader) {
+                cached.insert(game.to_owned(), data);
+            } else {
+                missing_games.push(game.to_owned());
+            }
+        } else {
+            missing_games.push(game.to_owned());
+        }
+    }
+
+    let mut lock = stdout().lock();
+    for game in &missing_games {
+        let _ = writeln!(lock, "Missing datapackage for {game}...");
+    }
+
+    client.get_data_package(Some(missing_games)).await?;
+
+    for (game, data) in &client.data_package.games {
+        if let Some(checksum) = client.room_info.datapackage_checksums.get(game) {
+            let _ = create_dir(Path::new("./datapackage").join(game));
+            if let Ok(writer) = File::create(Path::new("./datapackage").join(game).join(checksum)) {
+                let res = to_writer(writer, data);
+                if res.is_err() {
+                    remove_file(Path::new("./datapackage").join(game).join(checksum)).expect(format!("Failed to clean failed write for {game}-{checksum}. Data may be corrupt").as_str());
+                }
+            }
+        }
+    }
+
+    client.data_package.games.extend(cached);
 
     let connected = if let Some(pass) = password {
         client.connect("Manual_sotm_toto00", &slot, Some(&*pass), Some(7), vec!["AP".to_string()]).await?

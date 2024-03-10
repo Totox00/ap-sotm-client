@@ -13,14 +13,12 @@ pub async fn ap_thread(id_map: Arc<IdMap>, client_sender: Sender<DisplayUpdate>,
     let mut item_id_to_name = HashMap::new();
     let mut location_id_to_name = HashMap::new();
 
-    if let Some(datapackage) = ap_receiver.data_package() {
-        for game in datapackage.games.values() {
-            for (item, id) in &game.item_name_to_id {
-                item_id_to_name.insert(*id, item.to_owned());
-            }
-            for (location, id) in &game.location_name_to_id {
-                location_id_to_name.insert(*id, location.to_owned());
-            }
+    for game in ap_receiver.data_package.games.values() {
+        for (item, id) in &game.item_name_to_id {
+            item_id_to_name.insert(*id, item.to_owned());
+        }
+        for (location, id) in &game.location_name_to_id {
+            location_id_to_name.insert(*id, location.to_owned());
         }
     }
 
