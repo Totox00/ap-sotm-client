@@ -8,7 +8,7 @@ use crate::{
     data::{Environment, Hero, Item, Location, TeamVillain, Variant, Villain},
     state::State,
 };
-use console::{style, Term};
+use console::{style, StyledObject, Term};
 use num::FromPrimitive;
 use strum::IntoEnumIterator;
 
@@ -214,13 +214,13 @@ fn trunc(str: &str, max_len: usize) -> &str {
     }
 }
 
-const fn to_dif(d: u8) -> &'static str {
+fn to_dif(d: u8) -> StyledObject<&'static str> {
     match d {
-        0 => "Normal",
-        1 => "Advanced",
-        2 => "Challenge",
-        3 => "Ultimate",
-        _ => "",
+        0 => style("Normal").green(),
+        1 => style("Advanced").yellow(),
+        2 => style("Challenge").red(),
+        3 => style("Ultimate").magenta(),
+        _ => style(""),
     }
 }
 
