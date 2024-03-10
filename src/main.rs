@@ -181,7 +181,7 @@ pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected, String)>
             if let Ok(writer) = File::create(Path::new("./datapackage").join(game).join(checksum)) {
                 let res = to_writer(writer, data);
                 if res.is_err() {
-                    remove_file(Path::new("./datapackage").join(game).join(checksum)).expect(format!("Failed to clean failed write for {game}-{checksum}. Data may be corrupt").as_str());
+                    remove_file(Path::new("./datapackage").join(game).join(checksum)).unwrap_or_else(|_| panic!("Failed to clean failed write for {game}-{checksum}. Data may be corrupt"));
                 }
             }
         }

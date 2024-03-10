@@ -135,10 +135,10 @@ pub struct StatusUpdate {
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
 #[repr(u16)]
 pub enum ClientStatus {
-    ClientUnknown = 0,
-    ClientReady = 10,
-    ClientPlaying = 20,
-    ClientGoal = 30,
+    Unknown = 0,
+    Ready = 10,
+    Playing = 20,
+    Goal = 30,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
