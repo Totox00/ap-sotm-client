@@ -16,6 +16,7 @@ use data::Item;
 use input_thread::input_thread;
 use state::State;
 use std::{
+    collections::VecDeque,
     io::{self, BufRead, Write},
     process::exit,
 };
@@ -38,11 +39,11 @@ struct Args {
 pub async fn main() {
     let (client_sender, mut receiver) = channel::<DisplayUpdate>(16);
 
-    let (client, mut state) = match connect().await {
-        Ok((mut client, connected)) => {
+    let (client, mut state, connected, slot) = match connect().await {
+        Ok((mut client, connected, slot)) => {
             let mut state = State::new(client.data_package().expect("No datapackage was received"));
-            state.sync(connected, client.sync().await.expect("Failed to sync items"));
-            (client, state)
+            state.sync(&connected, client.sync().await.expect("Failed to sync items"));
+            (client, state, connected, slot)
         }
         Err(err) => {
             println!("Failed to connect to Archipelago server with reason: {err}");
@@ -53,7 +54,7 @@ pub async fn main() {
     println!("Connected!");
     let (mut ap_sender, ap_receiver) = client.split();
 
-    drop(spawn(ap_thread(state.idmap.clone(), client_sender.clone(), ap_receiver)));
+    drop(spawn(ap_thread(state.idmap.clone(), client_sender.clone(), ap_receiver, connected, slot)));
     drop(spawn(input_thread(client_sender)));
 
     let term = Term::stdout();
@@ -61,12 +62,18 @@ pub async fn main() {
     let mut filter = String::new();
     let mut cursor_x = 0;
     let mut cursor_y = 0;
+    let mut msg_buffer = VecDeque::with_capacity(10);
 
     loop {
-        print(&term, &state, &filter, cursor_x, cursor_y);
+        print(&term, &state, &filter, cursor_x, cursor_y, &msg_buffer);
         if let Some(update) = receiver.recv().await {
             match update {
-                DisplayUpdate::Msg(_) => (),
+                DisplayUpdate::Msg(msg) => {
+                    if msg_buffer.len() > 9 {
+                        msg_buffer.pop_front();
+                    }
+                    msg_buffer.push_back(msg);
+                }
                 DisplayUpdate::Items(items) => {
                     for item in items {
                         match item {
@@ -106,7 +113,7 @@ pub async fn main() {
     }
 }
 
-pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected)> {
+pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected, String)> {
     let args = Args::parse();
 
     let mut server = if let Some(server) = args.server {
@@ -140,7 +147,7 @@ pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected)> {
 
     let url = format!("wss://{server}:{port}");
 
-    let mut client = ArchipelagoClient::with_data_package(&url, Some(vec![String::from("Manual_sotm_toto00")])).await?;
+    let mut client = ArchipelagoClient::with_data_package(&url, None).await?;
 
     let connected = if let Some(pass) = password {
         client.connect("Manual_sotm_toto00", &slot, Some(&*pass), Some(7), vec!["AP".to_string()]).await?
@@ -148,7 +155,7 @@ pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected)> {
         client.connect("Manual_sotm_toto00", &slot, None, Some(7), vec!["AP".to_string()]).await?
     };
 
-    Ok((client, connected))
+    Ok((client, connected, slot))
 }
 
 fn prompt(text: &str) -> Option<String> {

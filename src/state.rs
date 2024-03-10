@@ -53,9 +53,9 @@ impl State {
         }
     }
 
-    pub fn sync(&mut self, connected: Connected, sync: ReceivedItems) {
-        for location_id in connected.checked_locations {
-            match self.idmap.locations_from_id.get(&location_id) {
+    pub fn sync(&mut self, connected: &Connected, sync: ReceivedItems) {
+        for location_id in &connected.checked_locations {
+            match self.idmap.locations_from_id.get(location_id) {
                 Some(Location::Variant(v)) => self.checked_locations.mark_variant(*v),
                 Some(Location::Villain((v, d))) => self.checked_locations.mark_villain(*v, *d),
                 Some(Location::TeamVillain((v, d))) => self.checked_locations.mark_team_villain(*v, *d),
