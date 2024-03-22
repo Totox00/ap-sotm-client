@@ -33,7 +33,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
                 && items.has_villain(Villain::TheChairman)
                 && items.has_team_villain(TeamVillain::Ambuscade)
                 && items.has_environment(Environment::PikeIndustrialComplex)
-                && items.has_hero(Hero::TheSentiels)
+                && items.has_hero(Hero::TheSentinels)
         }
         Variant::AkashThriyaSpiritOfTheVoid => items.has_environment(Environment::NexusOfTheVoid) && items.has_hero(Hero::AkashThriya),
         Variant::BenchmarkSupplyAndDemand => {
@@ -64,7 +64,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
         Variant::LaComodoraCurseOfTheBlackSpot => items.has_hero(Hero::LaComodora) && items.has_environment(Environment::TimeCataclysm),
         Variant::LifelineBloodMage => items.has_hero(Hero::Lifeline) && items.has_environment(Environment::TheCourtOfBlood),
         Variant::ParseFugueState => items.has_base_hero(Hero::Parse) && items.has_villain(Villain::Progeny),
-        Variant::TheAdamantSentinels => items.has_base_hero(Hero::TheSentiels),
+        Variant::TheAdamantSentinels => items.has_base_hero(Hero::TheSentinels),
         Variant::TheHuntedNaturalist => items.has_base_hero(Hero::TheNaturalist),
         Variant::TermiNationBunker => {
             items.has_villain(Villain::Omnitron) && items.has_villain(Villain::OmnitronII) && items.has_environment(Environment::OmnitronIV) && items.has_base_hero(Hero::Bunker)
