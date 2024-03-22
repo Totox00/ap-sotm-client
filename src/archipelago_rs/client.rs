@@ -9,6 +9,7 @@ use tokio::net::TcpStream;
 use tokio_tungstenite::{connect_async, MaybeTlsStream, WebSocketStream};
 use tungstenite::protocol::Message;
 
+#[allow(clippy::wildcard_imports)]
 use crate::archipelago_rs::protocol::*;
 
 #[derive(Error, Debug)]
@@ -28,6 +29,7 @@ pub enum ArchipelagoError {
 /**
  * A convenience layer to manage your connection to and communication with Archipelago
  */
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug)]
 pub struct ArchipelagoClient {
     ws: WebSocketStream<MaybeTlsStream<TcpStream>>,
@@ -127,12 +129,12 @@ impl ArchipelagoClient {
      * Will attempt to read a Connected packet in response, and will return an error if
      * another packet is found
      */
-    pub async fn connect(&mut self, game: &str, name: &str, password: Option<&str>, items_handling: Option<i32>, tags: Vec<String>) -> Result<Connected, ArchipelagoError> {
+    pub async fn connect(&mut self, game: &str, slot_name: &str, password: Option<&str>, items_handling: Option<i32>, tags: Vec<String>) -> Result<Connected, ArchipelagoError> {
         self.send(ClientMessage::Connect(Connect {
             game: game.to_string(),
-            name: name.to_string(),
-            uuid: "".to_string(),
-            password: password.map(|p| p.to_string()),
+            name: slot_name.to_string(),
+            uuid: String::new(),
+            password: password.map(ToString::to_string),
             version: network_version(),
             items_handling,
             tags,
@@ -154,7 +156,7 @@ impl ArchipelagoClient {
     }
 
     /**
-     * Sent to server to request a ReceivedItems packet to synchronize items.
+     * Sent to server to request a `ReceivedItems` packet to synchronize items.
      *
      * Will buffer any non-ReceivedItems packets returned
      */
@@ -233,7 +235,7 @@ impl ArchipelagoClient {
     /**
      * Used to write data to the server's data storage, that data can then be shared across worlds or just saved for later.
      *
-     * Values for keys in the data storage can be retrieved with a Get package, or monitored with a SetNotify package. Non-SetReply responses are buffered
+     * Values for keys in the data storage can be retrieved with a Get package, or monitored with a `SetNotify` package. Non-SetReply responses are buffered
      */
     pub async fn set(&mut self, key: String, default: serde_json::Value, want_reply: bool, operations: Vec<DataStorageOperation>) -> Result<SetReply, ArchipelagoError> {
         self.send(ClientMessage::Set(Set { key, default, want_reply, operations })).await?;
@@ -277,7 +279,7 @@ impl ArchipelagoClient {
 /**
  * Once split, this struct handles the sending-side of your connection
  *
- * For helper method docs, see ArchipelagoClient. Helper methods that require
+ * For helper method docs, see `ArchipelagoClient`. Helper methods that require
  * both sending and receiving are intentionally unavailable; for those messages,
  * use `send`.
  */
@@ -313,7 +315,7 @@ impl ArchipelagoClientSender {
 /**
  * Once split, this struct handles the receiving-side of your connection
  *
- * For helper method docs, see ArchipelagoClient. Helper methods that require
+ * For helper method docs, see `ArchipelagoClient`. Helper methods that require
  * both sending and receiving are intentionally unavailable; for those messages,
  * use `recv`.
  */
@@ -348,7 +350,7 @@ impl ArchipelagoClientReceiver {
 
 async fn recv_messages(mut ws: impl Stream<Item = Result<Message, tungstenite::error::Error>> + std::marker::Unpin) -> Option<Result<Vec<ServerMessage>, ArchipelagoError>> {
     match ws.next().await? {
-        Ok(Message::Text(response)) => Some(serde_json::from_str::<Vec<ServerMessage>>(&response).map_err(|e| e.into())),
+        Ok(Message::Text(response)) => Some(serde_json::from_str::<Vec<ServerMessage>>(&response).map_err(Into::into)),
         Ok(Message::Close(_)) => Some(Err(ArchipelagoError::ConnectionClosed)),
         Ok(msg) => Some(Err(ArchipelagoError::NonTextWebsocketResult(msg))),
         Err(e) => Some(Err(e.into())),

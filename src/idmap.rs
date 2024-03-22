@@ -5,6 +5,7 @@ use crate::{
     data::{Item, Location},
 };
 
+#[allow(clippy::struct_field_names)]
 #[derive(Debug)]
 pub struct IdMap {
     pub items_from_id: HashMap<i64, Item>,

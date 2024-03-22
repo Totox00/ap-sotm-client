@@ -335,7 +335,7 @@ pub enum Location {
 impl Variant {
     pub fn as_desc(&self) -> &str {
         match self {
-            Variant::AmericasGreatestLegacy => "Defeat standard Baron Blade. Then, while fighting Citizen Dawn, destroy Citizens Blood, Sweat, and Tears in the same round.",
+            Variant::AmericasGreatestLegacy => "Defeat Ambuscade in Silver Gulch with no hero character cards over 9 HP and Legacy not on your team.",
             Variant::AmericasNewestLegacy => "Baron Blade himself deals damage that incapacitates Legacy in Wagner Mars Base.",
             Variant::DarkVisionary => "Defeat GloomWeaver on his \"Demon-God_Incarnate\" side using The Visionary. Telekinetic Cocoon must have been destroyed at the start of The Visionary's turn",
             Variant::TheEternalHaka => "Win a game where Haka is the only non-incapacitated hero. Then, defeat any villain in The Final Wasteland, playing each \"Haka_of\" card at least once each. Again, Haka must be the only non-incapacitated hero.",

@@ -26,17 +26,11 @@ pub async fn ap_thread(id_map: Arc<IdMap>, client_sender: Sender<DisplayUpdate>,
         let res = ap_receiver.recv().await;
         if let Ok(Some(res)) = res {
             match res {
-                archipelago_rs::protocol::ServerMessage::RoomInfo(_) => (),
-                archipelago_rs::protocol::ServerMessage::ConnectionRefused(_) => (),
-                archipelago_rs::protocol::ServerMessage::Connected(_) => (),
                 archipelago_rs::protocol::ServerMessage::ReceivedItems(packet) => {
                     let _ = client_sender
                         .send(DisplayUpdate::Items(packet.items.iter().filter_map(|item| id_map.items_from_id.get(&item.item)).copied().collect()))
                         .await;
                 }
-                archipelago_rs::protocol::ServerMessage::LocationInfo(_) => (),
-                archipelago_rs::protocol::ServerMessage::RoomUpdate(_) => (),
-                archipelago_rs::protocol::ServerMessage::Print(_) => (),
                 archipelago_rs::protocol::ServerMessage::PrintJSON(msg) => {
                     let _ = client_sender
                         .send(DisplayUpdate::Msg(
@@ -47,15 +41,14 @@ pub async fn ap_thread(id_map: Arc<IdMap>, client_sender: Sender<DisplayUpdate>,
                                     if let Some(str) = &part.r#type {
                                         t_str = str.as_str();
                                     }
-                                    let text = part.text.to_owned().unwrap_or_default();
+                                    let text = part.text.clone().unwrap_or_default();
                                     match t_str {
-                                        "text" => style(text),
                                         "player_id" => {
                                             let player = connected
                                                 .players
                                                 .iter()
                                                 .find(|player| player.slot == text.parse().unwrap_or(0))
-                                                .map(|player| player.alias.to_owned())
+                                                .map(|player| player.alias.clone())
                                                 .unwrap_or(format!("Unknown player {text}"));
                                             if slot == player {
                                                 style(player).magenta()
@@ -71,34 +64,23 @@ pub async fn ap_thread(id_map: Arc<IdMap>, client_sender: Sender<DisplayUpdate>,
                                             }
                                         }
                                         "item_id" => style_item(
-                                            item_id_to_name.get(&text.parse().unwrap_or(0)).map(|str| str.to_owned()).unwrap_or(format!("Unknown location {text}")),
+                                            item_id_to_name.get(&text.parse().unwrap_or(0)).cloned().unwrap_or(format!("Unknown location {text}")),
                                             part.flags.unwrap_or(0),
                                         ),
                                         "item_name" => style(text).cyan(),
-                                        "location_id" => style(
-                                            location_id_to_name
-                                                .get(&text.parse().unwrap_or(0))
-                                                .map(|str| str.to_owned())
-                                                .unwrap_or(format!("Unknown location {text}")),
-                                        )
-                                        .green(),
+                                        "location_id" => style(location_id_to_name.get(&text.parse().unwrap_or(0)).cloned().unwrap_or(format!("Unknown location {text}"))).green(),
                                         "location_name" => style(text).green(),
                                         "entrance_name" => style(text).italic(),
-                                        "color" => style_color(text, &part.color.to_owned().unwrap_or(String::from("bold"))),
+                                        "color" => style_color(text, &part.color.clone().unwrap_or(String::from("bold"))),
                                         _ => style(text),
                                     }
                                 })
                                 .map(|style| style.to_string())
-                                .collect::<Vec<_>>()
-                                .join(""),
+                                .collect::<String>(),
                         ))
                         .await;
                 }
-                archipelago_rs::protocol::ServerMessage::DataPackage(_) => (),
-                archipelago_rs::protocol::ServerMessage::Bounced(_) => (),
-                archipelago_rs::protocol::ServerMessage::InvalidPacket(_) => (),
-                archipelago_rs::protocol::ServerMessage::Retrieved(_) => (),
-                archipelago_rs::protocol::ServerMessage::SetReply(_) => (),
+                _ => (),
             }
         }
         yield_now().await;
@@ -107,14 +89,12 @@ pub async fn ap_thread(id_map: Arc<IdMap>, client_sender: Sender<DisplayUpdate>,
 
 fn style_item(str: String, flags: i32) -> StyledObject<String> {
     match flags {
-        0b000 => style(str).cyan(),
-        0b001 => style(str).magenta(),
+        0b001 | 0b111 => style(str).magenta(),
         0b010 => style(str).blue(),
         0b011 => style(str).magenta().on_blue(),
         0b100 => style(str).red(),
         0b101 => style(str).magenta().on_red(),
         0b110 => style(str).blue().on_red(),
-        0b111 => style(str).magenta(),
         _ => style(str).cyan(),
     }
 }

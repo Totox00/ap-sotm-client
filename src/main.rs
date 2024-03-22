@@ -28,12 +28,16 @@ use tokio::{spawn, sync::mpsc::channel};
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Args {
+    #[allow(clippy::option_option)]
     #[arg(short, long)]
     server: Option<Option<String>>,
+    #[allow(clippy::option_option)]
     #[arg(short, long)]
     port: Option<Option<String>>,
+    #[allow(clippy::option_option)]
     #[arg(short = 'S', long)]
     slot: Option<Option<String>>,
+    #[allow(clippy::option_option)]
     #[arg(short = 'P', long)]
     password: Option<Option<String>>,
 }
@@ -94,7 +98,7 @@ pub async fn main() {
                 DisplayUpdate::CursorLeft => cursor_x = cursor_x.saturating_sub(1),
                 DisplayUpdate::CursorRight => {
                     if cursor_x < 5 {
-                        cursor_x += 1
+                        cursor_x += 1;
                     }
                 }
                 DisplayUpdate::CursorUp => cursor_y = cursor_y.saturating_sub(1),
@@ -116,6 +120,14 @@ pub async fn main() {
     }
 }
 
+/// # Errors
+/// 
+/// Will return `Err` if a connection to the server with data package could not be established
+/// 
+/// 
+/// # Panics
+/// 
+/// Will panic on data package cache errors
 pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected, String)> {
     let args = Args::parse();
 
@@ -199,8 +211,14 @@ pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected, String)>
 }
 
 fn prompt(text: &str) -> Option<String> {
-    print!("{} > ", text);
+    print!("{text} > ");
     let _ = io::stdout().flush();
 
-    Some(io::stdin().lock().lines().next().unwrap().unwrap().as_str().into())
+    let input = String::from(io::stdin().lock().lines().next().unwrap().unwrap().as_str());
+
+    if input.is_empty() {
+        None
+    } else {
+        Some(input)
+    }
 }

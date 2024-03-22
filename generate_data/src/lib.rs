@@ -1,6 +1,11 @@
 use proc_macro::TokenStream;
 use proc_macro::TokenTree;
+use std::fmt::Write;
 
+/// # Panics
+/// 
+/// Panics if the input table cannot be parsed into valid item data
+#[allow(clippy::too_many_lines)]
 #[proc_macro]
 pub fn generate_data(stream: TokenStream) -> TokenStream {
     let mut villains = vec![];
@@ -216,11 +221,11 @@ impl Location {{
     }}
 }}
         ",
-        villains.iter().map(|(v, _, _)| v).cloned().collect::<Vec<_>>().join(","),
-        team_villains.iter().map(|(v, _, _)| v).cloned().collect::<Vec<_>>().join(","),
-        heroes.iter().map(|(v, _, _)| v).cloned().collect::<Vec<_>>().join(","),
-        environments.iter().map(|(v, _, _)| v).cloned().collect::<Vec<_>>().join(","),
-        variants.iter().map(|(v, _, _, _, _)| v).cloned().collect::<Vec<_>>().join(","),
+        villains.iter().fold(String::new(), |mut str, (v, _, _)| {let _ = write!(str, "{v},"); str}),
+        team_villains.iter().fold(String::new(), |mut str, (v, _, _)| {let _ = write!(str, "{v},"); str}),
+        heroes.iter().fold(String::new(), |mut str, (v, _, _)| {let _ = write!(str, "{v},"); str}),
+        environments.iter().fold(String::new(), |mut str, (v, _, _)| {let _ = write!(str, "{v},"); str}),
+        variants.iter().fold(String::new(), |mut str, (v, _, _, _, _)| {let _ = write!(str, "{v},"); str}),
         variants.len() + 1,
         variant_counts.iter().map(|(v, _, c)| format!("Variant::{v} => {c}")).collect::<Vec<_>>().join(","),
         variants
@@ -236,13 +241,13 @@ impl Location {{
             .collect::<Vec<_>>()
             .join(","),
         heroes.len(),
-        heroes.iter().map(|(v, _, s)| format!("Hero::{v} => {s}")).collect::<Vec<_>>().join(","),
+        heroes.iter().fold(String::new(), |mut str, (v, _, s)| {let _ = write!(str, "Hero::{v} => {s},"); str}),
         villains.len(),
-        villains.iter().map(|(v, _, s)| format!("Villain::{v} => {s}")).collect::<Vec<_>>().join(","),
+        villains.iter().fold(String::new(), |mut str, (v, _, s)| {let _ = write!(str, "Villain::{v} => {s},"); str}),
         team_villains.len(),
-        team_villains.iter().map(|(v, _, s)| format!("TeamVillain::{v} => {s}")).collect::<Vec<_>>().join(","),
+        team_villains.iter().fold(String::new(), |mut str, (v, _, s)| {let _ = write!(str, "TeamVillain::{v} => {s},"); str}),
         environments.len(),
-        environments.iter().map(|(v, _, s)| format!("Environment::{v} => {s}")).collect::<Vec<_>>().join(","),
+        environments.iter().fold(String::new(), |mut str, (v, _, s)| {let _ = write!(str, "Environment::{v} => {s},"); str}),
         villains.iter().map(|(v, s, _)| format!("{s} => Some(Item::Villain(Villain::{v}))")).collect::<Vec<_>>().join(","),
         team_villains
             .iter()

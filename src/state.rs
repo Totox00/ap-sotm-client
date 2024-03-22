@@ -94,7 +94,7 @@ impl State {
                             .fold(0, |acc, x| acc | x),
                     )
                 })
-                .map(|(v, d)| if v != Villain::SkinwalkerGloomweaver { (v, d) } else { (v, d & 0b11) })
+                .map(|(v, d)| if v == Villain::SkinwalkerGloomweaver { (v, d & 0b11) } else { (v, d) })
                 .filter(|(_, d)| *d > 0)
                 .map(|(v, d)| {
                     if v != Villain::SpiteAgentOfGloom || self.items.has_villain(Villain::SkinwalkerGloomweaver) {
@@ -177,11 +177,11 @@ impl Items {
     }
 
     pub fn set_villain(&mut self, villain: Villain) {
-        self.villains |= 1 << villain as u64
+        self.villains |= 1 << villain as u64;
     }
 
     pub fn set_team_villain(&mut self, team_villain: TeamVillain) {
-        self.team_villains |= 1 << team_villain as u16
+        self.team_villains |= 1 << team_villain as u16;
     }
 
     pub fn set_hero(&mut self, hero: Hero) {
@@ -190,12 +190,12 @@ impl Items {
 
     pub fn set_hero_variant(&mut self, variant: Variant) {
         if let Some(normal) = variant.as_normal() {
-            self.heroes[normal as usize] |= 1 << variant.as_i()
+            self.heroes[normal as usize] |= 1 << variant.as_i();
         }
     }
 
     pub fn set_environment(&mut self, environment: Environment) {
-        self.environments |= 1 << environment as u64
+        self.environments |= 1 << environment as u64;
     }
 }
 
@@ -220,9 +220,10 @@ impl Locations {
 
     pub fn has_unchecked_variant(&self, variant: Variant) -> bool {
         if variant as usize >= Variant::BaccaratAceOfSwords as usize {
-            return false;
+            false
+        } else {
+            self.variants & 1 << variant as u128 == 0
         }
-        self.variants & 1 << variant as u128 == 0
     }
 
     pub fn has_unchecked_environment(&self, environment: Environment) -> bool {
@@ -230,21 +231,21 @@ impl Locations {
     }
 
     pub fn mark_villain(&mut self, villain: Villain, difficulty: u8) {
-        self.villains[villain as usize] |= 1 << difficulty
+        self.villains[villain as usize] |= 1 << difficulty;
     }
 
     pub fn mark_team_villain(&mut self, team_villain: TeamVillain, difficulty: u8) {
-        self.team_villains[team_villain as usize] |= 1 << difficulty
+        self.team_villains[team_villain as usize] |= 1 << difficulty;
     }
 
     pub fn mark_variant(&mut self, variant: Variant) {
         if variant as usize >= Variant::BaccaratAceOfSwords as usize {
             return;
         }
-        self.variants |= 1 << variant as u128
+        self.variants |= 1 << variant as u128;
     }
 
     pub fn mark_environment(&mut self, environment: Environment) {
-        self.environments |= 1 << environment as u64
+        self.environments |= 1 << environment as u64;
     }
 }
