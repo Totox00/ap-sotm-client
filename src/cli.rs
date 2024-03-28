@@ -4,7 +4,7 @@ use std::{
 };
 
 use crate::{
-    archipelago_rs::client::ArchipelagoClientSender,
+    archipelago_rs::{client::ArchipelagoClientSender, protocol::ClientStatus},
     data::{Environment, Hero, Item, Location, TeamVillain, Variant, Villain},
     state::State,
 };
@@ -34,13 +34,29 @@ const COLUMN_OFFSETS: [usize; 7] = [0, 20, 40, 70, 100, 120, 150];
 //                        > Variants |
 
 #[allow(clippy::too_many_lines)]
-pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y: usize, msg_buffer: &VecDeque<String>) {
+pub async fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y: usize, msg_buffer: &VecDeque<String>, ap_sender: &mut ArchipelagoClientSender) {
     let available = state.available_locations();
     let _ = term.clear_screen();
     let mut lock = stdout().lock();
     let _ = writeln!(lock, "{filter}");
+
     for msg in msg_buffer {
         let _ = writeln!(lock, "{msg}");
+    }
+
+    if available.victory {
+        if filter.to_lowercase() == "oblivaeon" {
+            let res = ap_sender.status_update(ClientStatus::Goal).await;
+            if res.is_err() {
+                let _ = writeln!(lock, "Failed to send goal");
+            }
+            return;
+        }
+        let (_, cols) = term.size();
+        let _ = term.move_cursor_to(cols as usize - 18, 1);
+        let _ = write!(lock, " {}", style("Victory available").bright());
+        let _ = term.move_cursor_to(cols as usize - 34, 2);
+        let _ = write!(lock, " {}", style("Send by filtering for \"oblivaeon\"").bright());
     }
 
     let mut offset = 1;

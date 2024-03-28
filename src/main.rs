@@ -72,7 +72,7 @@ pub async fn main() {
     let mut msg_buffer = VecDeque::with_capacity(10);
 
     loop {
-        print(&term, &state, &filter, cursor_x, cursor_y, &msg_buffer);
+        print(&term, &state, &filter, cursor_x, cursor_y, &msg_buffer, &mut ap_sender).await;
         if let Some(update) = receiver.recv().await {
             match update {
                 DisplayUpdate::Msg(msg) => {
