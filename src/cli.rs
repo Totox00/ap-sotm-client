@@ -4,7 +4,6 @@ use std::{
 };
 
 use crate::{
-    archipelago_rs::{client::ArchipelagoClientSender, protocol::ClientStatus},
     data::{Environment, Hero, Item, Location, TeamVillain, Variant, Villain},
     state::State,
 };
@@ -34,7 +33,7 @@ const COLUMN_OFFSETS: [usize; 7] = [0, 20, 40, 70, 100, 120, 150];
 //                        > Variants |
 
 #[allow(clippy::too_many_lines)]
-pub async fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y: usize, msg_buffer: &VecDeque<String>, ap_sender: &mut ArchipelagoClientSender) {
+pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y: usize, msg_buffer: &VecDeque<String>) -> bool {
     let available = state.available_locations();
     let _ = term.clear_screen();
     let mut lock = stdout().lock();
@@ -46,11 +45,7 @@ pub async fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cu
 
     if available.victory {
         if filter.to_lowercase() == "oblivaeon" {
-            let res = ap_sender.status_update(ClientStatus::Goal).await;
-            if res.is_err() {
-                let _ = writeln!(lock, "Failed to send goal");
-            }
-            return;
+            return true;
         }
         let (_, cols) = term.size();
         let _ = term.move_cursor_to(cols as usize - 18, 1);
@@ -179,9 +174,10 @@ pub async fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cu
     }
 
     let _ = lock.flush();
+    false
 }
 
-pub async fn send_location(ap_sender: &mut ArchipelagoClientSender, state: &mut State, filter: &str, cursor_x: usize, cursor_y: usize) {
+pub fn find_location(state: &mut State, filter: &str, cursor_x: usize, cursor_y: usize) -> Option<Location> {
     let available = state.available_locations();
     let location = match cursor_x {
         3 => {
@@ -204,23 +200,10 @@ pub async fn send_location(ap_sender: &mut ArchipelagoClientSender, state: &mut 
             .nth(cursor_y)
             .map(|e| Location::Environment(*e)),
         5 => available.variants.iter().filter(|v| filter_match(filter, v.as_str())).nth(cursor_y).map(|v| Location::Variant(*v)),
-        _ => return,
+        _ => return None,
     };
 
-    if let Some(location) = location {
-        if let Some(id) = state.idmap.locations_to_id.get(&location) {
-            let res = ap_sender.location_checks(vec![*id]).await;
-            if res.is_ok() {
-                match location {
-                    Location::Variant(v) => state.checked_locations.mark_variant(v),
-                    Location::Villain((v, d)) => state.checked_locations.mark_villain(v, d),
-                    Location::TeamVillain((v, d)) => state.checked_locations.mark_team_villain(v, d),
-                    Location::Environment(e) => state.checked_locations.mark_environment(e),
-                    Location::Victory => state.checked_locations.victory = true,
-                }
-            }
-        }
-    }
+    location
 }
 
 fn trunc(str: &str, max_len: usize) -> &str {

@@ -10,7 +10,7 @@ mod state;
 use ap_thread::ap_thread;
 use archipelago_rs::{client::ArchipelagoClient, protocol::Connected};
 use clap::Parser;
-use cli::{print, send_location, DisplayUpdate};
+use cli::{find_location, print, DisplayUpdate};
 use console::Term;
 use data::Item;
 use input_thread::input_thread;
@@ -22,8 +22,12 @@ use std::{
     io::{self, stdout, BufRead, Write},
     path::Path,
     process::exit,
+    sync::mpsc::channel,
+    thread::spawn,
 };
-use tokio::{spawn, sync::mpsc::channel};
+use tokio::runtime::Builder;
+
+use crate::{archipelago_rs::protocol::ClientStatus, data::Location};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -42,14 +46,15 @@ struct Args {
     password: Option<Option<String>>,
 }
 
-#[tokio::main(flavor = "current_thread")]
-pub async fn main() {
-    let (client_sender, mut receiver) = channel::<DisplayUpdate>(16);
+fn main() {
+    let (client_sender, receiver) = channel::<DisplayUpdate>();
 
-    let (client, mut state, connected, slot) = match connect().await {
+    let runtime = Builder::new_multi_thread().enable_io().build().unwrap();
+
+    let (client, mut state, connected, slot) = match runtime.block_on(async { connect().await }) {
         Ok((mut client, connected, slot)) => {
             let mut state = State::new(&client.data_package);
-            state.sync(&connected, client.sync().await.expect("Failed to sync items"));
+            runtime.block_on(async { state.sync(&connected, client.sync().await.expect("Failed to sync items")) });
             (client, state, connected, slot)
         }
         Err(err) => {
@@ -61,8 +66,9 @@ pub async fn main() {
     println!("Connected!");
     let (mut ap_sender, ap_receiver) = client.split();
 
-    drop(spawn(ap_thread(state.idmap.clone(), client_sender.clone(), ap_receiver, connected, slot)));
-    drop(spawn(input_thread(client_sender)));
+    let cloned_sender = client_sender.clone();
+    drop(spawn(|| input_thread(cloned_sender)));
+    runtime.spawn(ap_thread(state.idmap.clone(), client_sender.clone(), ap_receiver, connected, slot));
 
     let term = Term::stdout();
     let _ = term.hide_cursor();
@@ -72,8 +78,18 @@ pub async fn main() {
     let mut msg_buffer = VecDeque::with_capacity(10);
 
     loop {
-        print(&term, &state, &filter, cursor_x, cursor_y, &msg_buffer, &mut ap_sender).await;
-        if let Some(update) = receiver.recv().await {
+        let send_victory = print(&term, &state, &filter, cursor_x, cursor_y, &msg_buffer);
+        if send_victory {
+            runtime.block_on(async {
+                let res = ap_sender.status_update(ClientStatus::Goal).await;
+                if res.is_err() {
+                    println!("Failed to send goal");
+                } else {
+                    state.checked_locations.victory = true
+                }
+            })
+        }
+        if let Ok(update) = receiver.recv() {
             match update {
                 DisplayUpdate::Msg(msg) => {
                     if msg_buffer.len() > 9 {
@@ -106,7 +122,22 @@ pub async fn main() {
                 DisplayUpdate::CursorHome => (cursor_x, cursor_y) = (0, 0),
                 DisplayUpdate::Select => (),
                 DisplayUpdate::Send => {
-                    send_location(&mut ap_sender, &mut state, &filter, cursor_x, cursor_y).await;
+                    if let Some(location) = find_location(&mut state, &filter, cursor_x, cursor_y) {
+                        if let Some(id) = state.idmap.locations_to_id.get(&location) {
+                            runtime.block_on(async {
+                                let res = ap_sender.location_checks(vec![*id]).await;
+                                if res.is_ok() {
+                                    match location {
+                                        Location::Variant(v) => state.checked_locations.mark_variant(v),
+                                        Location::Villain((v, d)) => state.checked_locations.mark_villain(v, d),
+                                        Location::TeamVillain((v, d)) => state.checked_locations.mark_team_villain(v, d),
+                                        Location::Environment(e) => state.checked_locations.mark_environment(e),
+                                        Location::Victory => state.checked_locations.victory = true,
+                                    }
+                                }
+                            })
+                        }
+                    }
                     if cursor_y > 0 {
                         cursor_y -= 1;
                     } else {
@@ -121,12 +152,12 @@ pub async fn main() {
 }
 
 /// # Errors
-/// 
+///
 /// Will return `Err` if a connection to the server with data package could not be established
-/// 
-/// 
+///
+///
 /// # Panics
-/// 
+///
 /// Will panic on data package cache errors
 pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected, String)> {
     let args = Args::parse();

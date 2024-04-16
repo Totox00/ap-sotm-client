@@ -1,7 +1,10 @@
-use std::{collections::HashMap, sync::Arc};
+use std::{
+    collections::HashMap,
+    sync::{mpsc::Sender, Arc},
+};
 
 use console::{style, StyledObject};
-use tokio::{sync::mpsc::Sender, task::yield_now};
+use tokio::task::yield_now;
 
 use crate::{
     archipelago_rs::{self, client::ArchipelagoClientReceiver, protocol::Connected},
@@ -27,58 +30,54 @@ pub async fn ap_thread(id_map: Arc<IdMap>, client_sender: Sender<DisplayUpdate>,
         if let Ok(Some(res)) = res {
             match res {
                 archipelago_rs::protocol::ServerMessage::ReceivedItems(packet) => {
-                    let _ = client_sender
-                        .send(DisplayUpdate::Items(packet.items.iter().filter_map(|item| id_map.items_from_id.get(&item.item)).copied().collect()))
-                        .await;
+                    let _ = client_sender.send(DisplayUpdate::Items(packet.items.iter().filter_map(|item| id_map.items_from_id.get(&item.item)).copied().collect()));
                 }
                 archipelago_rs::protocol::ServerMessage::PrintJSON(msg) => {
-                    let _ = client_sender
-                        .send(DisplayUpdate::Msg(
-                            msg.data
-                                .iter()
-                                .map(|part| {
-                                    let mut t_str = "text";
-                                    if let Some(str) = &part.r#type {
-                                        t_str = str.as_str();
-                                    }
-                                    let text = part.text.clone().unwrap_or_default();
-                                    match t_str {
-                                        "player_id" => {
-                                            let player = connected
-                                                .players
-                                                .iter()
-                                                .find(|player| player.slot == text.parse().unwrap_or(0))
-                                                .map(|player| player.alias.clone())
-                                                .unwrap_or(format!("Unknown player {text}"));
-                                            if slot == player {
-                                                style(player).magenta()
-                                            } else {
-                                                style(player).yellow()
-                                            }
+                    let _ = client_sender.send(DisplayUpdate::Msg(
+                        msg.data
+                            .iter()
+                            .map(|part| {
+                                let mut t_str = "text";
+                                if let Some(str) = &part.r#type {
+                                    t_str = str.as_str();
+                                }
+                                let text = part.text.clone().unwrap_or_default();
+                                match t_str {
+                                    "player_id" => {
+                                        let player = connected
+                                            .players
+                                            .iter()
+                                            .find(|player| player.slot == text.parse().unwrap_or(0))
+                                            .map(|player| player.alias.clone())
+                                            .unwrap_or(format!("Unknown player {text}"));
+                                        if slot == player {
+                                            style(player).magenta()
+                                        } else {
+                                            style(player).yellow()
                                         }
-                                        "player_name" => {
-                                            if slot == text {
-                                                style(text).magenta()
-                                            } else {
-                                                style(text).yellow()
-                                            }
-                                        }
-                                        "item_id" => style_item(
-                                            item_id_to_name.get(&text.parse().unwrap_or(0)).cloned().unwrap_or(format!("Unknown location {text}")),
-                                            part.flags.unwrap_or(0),
-                                        ),
-                                        "item_name" => style(text).cyan(),
-                                        "location_id" => style(location_id_to_name.get(&text.parse().unwrap_or(0)).cloned().unwrap_or(format!("Unknown location {text}"))).green(),
-                                        "location_name" => style(text).green(),
-                                        "entrance_name" => style(text).italic(),
-                                        "color" => style_color(text, &part.color.clone().unwrap_or(String::from("bold"))),
-                                        _ => style(text),
                                     }
-                                })
-                                .map(|style| style.to_string())
-                                .collect::<String>(),
-                        ))
-                        .await;
+                                    "player_name" => {
+                                        if slot == text {
+                                            style(text).magenta()
+                                        } else {
+                                            style(text).yellow()
+                                        }
+                                    }
+                                    "item_id" => style_item(
+                                        item_id_to_name.get(&text.parse().unwrap_or(0)).cloned().unwrap_or(format!("Unknown location {text}")),
+                                        part.flags.unwrap_or(0),
+                                    ),
+                                    "item_name" => style(text).cyan(),
+                                    "location_id" => style(location_id_to_name.get(&text.parse().unwrap_or(0)).cloned().unwrap_or(format!("Unknown location {text}"))).green(),
+                                    "location_name" => style(text).green(),
+                                    "entrance_name" => style(text).italic(),
+                                    "color" => style_color(text, &part.color.clone().unwrap_or(String::from("bold"))),
+                                    _ => style(text),
+                                }
+                            })
+                            .map(|style| style.to_string())
+                            .collect::<String>(),
+                    ));
                 }
                 _ => (),
             }
