@@ -32,6 +32,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
             items.has_villain(Villain::Ambuscade)
                 && items.has_villain(Villain::TheChairman)
                 && items.has_team_villain(TeamVillain::Ambuscade)
+                && items.team_villains.count_ones() >= 3
                 && items.has_environment(Environment::PikeIndustrialComplex)
                 && items.has_hero(Hero::TheSentinels)
         }
@@ -78,7 +79,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
         Variant::FreedomSixWraith => items.has_villain(Villain::IronLegacy) && items.has_base_hero(Hero::Wraith) && items.has_villain(Villain::TheChairman),
         Variant::FreedomSixUnity => items.has_villain(Villain::IronLegacy) && items.has_base_hero(Hero::Unity),
         Variant::DarkWatchExpatriette => any_baron_blade(items) && items.has_environment(Environment::RookCity) && items.has_hero(Hero::Expatriette),
-        Variant::DarkWatchMisterFixer => (items.has_villain(Villain::TheChairman) || items.has_team_villain(TeamVillain::TheOperative)) && items.has_hero(Hero::MisterFixer),
+        Variant::DarkWatchMisterFixer => items.has_villain(Villain::TheChairman) && items.has_hero(Hero::MisterFixer),
         Variant::DarkWatchNightmist => items.has_hero(Hero::Nightmist) && items.has_environment(Environment::RealmOfDiscord) && items.has_hero(Hero::Expatriette),
         Variant::DarkWatchSetback => {
             items.has_villain(Villain::TheChairman)
@@ -105,9 +106,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
         Variant::PrimeWardensFanatic => {
             items.has_hero_variant(Variant::PrimeWardensArgentAdept) && (items.has_base_hero(Hero::Fanatic) || items.has_hero_variant(Variant::RedeemerFanatic)) && items.has_villain(Villain::Apostate)
         }
-        Variant::PrimeWardensHaka => {
-            items.has_hero_variant(Variant::PrimeWardensArgentAdept) && items.has_base_hero(Hero::Haka) && (items.has_villain(Villain::Ambuscade) || items.has_team_villain(TeamVillain::Ambuscade))
-        }
+        Variant::PrimeWardensHaka => items.has_hero_variant(Variant::PrimeWardensArgentAdept) && items.has_base_hero(Hero::Haka) && items.has_villain(Villain::Ambuscade),
         Variant::PrimeWardensTempest => items.has_hero_variant(Variant::PrimeWardensArgentAdept) && items.has_base_hero(Hero::Tempest),
         Variant::XtremePrimeWardensArgentAdept => items.has_base_hero(Hero::ArgentAdept) && items.has_environment(Environment::InsulaPrimalis),
         Variant::XtremePrimeWardensTempest => items.has_base_hero(Hero::Tempest) && items.has_environment(Environment::TheEnclaveOfTheEndlings),
@@ -116,7 +115,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
         Variant::XtremePrimeWardensHaka => items.has_base_hero(Hero::Haka) && items.has_environment(Environment::Magmaria),
         Variant::FreedomFiveAbsoluteZero | Variant::FreedomFiveBunker | Variant::FreedomFiveWraith | Variant::FreedomFiveTachyon | Variant::FreedomFiveLegacy => freedom_five_reqs(items),
         Variant::SuperSentaiIdealist => items.has_hero(Hero::TheIdealist),
-        Variant::DrMedicoMalpractice => items.has_hero(Hero::DoctorMedico) && items.has_team_villain(TeamVillain::Ambuscade),
+        Variant::DrMedicoMalpractice => items.has_hero(Hero::DoctorMedico) && items.has_team_villain(TeamVillain::Ambuscade) && items.team_villains.count_ones() >= 3,
         Variant::CosmicInventorWrithe => items.has_hero(Hero::Writhe),
         Variant::RoadWarriorMainstay => items.has_hero(Hero::Mainstay),
         Variant::MadBomberBaronBlade => items.has_villain(Villain::BaronBlade) && items.has_villain(Villain::CitizenDawn),
@@ -134,7 +133,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
 }
 
 fn any_baron_blade(items: &Items) -> bool {
-    items.has_villain(Villain::BaronBlade) || items.has_villain(Villain::MadBomberBaronBlade) || items.has_team_villain(TeamVillain::BaronBlade)
+    items.has_villain(Villain::BaronBlade) || items.has_villain(Villain::MadBomberBaronBlade)
 }
 
 fn freedom_five_reqs(items: &Items) -> bool {
