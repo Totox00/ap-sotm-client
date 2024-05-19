@@ -1,4 +1,4 @@
-use std::{process::exit, sync::mpsc::Sender};
+use std::sync::mpsc::Sender;
 
 use console::{Key, Term};
 
@@ -34,8 +34,7 @@ pub fn input_thread(sender: Sender<DisplayUpdate>) {
             }
             Key::Char(char) => {
                 if char == '\u{4}' {
-                    let _ = term.show_cursor();
-                    exit(0);
+                    let _ = sender.send(DisplayUpdate::Exit);
                 }
                 filter.push(char);
                 let _ = sender.send(DisplayUpdate::Filter(filter.clone()));

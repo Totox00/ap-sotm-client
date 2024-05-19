@@ -16,7 +16,7 @@ generate_data!(
     (TheMatriarch, Villain, "The Matriarch"),
     (PlagueRat, Villain, "Plague Rat"),
     (Spite, Villain, "Spite"),
-    (SpiteAgentOfGloom, Villain, "Spite - Agent of Gloom"),
+    (SpiteAgentOfGloom, Villain, "Spite: Agent of Gloom"),
     (AkashBhuta, Villain, "Akash'Bhuta"),
     (Apostate, Villain, "Apostate"),
     (TheEnnead, Villain, "The Ennead"),
@@ -183,8 +183,8 @@ generate_data!(
     (DarkVisionary, Variant, Visionary, "Dark Visionary"),
     (TheEternalHaka, Variant, Haka, "The Eternal Haka"),
     (GIBunker, Variant, Bunker, "G.I. Bunker"),
-    (RaHorusOfTwoHorizons, Variant, Ra, "Ra - Horus of Two Horizons"),
-    (RaSettingSun, Variant, Ra, "Ra - Setting Sun"),
+    (RaHorusOfTwoHorizons, Variant, Ra, "Ra: Horus of Two Horizons"),
+    (RaSettingSun, Variant, Ra, "Ra: Setting Sun"),
     (RedeemerFanatic, Variant, Fanatic, "Redeemer Fanatic"),
     (RookCityWraith, Variant, Wraith, "Rook City Wraith"),
     (TheSuperScientificTachyon, Variant, Tachyon, "The Super-Scientific Tachyon"),
@@ -197,13 +197,13 @@ generate_data!(
     (SantaGuise, Variant, Guise, "Santa Guise"),
     (TheScholarOfTheInfinite, Variant, TheScholar, "The Scholar of the Infinite"),
     (ActionHeroStuntman, Variant, Stuntman, "Action Hero Stuntman"),
-    (AkashThriyaSpiritOfTheVoid, Variant, AkashThriya, "Akash'Thriya - Spirit of the Void"),
+    (AkashThriyaSpiritOfTheVoid, Variant, AkashThriya, "Akash'Thriya: Spirit of the Void"),
     (BenchmarkSupplyAndDemand, Variant, Benchmark, "Benchmark Supply & Demand"),
     (HeroicLuminary, Variant, Luminary, "Heroic Luminary"),
-    (KnyfeRogueAgent, Variant, Knyfe, "K.N.Y.F.E. - Rogue Agent"),
-    (LaComodoraCurseOfTheBlackSpot, Variant, LaComodora, "La Comodora - Curse of the Black Spot"),
+    (KnyfeRogueAgent, Variant, Knyfe, "K.N.Y.F.E. Rogue Agent"),
+    (LaComodoraCurseOfTheBlackSpot, Variant, LaComodora, "La Comodora: Curse of the Black Spot"),
     (LifelineBloodMage, Variant, Lifeline, "Lifeline Blood Mage"),
-    (ParseFugueState, Variant, Parse, "Parse - Fugue State"),
+    (ParseFugueState, Variant, Parse, "Parse: Fugue State"),
     (TheAdamantSentinels, Variant, TheSentinels, "The Adamant Sentinels"),
     (TheHuntedNaturalist, Variant, TheNaturalist, "The Hunted Naturalist"),
     (TermiNationBunker, Variant, Bunker, "Termi-Nation Bunker"),
@@ -329,7 +329,6 @@ pub enum Location {
     Villain((Villain, u8)),
     TeamVillain((TeamVillain, u8)),
     Environment(Environment),
-    Victory,
 }
 
 impl Variant {
@@ -429,7 +428,6 @@ impl Hash for Location {
             Location::Villain((v, d)) => (*v as usize) * 4 + *d as usize + Variant::variant_count(),
             Location::TeamVillain((v, d)) => (*v as usize) * 4 + *d as usize + Variant::variant_count() + Villain::variant_count() * 4,
             Location::Environment(v) => *v as usize + Variant::variant_count() + Villain::variant_count() * 4 + TeamVillain::variant_count() * 4,
-            Location::Victory => Variant::variant_count() + Villain::variant_count() * 4 + TeamVillain::variant_count() * 4 + Environment::variant_count(),
         }
         .hash(state);
     }

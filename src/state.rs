@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 
 use crate::{
@@ -7,6 +8,7 @@ use crate::{
     data::{Environment, Hero, Item, Location, TeamVillain, Variant, Villain},
     idmap::IdMap,
     logic::can_unlock,
+    SlotData,
 };
 
 #[derive(Debug, Clone)]
@@ -14,11 +16,12 @@ pub struct State {
     pub items: Items,
     pub checked_locations: Locations,
     pub idmap: Arc<IdMap>,
+    pub slot_data: SlotData,
 }
 
 #[derive(Debug, Clone, Copy)]
 pub struct Items {
-    pub scions: u8,
+    pub scions: u32,
     pub villains: u64,
     pub team_villains: u16,
     pub heroes: [u8; Hero::variant_count()],
@@ -31,6 +34,15 @@ pub struct Locations {
     pub victory: bool,
     pub villains: [u8; Villain::variant_count()],
     pub team_villains: [u8; TeamVillain::variant_count()],
+    pub variants: u128,
+    pub environments: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LocationsSerializable {
+    pub victory: bool,
+    pub villains: Vec<u8>,
+    pub team_villains: Vec<u8>,
     pub variants: u128,
     pub environments: u64,
 }
@@ -50,17 +62,25 @@ impl State {
             items: Items::new(),
             checked_locations: Locations::new(),
             idmap: Arc::new(IdMap::new(datapackage)),
+            slot_data: SlotData {
+                required_scions: 10,
+                required_villains: 0,
+                required_variants: 0,
+                villain_difficulty_points: [1, 0, 0, 0],
+                locations_per: [1, 1, 1, 1, 1, 1],
+            },
         }
     }
 
-    pub fn sync(&mut self, connected: &Connected, sync: ReceivedItems) {
+    pub fn sync(&mut self, connected: &Connected, sync: ReceivedItems, persistent: LocationsSerializable) {
+        self.checked_locations = persistent.into();
+
         for location_id in &connected.checked_locations {
             match self.idmap.locations_from_id.get(location_id) {
-                Some(Location::Variant(v)) => self.checked_locations.mark_variant(*v),
-                Some(Location::Villain((v, d))) => self.checked_locations.mark_villain(*v, *d),
-                Some(Location::TeamVillain((v, d))) => self.checked_locations.mark_team_villain(*v, *d),
-                Some(Location::Environment(v)) => self.checked_locations.mark_environment(*v),
-                Some(Location::Victory) => self.checked_locations.victory = true,
+                Some((Location::Variant(v), _)) => self.checked_locations.mark_variant(*v),
+                Some((Location::Villain((v, d)), _)) => self.checked_locations.mark_villain(*v, *d),
+                Some((Location::TeamVillain((v, d)), _)) => self.checked_locations.mark_team_villain(*v, *d),
+                Some((Location::Environment(v), _)) => self.checked_locations.mark_environment(*v),
                 None => (),
             }
         }
@@ -77,11 +97,13 @@ impl State {
                 None => (),
             }
         }
+
+        self.slot_data = serde_json::from_value(connected.slot_data.clone()).expect("Failed to read slot data")
     }
 
     pub fn available_locations(&self) -> AvailableLocations {
         AvailableLocations {
-            victory: !self.checked_locations.victory && self.items.scions >= 10,
+            victory: !self.checked_locations.victory && self.victory_available(),
             villains: Villain::iter()
                 .filter(|v| self.items.has_villain(*v))
                 .map(|v| {
@@ -133,6 +155,18 @@ impl State {
                 .filter(|v| self.items.has_environment(*v))
                 .collect(),
         }
+    }
+
+    pub fn victory_available(&self) -> bool {
+        self.items.scions >= self.slot_data.required_scions
+            && self.checked_locations.variants.count_ones() >= self.slot_data.required_variants
+            && self
+                .checked_locations
+                .villains
+                .iter()
+                .map(|bitfield| (0..4).map(move |b| (*bitfield & (1 << b)) as u32 * self.slot_data.villain_difficulty_points[b]).sum::<u32>())
+                .sum::<u32>()
+                >= self.slot_data.required_villains
     }
 }
 
@@ -247,5 +281,54 @@ impl Locations {
 
     pub fn mark_environment(&mut self, environment: Environment) {
         self.environments |= 1 << environment as u64;
+    }
+}
+
+impl Default for Locations {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+
+impl LocationsSerializable {
+    pub fn new() -> Self {
+        LocationsSerializable {
+            victory: false,
+            villains: [0; Villain::variant_count()].into(),
+            team_villains: [0; TeamVillain::variant_count()].into(),
+            variants: 0,
+            environments: 0,
+        }
+    }
+}
+
+impl Default for LocationsSerializable {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl From<Locations> for LocationsSerializable {
+    fn from(value: Locations) -> Self {
+        LocationsSerializable {
+            victory: value.victory,
+            villains: value.villains.into(),
+            team_villains: value.team_villains.into(),
+            variants: value.variants,
+            environments: value.environments,
+        }
+    }
+}
+
+impl From<LocationsSerializable> for Locations {
+    fn from(value: LocationsSerializable) -> Self {
+        Locations {
+            victory: value.victory,
+            villains: value.villains.try_into().expect("Villains should be of fixed length"),
+            team_villains: value.team_villains.try_into().expect("Team Villains should be of fixed length"),
+            variants: value.variants,
+            environments: value.environments,
+        }
     }
 }

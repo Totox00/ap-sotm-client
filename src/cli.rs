@@ -23,6 +23,7 @@ pub enum DisplayUpdate {
     CursorHome,
     Select,
     Send,
+    Exit,
 }
 
 const COLUMN_SIZES: [usize; 7] = [20, 20, 30, 30, 20, 30, 50];

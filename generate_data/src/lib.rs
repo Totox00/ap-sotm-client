@@ -206,18 +206,17 @@ impl Item {{
 }}
 
 impl Location {{
-    pub fn from_str(str: &str) -> Option<Location> {{
-        match str {{
+    pub fn from_str(str: &str) -> Option<(Location, u8)> {{
+        match &str[..str.len() - 3] {{
             {},{},{},{},
-            \"Spite - Agent of Gloom - Normal\" => Some(Location::Villain((Villain::SpiteAgentOfGloom, 0))),
-            \"Spite - Agent of Gloom - Advanced\" => Some(Location::Villain((Villain::SpiteAgentOfGloom, 1))),
-            \"Spite - Agent of Gloom & Skinwalker Gloomweaver - Challenge\" => Some(Location::Villain((Villain::SpiteAgentOfGloom, 2))),
-            \"Spite - Agent of Gloom & Skinwalker Gloomweaver - Ultimate\" => Some(Location::Villain((Villain::SpiteAgentOfGloom, 3))),
+            \"Spite: Agent of Gloom - Normal\" => Some(Location::Villain((Villain::SpiteAgentOfGloom, 0))),
+            \"Spite: Agent of Gloom - Advanced\" => Some(Location::Villain((Villain::SpiteAgentOfGloom, 1))),
+            \"Spite: Agent of Gloom and Skinwalker Gloomweaver - Challenge\" => Some(Location::Villain((Villain::SpiteAgentOfGloom, 2))),
+            \"Spite: Agent of Gloom and Skinwalker Gloomweaver - Ultimate\" => Some(Location::Villain((Villain::SpiteAgentOfGloom, 3))),
             \"Skinwalker Gloomweaver - Normal\" => Some(Location::Villain((Villain::SkinwalkerGloomweaver, 0))),
             \"Skinwalker Gloomweaver - Advanced\" => Some(Location::Villain((Villain::SkinwalkerGloomweaver, 1))),            
-            \"Oblivaeon\" => Some(Location::Victory),
             _ => None
-        }}
+        }}.map(|l| (l, str[str.len() - 1..str.len()].parse().unwrap()))
     }}
 }}
         ",

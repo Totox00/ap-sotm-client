@@ -10,8 +10,8 @@ use crate::{
 pub struct IdMap {
     pub items_from_id: HashMap<i64, Item>,
     pub items_to_id: HashMap<Item, i64>,
-    pub locations_from_id: HashMap<i64, Location>,
-    pub locations_to_id: HashMap<Location, i64>,
+    pub locations_from_id: HashMap<i64, (Location, u8)>,
+    pub locations_to_id: HashMap<(Location, u8), i64>,
 }
 
 impl IdMap {
@@ -23,7 +23,7 @@ impl IdMap {
             locations_to_id: HashMap::new(),
         };
 
-        let data = datapackage.games.get("Manual_sotm_toto00").expect("Datapackage for Sentinels of the Multiverse was not found");
+        let data = datapackage.games.get("Sentinels of the Multiverse").expect("Datapackage for Sentinels of the Multiverse was not found");
 
         for (item, id) in &data.item_name_to_id {
             if let Some(item) = Item::from_str(item.as_str()) {

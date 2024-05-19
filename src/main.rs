@@ -14,8 +14,9 @@ use cli::{find_location, print, DisplayUpdate};
 use console::Term;
 use data::Item;
 use input_thread::input_thread;
+use serde::Deserialize;
 use serde_json::{from_reader, to_writer};
-use state::State;
+use state::{LocationsSerializable, State};
 use std::{
     collections::{HashMap, VecDeque},
     fs::{create_dir, create_dir_all, remove_file, File},
@@ -46,20 +47,43 @@ struct Args {
     password: Option<Option<String>>,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+struct SlotData {
+    pub required_scions: u32,
+    pub required_villains: u32,
+    pub required_variants: u32,
+    pub villain_difficulty_points: [u32; 4],
+    pub locations_per: [u8; 6],
+}
+
 fn main() {
     let (client_sender, receiver) = channel::<DisplayUpdate>();
 
     let runtime = Builder::new_multi_thread().enable_io().build().unwrap();
+    let seed_name: String;
 
-    let (client, mut state, connected, slot) = match runtime.block_on(async { connect().await }) {
+    let (client, mut state, connected, slot) = match runtime.block_on(async { connect(true).await }) {
         Ok((mut client, connected, slot)) => {
+            seed_name = client.room_info.seed_name.clone();
+            let persistent = get_persistent(&client.room_info.seed_name);
             let mut state = State::new(&client.data_package);
-            runtime.block_on(async { state.sync(&connected, client.sync().await.expect("Failed to sync items")) });
+            runtime.block_on(async { state.sync(&connected, client.sync().await.expect("Failed to sync items"), persistent) });
             (client, state, connected, slot)
         }
-        Err(err) => {
-            println!("Failed to connect to Archipelago server with reason: {err}");
-            exit(1);
+        Err(_) => {
+            match runtime.block_on(async { connect(false).await }) {
+                Ok((mut client, connected, slot)) => {
+                    seed_name = client.room_info.seed_name.clone();
+                    let persistent = get_persistent(&client.room_info.seed_name);
+                    let mut state = State::new(&client.data_package);
+                    runtime.block_on(async { state.sync(&connected, client.sync().await.expect("Failed to sync items"), persistent) });
+                    (client, state, connected, slot)
+                }
+                Err(err) => {
+                    println!("Failed to connect to Archipelago server with reason: {err}");
+                    exit(1);
+                }
+            }
         }
     };
 
@@ -123,20 +147,34 @@ fn main() {
                 DisplayUpdate::Select => (),
                 DisplayUpdate::Send => {
                     if let Some(location) = find_location(&mut state, &filter, cursor_x, cursor_y) {
-                        if let Some(id) = state.idmap.locations_to_id.get(&location) {
-                            runtime.block_on(async {
-                                let res = ap_sender.location_checks(vec![*id]).await;
-                                if res.is_ok() {
-                                    match location {
-                                        Location::Variant(v) => state.checked_locations.mark_variant(v),
-                                        Location::Villain((v, d)) => state.checked_locations.mark_villain(v, d),
-                                        Location::TeamVillain((v, d)) => state.checked_locations.mark_team_villain(v, d),
-                                        Location::Environment(e) => state.checked_locations.mark_environment(e),
-                                        Location::Victory => state.checked_locations.victory = true,
-                                    }
+                        let mut locations = vec![];
+
+                        for n in 0..=state.slot_data.locations_per[match location {
+                            Location::Variant(_) => 5,
+                            Location::Villain((_, d)) | Location::TeamVillain((_, d)) => d as usize,
+                            Location::Environment(_) => 4,
+                        }] {
+                            if n > 0 {
+                                if let Some(id) = state.idmap.locations_to_id.get(&(location, n)) {
+                                    locations.push(*id)
                                 }
-                            })
+                            }
                         }
+
+                        dbg!(&locations);
+
+                        runtime.block_on(async {
+                            let res = ap_sender.location_checks(locations).await;
+                            dbg!(&res);
+                            if res.is_ok() {
+                                match location {
+                                    Location::Variant(v) => state.checked_locations.mark_variant(v),
+                                    Location::Villain((v, d)) => state.checked_locations.mark_villain(v, d),
+                                    Location::TeamVillain((v, d)) => state.checked_locations.mark_team_villain(v, d),
+                                    Location::Environment(e) => state.checked_locations.mark_environment(e),
+                                }
+                            }
+                        })
                     }
                     if cursor_y > 0 {
                         cursor_y -= 1;
@@ -144,8 +182,15 @@ fn main() {
                         cursor_x -= 1;
                     }
                 }
+                DisplayUpdate::Exit => {
+                    set_persistent(&seed_name, state.checked_locations.into());
+                    let _ = term.show_cursor();
+                    exit(0);
+                }
             }
         } else {
+            set_persistent(&seed_name, state.checked_locations.into());
+            let _ = term.show_cursor();
             exit(1);
         }
     }
@@ -159,7 +204,7 @@ fn main() {
 /// # Panics
 ///
 /// Will panic on data package cache errors
-pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected, String)> {
+pub async fn connect(secure: bool) -> anyhow::Result<(ArchipelagoClient, Connected, String)> {
     let args = Args::parse();
 
     let mut server = if let Some(server) = args.server {
@@ -191,7 +236,7 @@ pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected, String)>
         slot = String::from("Player");
     }
 
-    let url = format!("wss://{server}:{port}");
+    let url = if secure { format!("wss://{server}:{port}") } else { format!("ws://{server}:{port}") };
 
     let mut client = ArchipelagoClient::new(&url).await?;
 
@@ -233,9 +278,9 @@ pub async fn connect() -> anyhow::Result<(ArchipelagoClient, Connected, String)>
     client.data_package.games.extend(cached);
 
     let connected = if let Some(pass) = password {
-        client.connect("Manual_sotm_toto00", &slot, Some(&*pass), Some(7), vec!["AP".to_string()]).await?
+        client.connect("Sentinels of the Multiverse", &slot, Some(&*pass), Some(7), vec!["AP".to_string()]).await?
     } else {
-        client.connect("Manual_sotm_toto00", &slot, None, Some(7), vec!["AP".to_string()]).await?
+        client.connect("Sentinels of the Multiverse", &slot, None, Some(7), vec!["AP".to_string()]).await?
     };
 
     Ok((client, connected, slot))
@@ -251,5 +296,30 @@ fn prompt(text: &str) -> Option<String> {
         None
     } else {
         Some(input)
+    }
+}
+
+pub fn get_persistent(seed_name: &str) -> LocationsSerializable {
+    create_dir_all("./persistent").expect("Failed to create persistent storage");
+    if let Ok(reader) = File::open(Path::new("./persistent").join(seed_name)) {
+        if let Ok(data) = from_reader(reader) {
+            data
+        } else {
+            LocationsSerializable::new()
+        }
+    } else {
+        LocationsSerializable::new()
+    }
+}
+
+pub fn set_persistent(seed_name: &str, locations: LocationsSerializable) {
+    create_dir_all("./persistent").expect("Failed to create persistent storage");
+    if let Ok(writer) = File::create(Path::new("./persistent").join(seed_name)) {
+        let res = to_writer(writer, &locations);
+        if res.is_err() {
+            println!("Failed to save locations to persistent storage")
+        }
+    } else {
+        println!("Failed to save locations to persistent storage")
     }
 }
