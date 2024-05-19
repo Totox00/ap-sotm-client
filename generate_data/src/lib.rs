@@ -3,7 +3,7 @@ use proc_macro::TokenTree;
 use std::fmt::Write;
 
 /// # Panics
-/// 
+///
 /// Panics if the input table cannot be parsed into valid item data
 #[allow(clippy::too_many_lines)]
 #[proc_macro]
@@ -207,7 +207,7 @@ impl Item {{
 
 impl Location {{
     pub fn from_str(str: &str) -> Option<Location> {{
-        match str {{
+        match str.to_lowercase().as_str() {{
             {},{},{},{},
             \"Spite - Agent of Gloom - Normal\" => Some(Location::Villain((Villain::SpiteAgentOfGloom, 0))),
             \"Spite - Agent of Gloom - Advanced\" => Some(Location::Villain((Villain::SpiteAgentOfGloom, 1))),
@@ -264,23 +264,27 @@ impl Location {{
         villains.iter()
             .filter(|(v, _, _)| v != "SpiteAgentOfGloom" && v != "SkinwalkerGloomweaver")
             .map(|(v, s1, s2)| (v, s1[0..(s1.len() - 1)].to_string(), s2))
-            .map(|(v, s, _)| format!("{s} - Normal\" => Some(Location::Villain((Villain::{v}, 0))),{s} - Advanced\" => Some(Location::Villain((Villain::{v}, 1))),{s} - Challenge\" => Some(Location::Villain((Villain::{v}, 2))),{s} - Ultimate\" => Some(Location::Villain((Villain::{v}, 3)))"))
+            .map(|(v, s1, s2)| (v, s1.to_lowercase(), s2))
+            .map(|(v, s, _)| format!("{s} - normal\" => Some(Location::Villain((Villain::{v}, 0))),{s} - advanced\" => Some(Location::Villain((Villain::{v}, 1))),{s} - challenge\" => Some(Location::Villain((Villain::{v}, 2))),{s} - ultimate\" => Some(Location::Villain((Villain::{v}, 3)))"))
             .collect::<Vec<_>>()
             .join(","),
         team_villains.iter()
-            .map(|(v, s, _)| (v, s[0..(s.len() - 1)].to_string()))
-            .map(|(v, s)| format!("{s} - Normal\" => Some(Location::TeamVillain((TeamVillain::{v}, 0))),{s} - Advanced\" => Some(Location::TeamVillain((TeamVillain::{v}, 1))),{s} - Challenge\" => Some(Location::TeamVillain((TeamVillain::{v}, 2))),{s} - Ultimate\" => Some(Location::TeamVillain((TeamVillain::{v}, 3)))"))
+            .map(|(v, s, _)| (v, s[0..(s.len() - 1)].to_string()))            
+            .map(|(v, s)| (v, s.to_lowercase()))
+            .map(|(v, s)| format!("{s} - normal\" => Some(Location::TeamVillain((TeamVillain::{v}, 0))),{s} - advanced\" => Some(Location::TeamVillain((TeamVillain::{v}, 1))),{s} - challenge\" => Some(Location::TeamVillain((TeamVillain::{v}, 2))),{s} - ultimate\" => Some(Location::TeamVillain((TeamVillain::{v}, 3)))"))
             .collect::<Vec<_>>()
             .join(","),
         environments.iter()
-            .map(|(v, s, _)| (v, s[0..(s.len() - 1)].to_string()))
-            .map(|(v, s)| format!("{s} - Any difficulty\" => Some(Location::Environment(Environment::{v}))"))
+            .map(|(v, s, _)| (v, s[0..(s.len() - 1)].to_string()))            
+            .map(|(v, s)| (v, s.to_lowercase()))
+            .map(|(v, s)| format!("{s} - any difficulty\" => Some(Location::Environment(Environment::{v}))"))
             .collect::<Vec<_>>()
             .join(","),
         variants.iter()
             .filter(|(_, _, _, _, u)| *u)
-            .map(|(v, _, s, _, _)| (v, s[0..(s.len() - 1)].to_string()))
-            .map(|(v, s)| format!("{s} - Unlock\" => Some(Location::Variant(Variant::{v}))"))
+            .map(|(v, _, s, _, _)| (v, s[0..(s.len() - 1)].to_string()))            
+            .map(|(v, s)| (v, s.to_lowercase()))
+            .map(|(v, s)| format!("{s} - unlock\" => Some(Location::Variant(Variant::{v}))"))
             .collect::<Vec<_>>()
             .join(",")
     )
