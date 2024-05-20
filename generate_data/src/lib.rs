@@ -273,7 +273,7 @@ impl Location {{
             .join(","),
         environments.iter()
             .map(|(v, s, _)| (v, s[0..(s.len() - 1)].to_string()))
-            .map(|(v, s)| format!("{s} - Any difficulty\" => Some(Location::Environment(Environment::{v}))"))
+            .map(|(v, s)| format!("{s} - Any Difficulty\" => Some(Location::Environment(Environment::{v}))"))
             .collect::<Vec<_>>()
             .join(","),
         variants.iter()
