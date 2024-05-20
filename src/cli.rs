@@ -30,7 +30,7 @@ const COLUMN_SIZES: [usize; 7] = [20, 20, 30, 30, 20, 30, 50];
 const COLUMN_OFFSETS: [usize; 7] = [0, 20, 40, 70, 100, 120, 150];
 
 #[allow(clippy::too_many_lines)]
-pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y: usize, msg_buffer: &VecDeque<String>) -> bool {
+pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y: usize, msg_buffer: &VecDeque<String>, multi_send: bool) -> bool {
     let available = state.available_locations();
     let scroll = if cursor_y < 10 { 0 } else { cursor_y - 10 };
     let _ = term.clear_screen();
@@ -50,6 +50,12 @@ pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y
         let _ = write!(lock, " {}", style("Victory available").bright());
         let _ = term.move_cursor_to(cols as usize - 34, 2);
         let _ = write!(lock, " {}", style("Send by filtering for \"oblivaeon\"").bright());
+    }
+
+    if multi_send {
+        let (_, cols) = term.size();
+        let _ = term.move_cursor_to(cols as usize - 19, 3);
+        let _ = write!(lock, " {}", style("Multi-send enabled").bright());
     }
 
     let mut offset = 1;
@@ -191,7 +197,7 @@ pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y
     false
 }
 
-pub fn find_location(state: &mut State, filter: &str, cursor_x: usize, cursor_y: usize) -> Option<Location> {
+pub fn find_location(state: &State, filter: &str, cursor_x: usize, cursor_y: usize) -> Option<Location> {
     let available = state.available_locations();
     match cursor_x {
         3 => {

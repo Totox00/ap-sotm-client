@@ -70,21 +70,19 @@ fn main() {
             runtime.block_on(async { state.sync(&connected, client.sync().await.expect("Failed to sync items"), persistent) });
             (client, state, connected, slot)
         }
-        Err(_) => {
-            match runtime.block_on(async { connect(false).await }) {
-                Ok((mut client, connected, slot)) => {
-                    seed_name = client.room_info.seed_name.clone();
-                    let persistent = get_persistent(&client.room_info.seed_name);
-                    let mut state = State::new(&client.data_package);
-                    runtime.block_on(async { state.sync(&connected, client.sync().await.expect("Failed to sync items"), persistent) });
-                    (client, state, connected, slot)
-                }
-                Err(err) => {
-                    println!("Failed to connect to Archipelago server with reason: {err}");
-                    exit(1);
-                }
+        Err(_) => match runtime.block_on(async { connect(false).await }) {
+            Ok((mut client, connected, slot)) => {
+                seed_name = client.room_info.seed_name.clone();
+                let persistent = get_persistent(&client.room_info.seed_name);
+                let mut state = State::new(&client.data_package);
+                runtime.block_on(async { state.sync(&connected, client.sync().await.expect("Failed to sync items"), persistent) });
+                (client, state, connected, slot)
             }
-        }
+            Err(err) => {
+                println!("Failed to connect to Archipelago server with reason: {err}");
+                exit(1);
+            }
+        },
     };
 
     println!("Connected!");
@@ -100,9 +98,10 @@ fn main() {
     let mut cursor_x = 0;
     let mut cursor_y = 0;
     let mut msg_buffer = VecDeque::with_capacity(10);
+    let mut multi_send = false;
 
     loop {
-        let send_victory = print(&term, &state, &filter, cursor_x, cursor_y, &msg_buffer);
+        let send_victory = print(&term, &state, &filter, cursor_x, cursor_y, &msg_buffer, multi_send);
         if send_victory {
             runtime.block_on(async {
                 let res = ap_sender.status_update(ClientStatus::Goal).await;
@@ -144,34 +143,36 @@ fn main() {
                 DisplayUpdate::CursorUp => cursor_y = cursor_y.saturating_sub(1),
                 DisplayUpdate::CursorDown => cursor_y += 1,
                 DisplayUpdate::CursorHome => (cursor_x, cursor_y) = (0, 0),
-                DisplayUpdate::Select => (),
+                DisplayUpdate::Select => multi_send = !multi_send,
                 DisplayUpdate::Send => {
-                    if let Some(location) = find_location(&mut state, &filter, cursor_x, cursor_y) {
-                        let mut locations = vec![];
+                    if let Some(location) = find_location(&state, &filter, cursor_x, cursor_y) {
+                        runtime.block_on(async {
+                            let mut location_ids = vec![];
 
-                        for n in 0..=state.slot_data.locations_per[match location {
-                            Location::Variant(_) => 5,
-                            Location::Villain((_, d)) | Location::TeamVillain((_, d)) => d as usize,
-                            Location::Environment(_) => 4,
-                        }] {
-                            if n > 0 {
-                                if let Some(id) = state.idmap.locations_to_id.get(&(location, n)) {
-                                    locations.push(*id)
+                            let locations = if multi_send { resolve_multi_send(location) } else { Box::new([location]) };
+                            for location in locations.iter() {
+                                for n in 0..=state.slot_data.locations_per[match location {
+                                    Location::Variant(_) => 5,
+                                    Location::Villain((_, d)) | Location::TeamVillain((_, d)) => *d as usize,
+                                    Location::Environment(_) => 4,
+                                }] {
+                                    if n > 0 {
+                                        if let Some(id) = state.idmap.locations_to_id.get(&(*location, n)) {
+                                            location_ids.push(*id)
+                                        }
+                                    }
                                 }
                             }
-                        }
 
-                        dbg!(&locations);
-
-                        runtime.block_on(async {
-                            let res = ap_sender.location_checks(locations).await;
-                            dbg!(&res);
+                            let res = ap_sender.location_checks(location_ids).await;
                             if res.is_ok() {
-                                match location {
-                                    Location::Variant(v) => state.checked_locations.mark_variant(v),
-                                    Location::Villain((v, d)) => state.checked_locations.mark_villain(v, d),
-                                    Location::TeamVillain((v, d)) => state.checked_locations.mark_team_villain(v, d),
-                                    Location::Environment(e) => state.checked_locations.mark_environment(e),
+                                for location in locations.iter() {
+                                    match *location {
+                                        Location::Variant(v) => state.checked_locations.mark_variant(v),
+                                        Location::Villain((v, d)) => state.checked_locations.mark_villain(v, d),
+                                        Location::TeamVillain((v, d)) => state.checked_locations.mark_team_villain(v, d),
+                                        Location::Environment(e) => state.checked_locations.mark_environment(e),
+                                    }
                                 }
                             }
                         })
@@ -183,14 +184,16 @@ fn main() {
                     }
                 }
                 DisplayUpdate::Exit => {
-                    set_persistent(&seed_name, state.checked_locations.into());
                     let _ = term.show_cursor();
+                    let _ = term.clear_screen();
+                    set_persistent(&seed_name, state.checked_locations.into());
                     exit(0);
                 }
             }
         } else {
-            set_persistent(&seed_name, state.checked_locations.into());
             let _ = term.show_cursor();
+            let _ = term.clear_screen();
+            set_persistent(&seed_name, state.checked_locations.into());
             exit(1);
         }
     }
@@ -321,5 +324,14 @@ pub fn set_persistent(seed_name: &str, locations: LocationsSerializable) {
         }
     } else {
         println!("Failed to save locations to persistent storage")
+    }
+}
+
+fn resolve_multi_send(location: Location) -> Box<[Location]> {
+    match location {
+        Location::Variant(_) => Box::new([location]),
+        Location::Villain((v, d)) => (0..=3).filter(|b| (d & *b) == *b).map(|d| Location::Villain((v, d))).collect(),
+        Location::TeamVillain((v, d)) => (0..=3).filter(|b| (d & *b) == *b).map(|d| Location::TeamVillain((v, d))).collect(),
+        Location::Environment(_) => Box::new([location]),
     }
 }
