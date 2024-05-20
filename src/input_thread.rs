@@ -25,7 +25,7 @@ pub fn input_thread(sender: Sender<DisplayUpdate>) {
             Key::Enter => {
                 let _ = sender.send(DisplayUpdate::Send);
             }
-            Key::Shift => {
+            Key::Tab => {
                 let _ = sender.send(DisplayUpdate::Select);
             }
             Key::Backspace => {
