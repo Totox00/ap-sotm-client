@@ -5,7 +5,7 @@ use strum::IntoEnumIterator;
 
 use crate::{
     archipelago_rs::protocol::{Connected, DataPackageObject, ReceivedItems},
-    data::{Environment, Hero, Item, Location, TeamVillain, Variant, Villain},
+    data::{Environment, Hero, Item, TeamVillain, Variant, Villain},
     idmap::IdMap,
     logic::can_unlock,
     SlotData,
@@ -74,16 +74,6 @@ impl State {
 
     pub fn sync(&mut self, connected: &Connected, sync: ReceivedItems, persistent: LocationsSerializable) {
         self.checked_locations = persistent.into();
-
-        for location_id in &connected.checked_locations {
-            match self.idmap.locations_from_id.get(location_id) {
-                Some((Location::Variant(v), _)) => self.checked_locations.mark_variant(*v),
-                Some((Location::Villain((v, d)), _)) => self.checked_locations.mark_villain(*v, *d),
-                Some((Location::TeamVillain((v, d)), _)) => self.checked_locations.mark_team_villain(*v, *d),
-                Some((Location::Environment(v), _)) => self.checked_locations.mark_environment(*v),
-                None => (),
-            }
-        }
 
         for item in sync.items {
             match self.idmap.items_from_id.get(&item.item) {
