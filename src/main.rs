@@ -145,6 +145,8 @@ fn main() {
                 DisplayUpdate::CursorHome => (cursor_x, cursor_y) = (0, 0),
                 DisplayUpdate::Select => multi_send = !multi_send,
                 DisplayUpdate::Send => {
+                    let mut sent = 0;
+
                     if let Some(location) = find_location(&state, &filter, cursor_x, cursor_y) {
                         runtime.block_on(async {
                             let mut location_ids = vec![];
@@ -174,11 +176,16 @@ fn main() {
                                         Location::Environment(e) => state.checked_locations.mark_environment(e),
                                     }
                                 }
+                                sent = locations.len();
                             }
                         })
                     }
                     if cursor_y > 0 {
-                        cursor_y -= 1;
+                        if cursor_y < sent {
+                            cursor_y += 1;
+                            cursor_x -= 1;
+                        }
+                        cursor_y -= sent;
                     } else {
                         cursor_x -= 1;
                     }
