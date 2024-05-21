@@ -61,17 +61,18 @@ fn main() {
 
     let runtime = Builder::new_multi_thread().enable_io().build().unwrap();
     let seed_name: String;
+    let (server, port, slot, pass) = get_server_info();
 
-    let (client, mut state, connected, slot) = match runtime.block_on(async { connect(true).await }) {
-        Ok((mut client, connected, slot)) => {
+    let (client, mut state, connected, slot) = match runtime.block_on(async { connect(true, &server, &port, pass.as_deref(), &slot).await }) {
+        Ok((mut client, connected)) => {
             seed_name = client.room_info.seed_name.clone();
             let persistent = get_persistent(&client.room_info.seed_name);
             let mut state = State::new(&client.data_package);
             runtime.block_on(async { state.sync(&connected, client.sync().await.expect("Failed to sync items"), persistent) });
             (client, state, connected, slot)
         }
-        Err(_) => match runtime.block_on(async { connect(false).await }) {
-            Ok((mut client, connected, slot)) => {
+        Err(_) => match runtime.block_on(async { connect(false, &server, &port, pass.as_deref(), &slot).await }) {
+            Ok((mut client, connected)) => {
                 seed_name = client.room_info.seed_name.clone();
                 let persistent = get_persistent(&client.room_info.seed_name);
                 let mut state = State::new(&client.data_package);
@@ -206,15 +207,7 @@ fn main() {
     }
 }
 
-/// # Errors
-///
-/// Will return `Err` if a connection to the server with data package could not be established
-///
-///
-/// # Panics
-///
-/// Will panic on data package cache errors
-pub async fn connect(secure: bool) -> anyhow::Result<(ArchipelagoClient, Connected, String)> {
+fn get_server_info() -> (String, String, String, Option<String>) {
     let args = Args::parse();
 
     let mut server = if let Some(server) = args.server {
@@ -246,6 +239,18 @@ pub async fn connect(secure: bool) -> anyhow::Result<(ArchipelagoClient, Connect
         slot = String::from("Player");
     }
 
+    (server, port, slot, password)
+}
+
+/// # Errors
+///
+/// Will return `Err` if a connection to the server with data package could not be established
+///
+///
+/// # Panics
+///
+/// Will panic on data package cache errors
+pub async fn connect(secure: bool, server: &str, port: &str, pass: Option<&str>, slot: &str) -> anyhow::Result<(ArchipelagoClient, Connected)> {
     let url = if secure { format!("wss://{server}:{port}") } else { format!("ws://{server}:{port}") };
 
     let mut client = ArchipelagoClient::new(&url).await?;
@@ -287,13 +292,13 @@ pub async fn connect(secure: bool) -> anyhow::Result<(ArchipelagoClient, Connect
 
     client.data_package.games.extend(cached);
 
-    let connected = if let Some(pass) = password {
-        client.connect("Sentinels of the Multiverse", &slot, Some(&*pass), Some(7), vec!["AP".to_string()]).await?
+    let connected = if let Some(pass) = pass {
+        client.connect("Sentinels of the Multiverse", slot, Some(pass), Some(7), vec!["AP".to_string()]).await?
     } else {
-        client.connect("Sentinels of the Multiverse", &slot, None, Some(7), vec!["AP".to_string()]).await?
+        client.connect("Sentinels of the Multiverse", slot, None, Some(7), vec!["AP".to_string()]).await?
     };
 
-    Ok((client, connected, slot))
+    Ok((client, connected))
 }
 
 fn prompt(text: &str) -> Option<String> {
