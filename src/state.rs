@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 
 use crate::{
@@ -38,15 +37,6 @@ pub struct Locations {
     pub environments: u64,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LocationsSerializable {
-    pub victory: bool,
-    pub villains: Vec<u8>,
-    pub team_villains: Vec<u8>,
-    pub variants: u128,
-    pub environments: u64,
-}
-
 #[derive(Debug, Clone)]
 pub struct AvailableLocations {
     pub victory: bool,
@@ -72,8 +62,8 @@ impl State {
         }
     }
 
-    pub fn sync(&mut self, connected: &Connected, sync: ReceivedItems, persistent: LocationsSerializable) {
-        self.checked_locations = persistent.into();
+    pub fn sync(&mut self, connected: &Connected, sync: ReceivedItems, persistent: Locations) {
+        self.checked_locations = persistent;
 
         for item in sync.items {
             match self.idmap.items_from_id.get(&item.item) {
@@ -277,48 +267,5 @@ impl Locations {
 impl Default for Locations {
     fn default() -> Self {
         Self::new()
-    }
-}
-
-
-impl LocationsSerializable {
-    pub fn new() -> Self {
-        LocationsSerializable {
-            victory: false,
-            villains: [0; Villain::variant_count()].into(),
-            team_villains: [0; TeamVillain::variant_count()].into(),
-            variants: 0,
-            environments: 0,
-        }
-    }
-}
-
-impl Default for LocationsSerializable {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl From<Locations> for LocationsSerializable {
-    fn from(value: Locations) -> Self {
-        LocationsSerializable {
-            victory: value.victory,
-            villains: value.villains.into(),
-            team_villains: value.team_villains.into(),
-            variants: value.variants,
-            environments: value.environments,
-        }
-    }
-}
-
-impl From<LocationsSerializable> for Locations {
-    fn from(value: LocationsSerializable) -> Self {
-        Locations {
-            victory: value.victory,
-            villains: value.villains.try_into().expect("Villains should be of fixed length"),
-            team_villains: value.team_villains.try_into().expect("Team Villains should be of fixed length"),
-            variants: value.variants,
-            environments: value.environments,
-        }
     }
 }

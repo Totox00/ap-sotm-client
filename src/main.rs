@@ -12,15 +12,15 @@ use archipelago_rs::{client::ArchipelagoClient, protocol::Connected};
 use clap::Parser;
 use cli::{find_location, print, DisplayUpdate};
 use console::Term;
-use data::Item;
+use data::{Item, TeamVillain, Villain};
 use input_thread::input_thread;
 use serde::Deserialize;
 use serde_json::{from_reader, to_writer};
-use state::{LocationsSerializable, State};
+use state::{Locations, State};
 use std::{
     collections::{HashMap, VecDeque},
-    fs::{create_dir, create_dir_all, remove_file, File},
-    io::{self, stdout, BufRead, Write},
+    fs::{create_dir, create_dir_all, remove_file, rename, File},
+    io::{self, stdout, BufRead, Read, Write},
     path::Path,
     process::exit,
     sync::mpsc::channel,
@@ -194,14 +194,14 @@ fn main() {
                 DisplayUpdate::Exit => {
                     let _ = term.show_cursor();
                     let _ = term.clear_screen();
-                    set_persistent(&seed_name, state.checked_locations.into());
+                    set_persistent(&seed_name, state.checked_locations);
                     exit(0);
                 }
             }
         } else {
             let _ = term.show_cursor();
             let _ = term.clear_screen();
-            set_persistent(&seed_name, state.checked_locations.into());
+            set_persistent(&seed_name, state.checked_locations);
             exit(1);
         }
     }
@@ -314,24 +314,44 @@ fn prompt(text: &str) -> Option<String> {
     }
 }
 
-pub fn get_persistent(seed_name: &str) -> LocationsSerializable {
+fn get_persistent(seed_name: &str) -> Locations {
     create_dir_all("./persistent").expect("Failed to create persistent storage");
-    if let Ok(reader) = File::open(Path::new("./persistent").join(seed_name)) {
-        if let Ok(data) = from_reader(reader) {
-            data
-        } else {
-            LocationsSerializable::new()
+    if let Ok(mut reader) = File::open(Path::new("./persistent").join(seed_name)) {
+        let mut buf = vec![];
+        if let Ok(len) = reader.read_to_end(&mut buf) {
+            if len != 1 + Villain::variant_count() + TeamVillain::variant_count() + 16 + 8 {
+                println!("Save file is invalid. Was it made with an older version?");
+                let _ = rename(Path::new("./persistent").join(seed_name), Path::new("./persistent").join(format!("{seed_name}-backup")));
+                let _ = prompt("Save has been moved to a backup. (Press Enter to continue)");
+                return Locations::new();
+            } else {
+                let mut locations = Locations::new();
+                locations.victory = buf[0] > 0;
+                let mut start = 1;
+                locations.villains.copy_from_slice(&buf[start..start + Villain::variant_count()]);
+                start += Villain::variant_count();
+                locations.team_villains.copy_from_slice(&buf[start..start + TeamVillain::variant_count()]);
+                start += TeamVillain::variant_count();
+                locations.variants = u128::from_le_bytes(buf[start..start + 16].try_into().unwrap());
+                start += 16;
+                locations.environments = u64::from_le_bytes(buf[start..start + 8].try_into().unwrap());
+                return locations;
+            }
         }
-    } else {
-        LocationsSerializable::new()
     }
+
+    Locations::new()
 }
 
-pub fn set_persistent(seed_name: &str, locations: LocationsSerializable) {
+fn set_persistent(seed_name: &str, locations: Locations) {
     create_dir_all("./persistent").expect("Failed to create persistent storage");
-    if let Ok(writer) = File::create(Path::new("./persistent").join(seed_name)) {
-        let res = to_writer(writer, &locations);
-        if res.is_err() {
+    if let Ok(mut writer) = File::create(Path::new("./persistent").join(seed_name)) {
+        let mut buf = vec![if locations.victory { 1 } else { 0 }];
+        buf.extend(locations.villains);
+        buf.extend(locations.team_villains);
+        buf.extend(locations.variants.to_le_bytes());
+        buf.extend(locations.environments.to_le_bytes());
+        if writer.write_all(&buf).is_err() {
             println!("Failed to save locations to persistent storage")
         }
     } else {
