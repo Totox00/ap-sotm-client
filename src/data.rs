@@ -309,7 +309,13 @@ generate_data!(
     (TitanOni, Variant, Titan, "Titan Oni"),
     (FirstResponseVanish, Variant, Vanish, "First Response Vanish"),
     (Vanish1929, Variant, Vanish, "Vanish 1929"),
-    (VanishTombOfThieves, Variant, Vanish, "Vanish Tomb of Thieves")
+    (VanishTombOfThieves, Variant, Vanish, "Vanish Tomb of Thieves"),
+    (UrbanWarfareExpatriette, Variant, Expatriette, "Urban Warfare Expatriette"),
+    (SiegeBreakerBunker, Variant, Bunker, "Siege Breaker Bunker"),
+    (NitroBoostAbsoluteZero, Variant, AbsoluteZero, "Nitro Boost Absolute Zero"),
+    (EnlightenedMisterFixer, Variant, MisterFixer, "Enlightened Mister Fixer"),
+    (NorthernWindMisterFixer, Variant, MisterFixer, "Northern Wind Mister Fixer"),
+    (OmnitronXI, Variant, OmnitronX, "Omnitron-XI")
 );
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
