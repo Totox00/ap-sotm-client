@@ -165,7 +165,7 @@ generate_data!(
     (NexusOfTheVoid, Environment, "Nexus of the Void"),
     (BlackwoodForest, Environment, "Blackwood Forest"),
     (CatchwaterHarbor1929, Environment, "Catchwater Harbor 1929"),
-    (TheChasmOfAThousandNights, Environment, "The Chasm of A Thousand Nights"),
+    (TheChasmOfAThousandNights, Environment, "The Chasm of a Thousand Nights"),
     (TheCybersphere, Environment, "The Cybersphere"),
     (DungeonsOfTerror, Environment, "Dungeons of Terror"),
     (FSCContinuanceWanderer, Environment, "F.S.C. Continuance Wanderer"),
