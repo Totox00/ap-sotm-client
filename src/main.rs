@@ -315,7 +315,10 @@ fn prompt(text: &str) -> Option<String> {
 }
 
 fn get_persistent(seed_name: &str) -> Locations {
-    create_dir_all("./persistent").expect("Failed to create persistent storage");
+    if let Err(err) = create_dir_all("./persistent") {
+        println!("Failed to create persistent storage with error {err}");
+    }
+    
     if let Ok(mut reader) = File::open(Path::new("./persistent").join(seed_name)) {
         let mut buf = vec![];
         if let Ok(len) = reader.read_to_end(&mut buf) {
@@ -344,18 +347,22 @@ fn get_persistent(seed_name: &str) -> Locations {
 }
 
 fn set_persistent(seed_name: &str, locations: Locations) {
-    create_dir_all("./persistent").expect("Failed to create persistent storage");
-    if let Ok(mut writer) = File::create(Path::new("./persistent").join(seed_name)) {
-        let mut buf = vec![if locations.victory { 1 } else { 0 }];
-        buf.extend(locations.villains);
-        buf.extend(locations.team_villains);
-        buf.extend(locations.variants.to_le_bytes());
-        buf.extend(locations.environments.to_le_bytes());
-        if writer.write_all(&buf).is_err() {
-            println!("Failed to save locations to persistent storage")
+    if let Err(err) = create_dir_all("./persistent") {
+        println!("Failed to create persistent storage with error {err}");
+    }
+
+    match File::create(Path::new("./persistent").join(seed_name)) {
+        Ok(mut writer) => {
+            let mut buf = vec![if locations.victory { 1 } else { 0 }];
+            buf.extend(locations.villains);
+            buf.extend(locations.team_villains);
+            buf.extend(locations.variants.to_le_bytes());
+            buf.extend(locations.environments.to_le_bytes());
+            if let Err(err) = writer.write_all(&buf) {
+                println!("Failed to save locations to persistent storage with error {err}");
+            }
         }
-    } else {
-        println!("Failed to save locations to persistent storage")
+        Err(err) => println!("Failed to save locations to persistent storage with error {err}"),
     }
 }
 
