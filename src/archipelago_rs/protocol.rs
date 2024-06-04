@@ -195,7 +195,6 @@ pub struct RoomInfo {
     pub hint_cost: i32,
     pub location_check_points: i32,
     pub games: Vec<String>,
-    pub datapackage_versions: HashMap<String, i32>,
     pub datapackage_checksums: HashMap<String, String>,
     pub seed_name: String,
     pub time: f32,
@@ -214,7 +213,7 @@ pub struct Connected {
     pub missing_locations: Vec<i64>,
     pub checked_locations: Vec<i64>,
     pub slot_data: Value,
-    pub slot_info: HashMap<String, NetworkSlot>, // TODO: docs claim this is an int key. they are lying?
+    pub slot_info: HashMap<String, NetworkSlot>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -238,7 +237,6 @@ pub struct RoomUpdate {
     pub hint_cost: Option<i32>,
     pub location_check_points: Option<i32>,
     pub games: Option<Vec<String>>,
-    pub datapackage_versions: Option<HashMap<String, i32>>,
     pub seed_name: Option<String>,
     pub time: Option<f32>,
     // Exclusive to RoomUpdate
@@ -286,7 +284,6 @@ pub struct DataPackageObject {
 pub struct GameData {
     pub item_name_to_id: HashMap<String, i64>,
     pub location_name_to_id: HashMap<String, i64>,
-    pub version: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

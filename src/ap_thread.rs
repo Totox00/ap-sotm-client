@@ -12,16 +12,33 @@ use crate::{
     idmap::IdMap,
 };
 
-pub async fn ap_thread(id_map: Arc<IdMap>, client_sender: Sender<DisplayUpdate>, mut ap_receiver: ArchipelagoClientReceiver, connected: Connected, slot: String) {
-    let mut item_id_to_name = HashMap::new();
-    let mut location_id_to_name = HashMap::new();
+struct GameData {
+    item_id_to_name: HashMap<i64, String>,
+    location_id_to_name: HashMap<i64, String>,
+}
 
-    for game in ap_receiver.data_package.games.values() {
+pub async fn ap_thread(id_map: Arc<IdMap>, client_sender: Sender<DisplayUpdate>, mut ap_receiver: ArchipelagoClientReceiver, connected: Connected, slot: String) {
+    let mut player_to_game: HashMap<i32, Arc<GameData>> = HashMap::new();
+
+    for (name, game) in ap_receiver.data_package.games.iter() {
+        let mut item_id_to_name = HashMap::new();
+        let mut location_id_to_name = HashMap::new();
+
         for (item, id) in &game.item_name_to_id {
             item_id_to_name.insert(*id, item.to_owned());
         }
         for (location, id) in &game.location_name_to_id {
             location_id_to_name.insert(*id, location.to_owned());
+        }
+
+        let rc = Arc::new(GameData { item_id_to_name, location_id_to_name });
+        for player in connected
+            .players
+            .iter()
+            .filter(|p| connected.slot_info.get(&p.slot.to_string()).is_some_and(|s| s.game == *name))
+            .map(|p| p.slot)
+        {
+            player_to_game.insert(player, rc.clone());
         }
     }
 
@@ -64,11 +81,20 @@ pub async fn ap_thread(id_map: Arc<IdMap>, client_sender: Sender<DisplayUpdate>,
                                         }
                                     }
                                     "item_id" => style_item(
-                                        item_id_to_name.get(&text.parse().unwrap_or(0)).cloned().unwrap_or(format!("Unknown location {text}")),
+                                        if let Some(data) = player_to_game.get(&part.player.unwrap_or(0)) {
+                                            data.item_id_to_name.get(&text.parse().unwrap_or(0)).cloned().unwrap_or(String::from("Unknown item"))
+                                        } else {
+                                            String::from("Unknown item")
+                                        },
                                         part.flags.unwrap_or(0),
                                     ),
                                     "item_name" => style(text).cyan(),
-                                    "location_id" => style(location_id_to_name.get(&text.parse().unwrap_or(0)).cloned().unwrap_or(format!("Unknown location {text}"))).green(),
+                                    "location_id" => style(if let Some(data) = player_to_game.get(&part.player.unwrap_or(0)) {
+                                        data.location_id_to_name.get(&text.parse().unwrap_or(0)).cloned().unwrap_or(String::from("Unknown location"))
+                                    } else {
+                                        String::from("Unknown location")
+                                    })
+                                    .green(),
                                     "location_name" => style(text).green(),
                                     "entrance_name" => style(text).italic(),
                                     "color" => style_color(text, &part.color.clone().unwrap_or(String::from("bold"))),

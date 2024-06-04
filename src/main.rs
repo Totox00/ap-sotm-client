@@ -318,7 +318,7 @@ fn get_persistent(seed_name: &str) -> Locations {
     if let Err(err) = create_dir_all("./persistent") {
         println!("Failed to create persistent storage with error {err}");
     }
-    
+
     if let Ok(mut reader) = File::open(Path::new("./persistent").join(seed_name)) {
         let mut buf = vec![];
         if let Ok(len) = reader.read_to_end(&mut buf) {
