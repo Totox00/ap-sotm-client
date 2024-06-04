@@ -32,9 +32,9 @@ pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y
     let scroll_y = if cursor_y < 10 { 0 } else { cursor_y - 10 };
     let _ = term.clear_screen();
     let mut lock = stdout().lock();
-    let _ = writeln!(lock, "{filter}");
+    let _ = writeln!(lock, "{}", if filter.is_empty() { "Type to filter..." } else { filter });
 
-    let (_, cols) = term.size();
+    let (rows, cols) = term.size();
     let column_sizes = calc_columns(cols as usize, cursor_x);
     let mut lines_needed = 0;
     let mut start_i = 0;
@@ -226,6 +226,8 @@ pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y
         }
     }
 
+    print_keybinds(term, &mut lock, rows as usize - 3);
+
     let _ = lock.flush();
     false
 }
@@ -350,4 +352,22 @@ fn calc_columns(cols: usize, cursor_x: usize) -> [usize; 7] {
     }
 
     sizes
+}
+
+fn print_keybinds(term: &Term, lock: &mut StdoutLock, row: usize) {
+    let _ = term.move_cursor_to(0, row);
+    let _ = writeln!(
+        lock,
+        " {}: Move cursor   {}: Send location   {}: Move cursor to start",
+        style("Arrow Keys").black().on_white(),
+        style("Enter").black().on_white(),
+        style("Home").black().on_white()
+    );
+    let _ = writeln!(
+        lock,
+        "     {}: Disconnect   {}: Clear filter     {}: Toggle multisend",
+        style("Ctrl+D").black().on_white(),
+        style("Ctrl+C").black().on_white(),
+        style("Tab").black().on_white()
+    );
 }
