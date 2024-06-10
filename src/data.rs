@@ -97,7 +97,7 @@ generate_data!(
     (Knyfe, Hero, "K.N.Y.F.E."),
     (TheNaturalist, Hero, "The Naturalist"),
     (Parse, Hero, "Parse"),
-    (TheSentinels, Hero, "The Sentiels"),
+    (TheSentinels, Hero, "The Sentinels"),
     (Setback, Hero, "Setback"),
     (Benchmark, Hero, "Benchmark"),
     (Stuntman, Hero, "Stuntman"),
