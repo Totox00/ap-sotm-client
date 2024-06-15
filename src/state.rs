@@ -7,7 +7,7 @@ use crate::{
     data::{Environment, Hero, Item, TeamVillain, Variant, Villain},
     idmap::IdMap,
     logic::can_unlock,
-    SlotData,
+    ParseSlotData, SlotData,
 };
 
 #[derive(Debug, Clone)]
@@ -78,7 +78,9 @@ impl State {
             }
         }
 
-        self.slot_data = serde_json::from_value(connected.slot_data.clone()).expect("Failed to read slot data")
+        dbg!(&connected.slot_data);
+        let parse_slot_data: ParseSlotData = serde_json::from_value(connected.slot_data.clone()).expect("Failed to read slot data");
+        self.slot_data = SlotData::from(parse_slot_data);
     }
 
     pub fn available_locations(&self) -> AvailableLocations {

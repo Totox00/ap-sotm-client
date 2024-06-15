@@ -48,6 +48,15 @@ struct Args {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+struct ParseSlotData {
+    pub required_scions: i32,
+    pub required_villains: i32,
+    pub required_variants: i32,
+    pub villain_difficulty_points: [i32; 4],
+    pub locations_per: [i8; 6],
+}
+
+#[derive(Debug, Clone, Deserialize)]
 struct SlotData {
     pub required_scions: u32,
     pub required_villains: u32,
@@ -276,7 +285,9 @@ pub async fn connect(secure: bool, server: &str, port: &str, pass: Option<&str>,
         let _ = writeln!(lock, "Missing datapackage for {game}...");
     }
 
-    client.get_data_package(Some(missing_games)).await?;
+    if let Err(err) = client.get_data_package(Some(missing_games)).await {
+        Err(dbg!(err))?;
+    }
 
     for (game, data) in &client.data_package.games {
         if let Some(checksum) = client.room_info.datapackage_checksums.get(game) {
@@ -372,5 +383,17 @@ fn resolve_multi_send(location: Location) -> Box<[Location]> {
         Location::Villain((v, d)) => (0..=3).filter(|b| (d & *b) == *b).map(|d| Location::Villain((v, d))).collect(),
         Location::TeamVillain((v, d)) => (0..=3).filter(|b| (d & *b) == *b).map(|d| Location::TeamVillain((v, d))).collect(),
         Location::Environment(_) => Box::new([location]),
+    }
+}
+
+impl From<ParseSlotData> for SlotData {
+    fn from(value: ParseSlotData) -> Self {
+        Self {
+            required_scions: if value.required_scions < 0 { 0 } else { value.required_scions as u32 },
+            required_villains: if value.required_villains < 0 { 0 } else { value.required_villains as u32 },
+            required_variants: if value.required_variants < 0 { 0 } else { value.required_variants as u32 },
+            villain_difficulty_points: value.villain_difficulty_points.map(|e| if e < 0 { 0 } else { e as u32 }),
+            locations_per: value.locations_per.map(|e| if e < 0 { 0 } else { e as u8 }),
+        }
     }
 }
