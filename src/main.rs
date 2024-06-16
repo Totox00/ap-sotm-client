@@ -77,7 +77,10 @@ fn main() {
             seed_name = client.room_info.seed_name.clone();
             let persistent = get_persistent(&client.room_info.seed_name);
             let mut state = State::new(&client.data_package);
-            runtime.block_on(async { state.sync(&connected, client.sync().await.expect("Failed to sync items"), persistent) });
+            runtime.block_on(async {
+                client.sync().await.expect("Failed to sync items");
+                state.sync(&connected, persistent)
+            });
             (client, state, connected, slot)
         }
         Err(_) => match runtime.block_on(async { connect(false, &server, &port, pass.as_deref(), &slot).await }) {
@@ -85,7 +88,10 @@ fn main() {
                 seed_name = client.room_info.seed_name.clone();
                 let persistent = get_persistent(&client.room_info.seed_name);
                 let mut state = State::new(&client.data_package);
-                runtime.block_on(async { state.sync(&connected, client.sync().await.expect("Failed to sync items"), persistent) });
+                runtime.block_on(async {
+                    client.sync().await.expect("Failed to sync items");
+                    state.sync(&connected, persistent)
+                });
                 (client, state, connected, slot)
             }
             Err(err) => {

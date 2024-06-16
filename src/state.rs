@@ -3,8 +3,8 @@ use std::sync::Arc;
 use strum::IntoEnumIterator;
 
 use crate::{
-    archipelago_rs::protocol::{Connected, DataPackageObject, ReceivedItems},
-    data::{Environment, Hero, Item, TeamVillain, Variant, Villain},
+    archipelago_rs::protocol::{Connected, DataPackageObject},
+    data::{Environment, Hero, TeamVillain, Variant, Villain},
     idmap::IdMap,
     logic::can_unlock,
     ParseSlotData, SlotData,
@@ -62,22 +62,8 @@ impl State {
         }
     }
 
-    pub fn sync(&mut self, connected: &Connected, sync: ReceivedItems, persistent: Locations) {
+    pub fn sync(&mut self, connected: &Connected, persistent: Locations) {
         self.checked_locations = persistent;
-
-        for item in sync.items {
-            match self.idmap.items_from_id.get(&item.item) {
-                Some(Item::Hero(v)) => self.items.set_hero(*v),
-                Some(Item::Variant(v)) => self.items.set_hero_variant(*v),
-                Some(Item::Villain(v)) => self.items.set_villain(*v),
-                Some(Item::TeamVillain(v)) => self.items.set_team_villain(*v),
-                Some(Item::Environment(v)) => self.items.set_environment(*v),
-                Some(Item::Scion) => self.items.scions += 1,
-                Some(Item::Filler) => self.items.filler += 1,
-                None => (),
-            }
-        }
-
         dbg!(&connected.slot_data);
         let parse_slot_data: ParseSlotData = serde_json::from_value(connected.slot_data.clone()).expect("Failed to read slot data");
         self.slot_data = SlotData::from(parse_slot_data);
