@@ -4,6 +4,8 @@ use generate_data::generate_data;
 use num_derive::FromPrimitive;
 use strum::EnumIter;
 
+use crate::filler::Filler;
+
 generate_data!(
     (BaronBlade, Villain, "Baron Blade"),
     (MadBomberBaronBlade, Villain, "Mad Bomber Baron Blade"),
@@ -101,7 +103,7 @@ generate_data!(
     (Setback, Hero, "Setback"),
     (Benchmark, Hero, "Benchmark"),
     (Stuntman, Hero, "Stuntman"),
-    (DoctorMedico, Hero, "Doctor Medico"),
+    (DoctorMedico, Hero, "Dr. Medico"),
     (TheIdealist, Hero, "The Idealist"),
     (Mainstay, Hero, "Mainstay"),
     (Writhe, Hero, "Writhe"),
@@ -326,7 +328,7 @@ pub enum Item {
     TeamVillain(TeamVillain),
     Environment(Environment),
     Scion,
-    Filler,
+    Filler(Filler),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -335,6 +337,7 @@ pub enum Location {
     Villain((Villain, u8)),
     TeamVillain((TeamVillain, u8)),
     Environment(Environment),
+    Victory,
 }
 
 impl Variant {
@@ -398,8 +401,8 @@ impl Variant {
             Variant::FreedomFiveTachyon => "First, the Prime Wardens (all variant members) must be defeated by Progeny anywhere other than Rook City or Megalopolis. Then, Dark Watch (all variant members) must by defeated by Progeny in Rook City. Then, the Freedom Five (non-variant members) must be defeated by Progeny in Rook City. Then, the Freedom Five (non-variant team members) must defeat Progeny in Megalopolis. During that game, Tachyon must play at least 10_cards in one turn. Tachyon must run out of cards in her deck and thus shuffle her trash into her deck at least once. Tachyon must be incapacitated.",
             Variant::FreedomFiveLegacy => "First, the Prime Wardens (all variant members) must be defeated by Progeny anywhere other than Rook City or Megalopolis. Then, Dark Watch (all variant members) must by defeated by Progeny in Rook City. Then, the Freedom Five (non-variant members) must be defeated by Progeny in Rook City. Then, the Freedom Five (non-variant team members) must defeat Progeny in Megalopolis. During that game, Legacy must prevent at least 20_points of damage and must prevent more damage than he increases. Danger Sense must be played during the game.",
             Variant::SuperSentaiIdealist => "First, 5_Concepts must be in play with at least 2_cards under each of them for at least 2_rounds. Then, in the same game, 5_Concepts must be in play and no Concept may have a card under it.",
-            Variant::DrMedicoMalpractice => "Complete a game with Void Guard Writhe on the team. Void Guard Writhe must play at least 1_equipment card and at least 1_ongoing card. Whenever Void Guard Writhe has an ongoing card in his play area, he must have more equipment cards than ongoing cards in his play area.",
-            Variant::CosmicInventorWrithe => "First, Void Guard Dr. Medico must be dealt 50_damage in a single game. Then, Void Guard Dr. Medico must destroy Re-Volt.",
+            Variant::DrMedicoMalpractice => "First, Void Guard Dr. Medico must be dealt 50_damage in a single game. Then, Void Guard Dr. Medico must destroy Re-Volt.",
+            Variant::CosmicInventorWrithe => "Complete a game with Void Guard Writhe on the team. Void Guard Writhe must play at least 1_equipment card and at least 1_ongoing card. Whenever Void Guard Writhe has an ongoing card in his play area, he must have more equipment cards than ongoing cards in his play area.",
             Variant::RoadWarriorMainstay => "First, all 3_of Void Guard Mainstay's equipment cards must enter and remain in play for at least 3_rounds. Then, in the same game, Void Guard Mainstay must destroy all 3_of his equipment cards in one turn.",
             Variant::MadBomberBaronBlade => "Defeat standard Baron Blade. Then, while fighting Citizen Dawn, destroy Citizens Blood, Sweat, and Tears in the same round.",
             Variant::OmnitronII => "Defeat standard Omnitron. Then, while fighting Grand Warlord Voss, destroy two spaceships in the same round.",
@@ -421,7 +424,7 @@ impl Hash for Item {
             Item::TeamVillain(v) => *v as usize + Hero::variant_count() + Variant::variant_count() + Villain::variant_count(),
             Item::Environment(v) => *v as usize + Hero::variant_count() + Variant::variant_count() + Villain::variant_count() + TeamVillain::variant_count(),
             Item::Scion => Hero::variant_count() + Variant::variant_count() + Villain::variant_count() + TeamVillain::variant_count() + Environment::variant_count(),
-            Item::Filler => Hero::variant_count() + Variant::variant_count() + Villain::variant_count() + TeamVillain::variant_count() + Environment::variant_count() + 1,
+            Item::Filler(v) => return v.hash(state),
         }
         .hash(state);
     }
@@ -434,6 +437,7 @@ impl Hash for Location {
             Location::Villain((v, d)) => (*v as usize) * 4 + *d as usize + Variant::variant_count(),
             Location::TeamVillain((v, d)) => (*v as usize) * 4 + *d as usize + Variant::variant_count() + Villain::variant_count() * 4,
             Location::Environment(v) => *v as usize + Variant::variant_count() + Villain::variant_count() * 4 + TeamVillain::variant_count() * 4,
+            Location::Victory => Environment::variant_count() + Variant::variant_count() + Villain::variant_count() * 4 + TeamVillain::variant_count() * 4,
         }
         .hash(state);
     }

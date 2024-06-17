@@ -93,7 +93,7 @@ pub fn network_version() -> NetworkVersion {
         major: 0,
         minor: 4,
         build: 7,
-        class: "Version".to_string(),
+        class: "Version".into(),
     }
 }
 
@@ -105,7 +105,7 @@ pub struct Connect {
     pub name: String,
     pub version: NetworkVersion,
     pub items_handling: Option<i32>,
-    pub tags: Vec<String>,
+    pub tags: Box<[String]>,
     pub uuid: String,
     pub game: String,
 }
@@ -149,7 +149,7 @@ pub struct Say {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct GetDataPackage {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub games: Option<Vec<String>>,
+    pub games: Option<Box<[String]>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -212,8 +212,17 @@ pub struct Connected {
     pub players: Vec<NetworkPlayer>,
     pub missing_locations: Vec<i64>,
     pub checked_locations: Vec<i64>,
-    pub slot_data: Value,
+    pub slot_data: SlotData,
     pub slot_info: HashMap<String, NetworkSlot>,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct SlotData {
+    pub required_scions: i32,
+    pub required_villains: i32,
+    pub required_variants: i32,
+    pub villain_difficulty_points: [i32; 4],
+    pub locations_per: [i8; 6],
 }
 
 #[derive(Debug, Serialize, Deserialize)]

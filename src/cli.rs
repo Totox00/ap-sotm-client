@@ -3,28 +3,13 @@ use std::{
     io::{stdout, StdoutLock, Write},
 };
 
-use crate::{
-    data::{Environment, Hero, Item, Location, TeamVillain, Variant, Villain},
+use client_lib::{
+    data::{Environment, Hero, Location, TeamVillain, Variant, Villain},
     state::State,
 };
 use console::{style, StyledObject, Term};
 use num::FromPrimitive;
 use strum::IntoEnumIterator;
-
-#[derive(Debug)]
-pub enum DisplayUpdate {
-    Msg(String),
-    Items(Vec<Item>),
-    Filter(String),
-    CursorLeft,
-    CursorRight,
-    CursorUp,
-    CursorDown,
-    CursorHome,
-    Select,
-    Send,
-    Exit,
-}
 
 #[allow(clippy::too_many_lines)]
 pub fn print(term: &Term, state: &State, filter: &str, cursor_x: usize, cursor_y: usize, msg_buffer: &VecDeque<String>, multi_send: bool) -> bool {

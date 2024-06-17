@@ -1,21 +1,26 @@
-use std::sync::Arc;
-
 use strum::IntoEnumIterator;
 
 use crate::{
-    archipelago_rs::protocol::{Connected, DataPackageObject},
-    data::{Environment, Hero, TeamVillain, Variant, Villain},
-    idmap::IdMap,
+    data::{Environment, Hero, Item, TeamVillain, Variant, Villain},
+    filler::ReceivedFiller,
     logic::can_unlock,
-    ParseSlotData, SlotData,
 };
+use archipelago_rs::protocol::SlotData;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct State {
     pub items: Items,
     pub checked_locations: Locations,
-    pub idmap: Arc<IdMap>,
-    pub slot_data: SlotData,
+    pub slot_data: CleanedSlotData,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct CleanedSlotData {
+    pub required_scions: u32,
+    pub required_villains: u32,
+    pub required_variants: u32,
+    pub villain_difficulty_points: [u32; 4],
+    pub locations_per: [u8; 6],
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -25,7 +30,7 @@ pub struct Items {
     pub team_villains: u16,
     pub heroes: [u8; Hero::variant_count()],
     pub environments: u64,
-    pub filler: u8,
+    pub filler: ReceivedFiller,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -47,26 +52,12 @@ pub struct AvailableLocations {
 }
 
 impl State {
-    pub fn new(datapackage: &DataPackageObject) -> Self {
+    pub fn new(slot_data: SlotData) -> Self {
         State {
             items: Items::new(),
             checked_locations: Locations::new(),
-            idmap: Arc::new(IdMap::new(datapackage)),
-            slot_data: SlotData {
-                required_scions: 10,
-                required_villains: 0,
-                required_variants: 0,
-                villain_difficulty_points: [1, 0, 0, 0],
-                locations_per: [1, 1, 1, 1, 1, 1],
-            },
+            slot_data: slot_data.into(),
         }
-    }
-
-    pub fn sync(&mut self, connected: &Connected, persistent: Locations) {
-        self.checked_locations = persistent;
-        dbg!(&connected.slot_data);
-        let parse_slot_data: ParseSlotData = serde_json::from_value(connected.slot_data.clone()).expect("Failed to read slot data");
-        self.slot_data = SlotData::from(parse_slot_data);
     }
 
     pub fn available_locations(&self) -> AvailableLocations {
@@ -146,7 +137,7 @@ impl Items {
             team_villains: 0,
             heroes: [0; Hero::variant_count()],
             environments: 0,
-            filler: 0,
+            filler: ReceivedFiller::new(),
         }
     }
 
@@ -198,6 +189,24 @@ impl Items {
 
     pub fn set_environment(&mut self, environment: Environment) {
         self.environments |= 1 << environment as u64;
+    }
+
+    pub fn set_item(&mut self, item: Item) {
+        match item {
+            Item::Hero(v) => self.set_hero(v),
+            Item::Variant(v) => self.set_hero_variant(v),
+            Item::Villain(v) => self.set_villain(v),
+            Item::TeamVillain(v) => self.set_team_villain(v),
+            Item::Environment(v) => self.set_environment(v),
+            Item::Scion => self.scions += 1,
+            Item::Filler(filler) => self.filler.add(filler),
+        }
+    }
+}
+
+impl Default for Items {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -255,5 +264,17 @@ impl Locations {
 impl Default for Locations {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+impl From<SlotData> for CleanedSlotData {
+    fn from(value: SlotData) -> Self {
+        Self {
+            required_scions: if value.required_scions < 0 { 0 } else { value.required_scions as u32 },
+            required_villains: if value.required_villains < 0 { 0 } else { value.required_villains as u32 },
+            required_variants: if value.required_variants < 0 { 0 } else { value.required_variants as u32 },
+            villain_difficulty_points: value.villain_difficulty_points.map(|e| if e < 0 { 0 } else { e as u32 }),
+            locations_per: value.locations_per.map(|e| if e < 0 { 0 } else { e as u8 }),
+        }
     }
 }

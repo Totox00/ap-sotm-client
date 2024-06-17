@@ -3,7 +3,7 @@ use proc_macro::TokenTree;
 use std::fmt::Write;
 
 /// # Panics
-/// 
+///
 /// Panics if the input table cannot be parsed into valid item data
 #[allow(clippy::too_many_lines)]
 #[proc_macro]
@@ -198,7 +198,6 @@ impl Item {{
     pub fn from_str(str: &str) -> Option<Item> {{
         match str {{
             {},{},{},{},{},
-            \"1 Undo\" => Some(Item::Filler),
             \"Scion of Oblivaeon\" => Some(Item::Scion),
             _ => None
         }}
