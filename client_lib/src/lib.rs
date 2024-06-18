@@ -81,11 +81,7 @@ where
 
         state.checked_locations = persistent_store.load();
 
-        for item in client.sync().await?.items {
-            if let Some(item) = datapackage_store.id_to_own_item(item.item) {
-                state.items.set_item(item);
-            }
-        }
+        client.sync().await?;
 
         let mut players = HashMap::new();
         for player in connected.players {
