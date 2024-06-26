@@ -2,7 +2,6 @@ use strum::IntoEnumIterator;
 
 use crate::{
     data::{Environment, Hero, Item, TeamVillain, Variant, Villain},
-    filler::ReceivedFiller,
     logic::can_unlock,
 };
 use archipelago_rs::protocol::SlotData;
@@ -30,7 +29,6 @@ pub struct Items {
     pub team_villains: u16,
     pub heroes: [u8; Hero::variant_count()],
     pub environments: u64,
-    pub filler: ReceivedFiller,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -137,7 +135,6 @@ impl Items {
             team_villains: 0,
             heroes: [0; Hero::variant_count()],
             environments: 0,
-            filler: ReceivedFiller::new(),
         }
     }
 
@@ -199,7 +196,7 @@ impl Items {
             Item::TeamVillain(v) => self.set_team_villain(v),
             Item::Environment(v) => self.set_environment(v),
             Item::Scion => self.scions += 1,
-            Item::Filler(filler) => self.filler.add(filler),
+            Item::Filler(_filler) => (),
         }
     }
 }

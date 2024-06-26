@@ -1,7 +1,6 @@
 mod ap_thread;
 pub mod data;
 pub mod datapackage;
-pub mod filler;
 mod logic;
 pub mod persistent;
 pub mod state;
@@ -30,7 +29,7 @@ pub enum Update {
     Exit,
 }
 
-#[allow(clippy::large_enum_variant)] // Boxxing State wouldn't do much since most updates are state updates anyways
+#[allow(clippy::large_enum_variant)] // Boxing State wouldn't do much since most updates are state updates anyways
 #[derive(Debug)]
 pub enum DisplayUpdate {
     Msg(PrintJSON),
