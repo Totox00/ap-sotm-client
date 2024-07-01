@@ -1,14 +1,13 @@
-use std::{
-    collections::VecDeque,
-    io::{stdout, StdoutLock, Write},
-};
-
 use client_lib::{
     data::{Environment, Hero, Location, TeamVillain, Variant, Villain},
     state::State,
 };
 use console::{style, StyledObject, Term};
 use num::FromPrimitive;
+use std::{
+    collections::VecDeque,
+    io::{stdout, StdoutLock, Write},
+};
 use strum::IntoEnumIterator;
 
 #[allow(clippy::too_many_lines)]

@@ -2,7 +2,6 @@ use crate::{
     data::{TeamVillain, Villain},
     state::Locations,
 };
-
 use std::{
     fs::{create_dir_all, rename, File},
     io::{Read, Write},

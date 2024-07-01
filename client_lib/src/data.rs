@@ -1,7 +1,6 @@
-use std::hash::Hash;
-
 use generate_data::generate_data;
 use num_derive::FromPrimitive;
+use std::hash::Hash;
 use strum::EnumIter;
 
 generate_data!(
@@ -438,6 +437,20 @@ impl VillainLike {
             VillainLike::All => String::new(),
             VillainLike::Villain(villain) => format!(": {}", villain.as_str()),
             VillainLike::TeamVillain(team_villain) => format!(": {}", team_villain.as_str()),
+        }
+    }
+}
+
+impl Item {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Item::Hero(i) => i.as_str(),
+            Item::Variant(i) => i.as_str(),
+            Item::Villain(i) => i.as_str(),
+            Item::TeamVillain(i) => i.as_str(),
+            Item::Environment(i) => i.as_str(),
+            Item::Scion => "Scion of Oblivaeon",
+            Item::Filler(_) => "Filler",
         }
     }
 }

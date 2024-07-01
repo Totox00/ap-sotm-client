@@ -1,0 +1,18 @@
+[package]
+name = "client_web"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen = "0.2.92"
+client_lib = { path = "../client_lib" }
+web-sys = { version = "0.3.69", features = ["Storage", "Window"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+strum = { version = "0.26", features = ["derive"] }
+num = "0.4"
+archipelago_protocol = { path = "../archipelago_protocol" }
+base64 = "0.22.1"

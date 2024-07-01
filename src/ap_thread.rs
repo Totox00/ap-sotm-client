@@ -1,8 +1,7 @@
-use tokio::{sync::mpsc::UnboundedSender, task::yield_now};
-
-use archipelago_rs::{self, client::ClientReceiver, protocol::ServerMessage};
-
 use crate::Update;
+use archipelago_client::{self, ClientReceiver};
+use archipelago_protocol::ServerMessage;
+use tokio::{sync::mpsc::UnboundedSender, task::yield_now};
 
 pub async fn ap_thread(client_sender: UnboundedSender<Update>, mut ap_receiver: ClientReceiver) {
     loop {

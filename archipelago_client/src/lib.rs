@@ -1,3 +1,7 @@
+use archipelago_protocol::{
+    network_version, Bounce, ClientMessage, ClientStatus, Connect, Connected, DataPackage, DataStorageOperation, Get, GetDataPackage, LocationChecks, LocationInfo, LocationScouts, ReceivedItems,
+    Retrieved, RoomInfo, Say, ServerMessage, Set, SetReply, StatusUpdate,
+};
 use futures_util::{
     stream::{SplitSink, SplitStream},
     SinkExt, Stream, StreamExt,
@@ -6,9 +10,6 @@ use thiserror::Error;
 use tokio::net::TcpStream;
 use tokio_tungstenite::{connect_async, MaybeTlsStream, WebSocketStream};
 use tungstenite::protocol::Message;
-
-#[allow(clippy::wildcard_imports)]
-use crate::protocol::*;
 
 #[derive(Error, Debug)]
 pub enum Error {

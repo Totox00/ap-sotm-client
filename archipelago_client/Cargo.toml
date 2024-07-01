@@ -1,5 +1,5 @@
 [package]
-name = "archipelago_rs"
+name = "archipelago_client"
 version = "0.1.0"
 edition = "2021"
 
@@ -14,3 +14,4 @@ serde_repr = "0.1"
 tokio = { version = "1.0", features = ["rt", "rt-multi-thread", "macros", "sync"] }
 tokio-tungstenite = { version = "0.17", features = ["native-tls"] } 
 tungstenite = "0.17"
+archipelago_protocol = { path = "../archipelago_protocol" }

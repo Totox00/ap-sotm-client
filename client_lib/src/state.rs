@@ -1,10 +1,9 @@
-use strum::IntoEnumIterator;
-
 use crate::{
-    data::{Environment, Hero, Item, TeamVillain, Variant, Villain},
+    data::{Environment, Hero, Item, Location, TeamVillain, Variant, Villain},
     logic::can_unlock,
 };
-use archipelago_rs::protocol::SlotData;
+use archipelago_protocol::SlotData;
+use strum::IntoEnumIterator;
 
 #[derive(Debug, Clone, Copy)]
 pub struct State {
@@ -255,6 +254,16 @@ impl Locations {
 
     pub fn mark_environment(&mut self, environment: Environment) {
         self.environments |= 1 << environment as u64;
+    }
+
+    pub fn mark_location(&mut self, location: Location) {
+        match location {
+            Location::Variant(v) => self.mark_variant(v),
+            Location::Villain((v, d)) => self.mark_villain(v, d),
+            Location::TeamVillain((v, d)) => self.mark_team_villain(v, d),
+            Location::Environment(e) => self.mark_environment(e),
+            Location::Victory => (),
+        }
     }
 }
 

@@ -1,8 +1,7 @@
-use std::collections::HashMap;
-
-use archipelago_rs::protocol::PrintJSON;
+use archipelago_protocol::PrintJSON;
 use client_lib::datapackage::DatapackageStore;
 use console::{style, StyledObject};
+use std::collections::HashMap;
 
 pub fn format<D>(datapackage_store: &D, msg: PrintJSON, players: &HashMap<i32, String>, slot: &str) -> String
 where

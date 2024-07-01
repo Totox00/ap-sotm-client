@@ -1,28 +1,13 @@
-use crate::data::{Item, Location};
-use archipelago_protocol::{Connected, DataPackageObject, GameData as ArchipelagoGameData};
-use serde_json::{from_reader, to_writer};
-use std::{
-    collections::HashMap,
-    fs::{create_dir, create_dir_all, remove_file, File},
-    io::{stdout, Write},
-    path::Path,
-    sync::Arc,
+use archipelago_protocol::{Connected, DataPackageObject, GameData as ArchipelagoGameData, RoomInfo};
+use client_lib::{
+    data::{Item, Location},
+    datapackage::DatapackageStore,
 };
+use serde_json::from_str;
+use std::{collections::HashMap, sync::Arc};
+use wasm_bindgen::prelude::wasm_bindgen;
 
 pub type Requested = HashMap<String, String>;
-
-pub trait DatapackageStore {
-    fn new(requested: Requested) -> Self;
-    fn missing_games(&self) -> Box<[String]>;
-    fn cache(&mut self, data: DataPackageObject);
-    fn build_player_map(&mut self, connected: &Connected);
-    fn get_item(&self, player: i32, id: i64) -> &str;
-    fn get_location(&self, player: i32, id: i64) -> &str;
-    fn id_to_own_item(&self, id: i64) -> Option<Item>;
-    fn id_to_own_location(&self, id: i64) -> Option<Location>;
-    fn id_from_own_item(&self, item: Item) -> Option<i64>;
-    fn id_from_own_location(&self, location: (Location, u8)) -> Option<i64>;
-}
 
 #[derive(Debug, Clone)]
 struct GameData {
@@ -30,8 +15,9 @@ struct GameData {
     location_id_to_name: HashMap<i64, String>,
 }
 
+#[wasm_bindgen]
 #[derive(Debug, Clone)]
-pub struct DefaultDatapackageStore {
+pub struct WebDatapackageStore {
     items_from_id: HashMap<i64, Item>,
     items_to_id: HashMap<Item, i64>,
     locations_from_id: HashMap<i64, (Location, u8)>,
@@ -42,8 +28,15 @@ pub struct DefaultDatapackageStore {
     player_to_game: HashMap<i32, Arc<GameData>>,
 }
 
-impl DefaultDatapackageStore {
-    fn add_game(&mut self, game: String, data: ArchipelagoGameData) {
+#[wasm_bindgen]
+impl WebDatapackageStore {
+    pub fn add_game(&mut self, game: String, data: &str) {
+        if let Ok(data) = from_str(data) {
+            self.add_game_internal(game, data)
+        }
+    }
+
+    fn add_game_internal(&mut self, game: String, data: ArchipelagoGameData) {
         if *game == *"Sentinels of the Multiverse" {
             for (item, id) in &data.item_name_to_id {
                 if let Some(item) = Item::from_str(item) {
@@ -72,9 +65,29 @@ impl DefaultDatapackageStore {
 
         self.data.insert(game, Arc::new(GameData { item_id_to_name, location_id_to_name }));
     }
+
+    pub fn item(&self, id: i64) -> String {
+        if let Some(game_data) = self.data.get("Sentinels of the Multiverse") {
+            game_data.item_id_to_name.get(&id).map(|i| i.to_owned()).unwrap_or(format!("Unknown item {id}"))
+        } else {
+            format!("Unknown item {id}")
+        }
+    }
+
+    pub fn location(&self, id: i64) -> String {
+        if let Some(game_data) = self.data.get("Sentinels of the Multiverse") {
+            game_data.location_id_to_name.get(&id).map(|i| i.to_owned()).unwrap_or(format!("Unknown location {id}"))
+        } else {
+            format!("Unknown location {id}")
+        }
+    }
+
+    pub fn get_missing_games(&self) -> Vec<String> {
+        self.missing_games().into()
+    }
 }
 
-impl DatapackageStore for DefaultDatapackageStore {
+impl DatapackageStore for WebDatapackageStore {
     fn new(requested: Requested) -> Self {
         let mut new = Self {
             data: HashMap::new(),
@@ -88,48 +101,20 @@ impl DatapackageStore for DefaultDatapackageStore {
         };
 
         for (game, checksum) in requested {
-            if let Ok(reader) = File::open(Path::new("./datapackage").join(&game).join(&checksum)) {
-                if let Ok(data) = from_reader::<File, archipelago_protocol::GameData>(reader) {
-                    new.add_game(game, data);
-                } else {
-                    new.missing.push(game);
-                    new.missing_checksums.push(checksum);
-                }
-            } else {
-                new.missing.push(game);
-                new.missing_checksums.push(checksum);
-            }
+            new.missing.push(game);
+            new.missing_checksums.push(checksum);
         }
 
         new
     }
 
     fn missing_games(&self) -> Box<[String]> {
-        let mut lock = stdout().lock();
-        for game in &self.missing {
-            let _ = writeln!(lock, "Missing datapackage for {game}...");
-        }
-
         self.missing.clone().into()
     }
 
     fn cache(&mut self, data: DataPackageObject) {
-        create_dir_all("./datapackage").expect("Failed to create datapackage cache");
-
-        for (game, checksum) in self.missing.iter().zip(&self.missing_checksums) {
-            if let Some(data) = data.games.get(game) {
-                let _ = create_dir(Path::new("./datapackage").join(game));
-                if let Ok(writer) = File::create(Path::new("./datapackage").join(game).join(checksum)) {
-                    let res = to_writer(writer, data);
-                    if res.is_err() {
-                        remove_file(Path::new("./datapackage").join(game).join(checksum)).unwrap_or_else(|_| panic!("Failed to clean failed write for {game}-{checksum}. Data may be corrupt"));
-                    }
-                }
-            }
-        }
-
         for (game, data) in data.games {
-            self.add_game(game, data);
+            self.add_game_internal(game, data);
         }
     }
 
@@ -177,5 +162,14 @@ impl DatapackageStore for DefaultDatapackageStore {
 
     fn id_from_own_location(&self, location: (Location, u8)) -> Option<i64> {
         self.locations_to_id.get(&location).copied()
+    }
+}
+
+#[wasm_bindgen]
+pub fn new_datapackage_store(room_info: &str) -> WebDatapackageStore {
+    if let Ok(room_info) = from_str::<RoomInfo>(room_info) {
+        WebDatapackageStore::new(room_info.datapackage_checksums)
+    } else {
+        panic!("Failed to parse room_info")
     }
 }

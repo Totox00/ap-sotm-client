@@ -1,10 +1,20 @@
+mod ap_thread;
 mod cli;
 mod format_json;
 mod input_thread;
 
+use anyhow::Result;
+use ap_thread::ap_thread;
+use archipelago_client::Client;
+use archipelago_protocol::ClientStatus;
 use clap::Parser;
 use cli::{find_location, print};
-use client_lib::{data::Location, datapackage::DefaultDatapackageStore, persistent::DefaultPersistentStore, DisplayUpdate, Session, Update};
+use client_lib::{
+    data::Location,
+    datapackage::{DatapackageStore, DefaultDatapackageStore},
+    persistent::{DefaultPersistentStore, PersistentStore},
+    DisplayUpdate, Session, Update,
+};
 use console::Term;
 use format_json::format;
 use input_thread::{input_thread, Input};
@@ -13,7 +23,11 @@ use std::{
     io::{self, BufRead, Write},
     process::exit,
 };
-use tokio::{runtime::Builder, select, sync::mpsc::unbounded_channel};
+use tokio::{
+    runtime::Builder,
+    select, spawn,
+    sync::mpsc::{unbounded_channel, UnboundedReceiver, UnboundedSender},
+};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -40,8 +54,8 @@ fn main() {
     let runtime = Builder::new_multi_thread().enable_io().build().unwrap();
     let (server, port, slot, pass) = get_server_info();
 
-    let session: Session<DefaultDatapackageStore, DefaultPersistentStore> = runtime.block_on(Session::connect(&server, port, &slot, pass.as_deref(), true)).unwrap_or_else(|_| {
-        runtime.block_on(Session::connect(&server, port, &slot, pass.as_deref(), false)).unwrap_or_else(|err| {
+    let (client, session) = runtime.block_on(connect(&server, port, &slot, pass.as_deref(), true)).unwrap_or_else(|_| {
+        runtime.block_on(connect(&server, port, &slot, pass.as_deref(), false)).unwrap_or_else(|err| {
             println!("Failed to connect to archipelago server");
             dbg!(err);
             exit(1);
@@ -63,7 +77,7 @@ fn main() {
     let term = Term::stdout();
     let _ = term.hide_cursor();
 
-    runtime.spawn(session.run(ap_receiver, server_sender));
+    runtime.spawn(run(session, client, ap_receiver, server_sender));
     runtime.spawn(input_thread(input_sender));
     runtime.block_on(async move {
         loop {
@@ -186,5 +200,98 @@ fn resolve_multi_send(location: Location) -> Vec<Location> {
         Location::TeamVillain((v, d)) => (0..=3).filter(|b| (d & *b) == *b).map(|d| Location::TeamVillain((v, d))).collect(),
         Location::Environment(_) => vec![location],
         Location::Victory => vec![Location::Victory],
+    }
+}
+
+async fn connect(server: &str, port: u16, slot: &str, pass: Option<&str>, secure: bool) -> Result<(Client, Session<DefaultDatapackageStore, DefaultPersistentStore>)> {
+    let (mut client, room_info) = Client::new(&format!("{}://{server}:{port}", if secure { "wss" } else { "ws" })).await?;
+
+    let mut datapackage_store = DefaultDatapackageStore::new(room_info.datapackage_checksums);
+    let missing_games = datapackage_store.missing_games();
+    let data_package = if !missing_games.is_empty() {
+        Some(client.get_data_package(Some(missing_games)).await?.data)
+    } else {
+        None
+    };
+
+    let connected = client.connect("Sentinels of the Multiverse", slot, "", pass, Some(7), &["AP".into()]).await?;
+
+    if let Some(data) = data_package {
+        datapackage_store.cache(data);
+    }
+
+    datapackage_store.build_player_map(&connected);
+
+    client.sync().await?;
+
+    Ok((client, Session::new(&room_info.seed_name, datapackage_store, connected, slot)))
+}
+
+async fn run(
+    mut session: Session<DefaultDatapackageStore, DefaultPersistentStore>,
+    client: Client,
+    mut locations_to_send: UnboundedReceiver<Update>,
+    display_sender: UnboundedSender<DisplayUpdate>,
+) -> ! {
+    let (mut ap_sender, ap_receiver) = client.split();
+    let (sender, mut receiver) = unbounded_channel::<Update>();
+
+    spawn(ap_thread(sender, ap_receiver));
+
+    loop {
+        if let Some(update) = select! {
+            v = locations_to_send.recv() => v,
+            v = receiver.recv() => v
+        } {
+            let _ = match update {
+                Update::Msg(msg) => display_sender.send(DisplayUpdate::Msg(msg)),
+                Update::Items(item_ids) => {
+                    for id in item_ids {
+                        if let Some(item) = session.datapackage_store.id_to_own_item(id) {
+                            session.state.items.set_item(item);
+                        }
+                    }
+                    display_sender.send(DisplayUpdate::State(session.state))
+                }
+                Update::Send(locations) => {
+                    let mut location_ids = vec![];
+
+                    for location in locations.iter() {
+                        if *location == Location::Victory {
+                            let res = ap_sender.status_update(ClientStatus::Goal).await;
+                            if res.is_ok() {
+                                session.state.checked_locations.victory = true;
+                            }
+                        } else {
+                            for n in 0..=session.state.slot_data.locations_per[match location {
+                                Location::Variant(_) => 5,
+                                Location::Villain((_, d)) | Location::TeamVillain((_, d)) => *d as usize,
+                                Location::Environment(_) => 4,
+                                Location::Victory => unreachable!(),
+                            }] {
+                                if n > 0 {
+                                    if let Some(id) = session.datapackage_store.id_from_own_location((*location, n)) {
+                                        location_ids.push(id)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    let res = ap_sender.location_checks(location_ids).await;
+                    if res.is_ok() {
+                        for location in locations {
+                            session.state.checked_locations.mark_location(location);
+                        }
+                    }
+
+                    display_sender.send(DisplayUpdate::State(session.state))
+                }
+                Update::Exit => {
+                    session.persistent_store.save(&session.state.checked_locations);
+                    display_sender.send(DisplayUpdate::Exit)
+                }
+            };
+        }
     }
 }
