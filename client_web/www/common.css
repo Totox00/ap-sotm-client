@@ -1,0 +1,13 @@
+main {
+  display: flex;
+  flex-direction: row;
+}
+
+main > * {
+  flex: 1;
+}
+
+#msg-buffer {
+  height: 30vh;
+  overflow: scroll;
+}

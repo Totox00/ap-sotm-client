@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link href="./common.css" rel="stylesheet" />
+    <script type="module" src="index.js" defer></script>
+    <title>Sentinels of the Multiverse</title>
+  </head>
+  <body>
+    <noscript
+      >This page contains webassembly and javascript content, please enable
+      javascript in your browser.</noscript
+    >
+    <form id="conn-info">
+      <label for="server">Server:</label>
+      <input id="server" name="server" type="text" value="archipelago.gg" />
+      <label for="port">Port:</label>
+      <input
+        id="port"
+        name="port"
+        type="number"
+        value="38281"
+        min="1"
+        max="65535"
+      />
+      <label for="slot">Slot:</label>
+      <input id="slot" name="slot" type="text" value="Player" />
+      <label for="password">Password:</label>
+      <input id="password" name="password" type="text" />
+      <input type="submit" value="Connect" />
+    </form>
+    <button id="disconnect">Disconnect</button>
+    <ul id="msg-buffer"></ul>
+    <main id="client">
+      <ul id="villains"></ul>
+      <ul id="environments"></ul>
+      <ul id="heroes"></ul>
+      <ul id="villain-locations"></ul>
+      <ul id="environment-locations"></ul>
+      <ul id="variant-locations"></ul>
+    </main>
+  </body>
+</html>
