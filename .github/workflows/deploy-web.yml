@@ -28,6 +28,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install dependencies
+        run: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh"
       - name: Build
         run: ./build.sh
         working-directory: client_web
