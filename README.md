@@ -4,6 +4,9 @@ Credits to [archipelago_rs](https://github.com/ryanisaacg/archipelago_rs) by rya
 ## Joining a MultiWorld Game
 ###### This is the same section as in the setup guide on the archipelago site
 
+**A browser-based client is now available**
+If you do not want to or do not understand how to compile and run the CLI client locally, there is a rudimentary but functional client that runs in the browser with no installation required available [here](https://totox00.github.io/ap-sotm-client/index.html)!
+
 Once you have a compiled version of the client, simply launch it in a terminal and input the server address, server port, slot name, and password if applicable.
 These values can also be provided using the -s, -p, -S, and -P flags respectively like `-p {port}`,
 or set to the defaults by using those flags by not providing a value like `-P`
