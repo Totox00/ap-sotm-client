@@ -6,8 +6,8 @@ use crate::{
 #[allow(clippy::too_many_lines)]
 pub fn can_unlock(variant: Variant, items: &Items) -> bool {
     match variant {
-        Variant::AmericasGreatestLegacy => items.has_villain(Villain::Ambuscade) && items.has_environment(Environment::SilverGulch1883),
-        Variant::AmericasNewestLegacy => any_baron_blade(items) && items.has_hero(Hero::Legacy) && items.has_environment(Environment::WagnerMarsBase),
+        Variant::AmericasGreatestLegacy => any_similar(items, Villain::Ambuscade) && items.has_environment(Environment::SilverGulch1883),
+        Variant::AmericasNewestLegacy => any_similar(items, Villain::BaronBlade) && items.has_hero(Hero::Legacy) && items.has_environment(Environment::WagnerMarsBase),
         Variant::DarkVisionary => items.has_villain(Villain::Gloomweaver) && items.has_hero(Hero::Visionary),
         Variant::TheEternalHaka => items.has_hero(Hero::Haka) && items.has_environment(Environment::TheFinalWasteland),
         Variant::GIBunker => items.has_hero(Hero::Bunker),
@@ -17,17 +17,15 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
         Variant::RookCityWraith => items.has_hero(Hero::Wraith),
         Variant::TheSuperScientificTachyon => items.has_hero(Hero::Tachyon),
         Variant::TheVisionaryUnleashed => items.has_environment(Environment::TheEnclaveOfTheEndlings) && items.has_base_hero(Hero::ArgentAdept) && items.has_hero_variant(Variant::DarkVisionary),
-        Variant::CaptainCosmicRequital => (items.has_villain(Villain::Infinitor) || items.has_villain(Villain::HeroicInfinitor)) && items.has_base_hero(Hero::CaptainCosmic),
+        Variant::CaptainCosmicRequital => (any_similar(items, Villain::HeroicInfinitor)) && items.has_base_hero(Hero::CaptainCosmic),
         Variant::ChronoRangerTheBestOfTimes => {
-            items.has_villain(Villain::Ambuscade) && items.has_environment(Environment::WagnerMarsBase) && items.has_hero(Hero::Tachyon) && items.has_hero(Hero::ChronoRanger)
+            any_similar(items, Villain::Ambuscade) && items.has_environment(Environment::WagnerMarsBase) && items.has_hero(Hero::Tachyon) && items.has_hero(Hero::ChronoRanger)
         }
         Variant::DarkConductorArgentAdept => items.has_hero(Hero::ArgentAdept),
-        Variant::ExtremistSkyScraper => any_baron_blade(items) && items.has_base_hero(Hero::SkyScraper),
+        Variant::ExtremistSkyScraper => any_similar(items, Villain::BaronBlade) && items.has_base_hero(Hero::SkyScraper),
         Variant::OmnitronU => items.has_villain(Villain::Omnitron) && items.has_villain(Villain::OmnitronII) && items.has_base_hero(Hero::OmnitronX) && items.has_hero(Hero::Unity),
         Variant::SantaGuise => items.has_hero(Hero::Guise),
-        Variant::TheScholarOfTheInfinite => {
-            (items.has_villain(Villain::Gloomweaver) || items.has_villain(Villain::SkinwalkerGloomweaver) || items.has_villain(Villain::Apostate)) && items.has_hero(Hero::TheScholar)
-        }
+        Variant::TheScholarOfTheInfinite => (any_similar(items, Villain::Gloomweaver) || items.has_villain(Villain::Apostate)) && items.has_hero(Hero::TheScholar),
         Variant::ActionHeroStuntman => {
             items.has_villain(Villain::Ambuscade)
                 && items.has_villain(Villain::TheChairman)
@@ -50,7 +48,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
                 && items.has_hero(Hero::Setback)
         }
         Variant::HeroicLuminary => {
-            any_baron_blade(items)
+            any_similar(items, Villain::BaronBlade)
                 && items.has_environment(Environment::RealmOfDiscord)
                 && items.has_environment(Environment::FreedomTower)
                 && items.has_environment(Environment::Megalopolis)
@@ -78,7 +76,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
         Variant::FreedomSixTempest => items.has_villain(Villain::IronLegacy) && items.has_base_hero(Hero::Tempest),
         Variant::FreedomSixWraith => items.has_villain(Villain::IronLegacy) && items.has_base_hero(Hero::Wraith) && items.has_villain(Villain::TheChairman),
         Variant::FreedomSixUnity => items.has_villain(Villain::IronLegacy) && items.has_base_hero(Hero::Unity),
-        Variant::DarkWatchExpatriette => any_baron_blade(items) && items.has_environment(Environment::RookCity) && items.has_hero(Hero::Expatriette),
+        Variant::DarkWatchExpatriette => any_similar(items, Villain::BaronBlade) && items.has_environment(Environment::RookCity) && items.has_hero(Hero::Expatriette),
         Variant::DarkWatchMisterFixer => items.has_villain(Villain::TheChairman) && items.has_hero(Hero::MisterFixer),
         Variant::DarkWatchNightmist => items.has_hero(Hero::Nightmist) && items.has_environment(Environment::RealmOfDiscord) && items.has_hero(Hero::Expatriette),
         Variant::DarkWatchSetback => {
@@ -89,9 +87,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
                 && items.has_hero_variant(Variant::DarkWatchNightmist)
                 && items.has_base_hero(Hero::Setback)
         }
-        Variant::DarkWatchHarpy => {
-            (items.has_villain(Villain::Gloomweaver) || items.has_villain(Villain::SkinwalkerGloomweaver)) && items.has_hero(Hero::TheHarpy) && items.has_environment(Environment::RealmOfDiscord)
-        }
+        Variant::DarkWatchHarpy => (any_similar(items, Villain::Gloomweaver)) && items.has_hero(Hero::TheHarpy) && items.has_environment(Environment::RealmOfDiscord),
         Variant::PrimeWardensArgentAdept => {
             items.has_villain(Villain::AkashBhuta)
                 && items.has_base_hero(Hero::ArgentAdept)
@@ -106,7 +102,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
         Variant::PrimeWardensFanatic => {
             items.has_hero_variant(Variant::PrimeWardensArgentAdept) && (items.has_base_hero(Hero::Fanatic) || items.has_hero_variant(Variant::RedeemerFanatic)) && items.has_villain(Villain::Apostate)
         }
-        Variant::PrimeWardensHaka => items.has_hero_variant(Variant::PrimeWardensArgentAdept) && items.has_base_hero(Hero::Haka) && items.has_villain(Villain::Ambuscade),
+        Variant::PrimeWardensHaka => items.has_hero_variant(Variant::PrimeWardensArgentAdept) && items.has_base_hero(Hero::Haka) && any_similar(items, Villain::Ambuscade),
         Variant::PrimeWardensTempest => items.has_hero_variant(Variant::PrimeWardensArgentAdept) && items.has_base_hero(Hero::Tempest),
         Variant::XtremePrimeWardensArgentAdept => items.has_base_hero(Hero::ArgentAdept) && items.has_environment(Environment::InsulaPrimalis),
         Variant::XtremePrimeWardensTempest => items.has_base_hero(Hero::Tempest) && items.has_environment(Environment::TheEnclaveOfTheEndlings),
@@ -127,13 +123,27 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
         Variant::TricksterKismet => {
             items.has_villain(Villain::Kismet) && items.has_environment(Environment::TheBlock) && items.has_hero(Hero::Knyfe) && items.has_hero(Hero::ArgentAdept) && items.has_hero(Hero::Fanatic)
         }
-        Variant::HeroicInfinitor => (items.has_villain(Villain::Infinitor) || items.has_villain(Villain::HeroicInfinitor)) && items.has_hero(Hero::CaptainCosmic),
+        Variant::HeroicInfinitor => (any_similar(items, Villain::Infinitor)) && items.has_hero(Hero::CaptainCosmic),
         _ => false,
     }
 }
 
-fn any_baron_blade(items: &Items) -> bool {
-    items.has_villain(Villain::BaronBlade) || items.has_villain(Villain::MadBomberBaronBlade)
+fn any_similar(items: &Items, villain: Villain) -> bool {
+    match villain {
+        Villain::BaronBlade | Villain::MadBomberBaronBlade => {
+            items.has_villain(Villain::BaronBlade) || items.has_villain(Villain::MadBomberBaronBlade) || items.has_team_villain(TeamVillain::BaronBlade)
+        }
+        Villain::Omnitron | Villain::OmnitronII => items.has_villain(Villain::Omnitron) || items.has_villain(Villain::OmnitronII),
+        Villain::Spite | Villain::SpiteAgentOfGloom => items.has_villain(Villain::Spite) || items.has_villain(Villain::SpiteAgentOfGloom),
+        Villain::Gloomweaver | Villain::SkinwalkerGloomweaver => items.has_villain(Villain::Gloomweaver) || items.has_villain(Villain::SkinwalkerGloomweaver),
+        Villain::Kismet | Villain::TricksterKismet => items.has_villain(Villain::Kismet) || items.has_villain(Villain::TricksterKismet),
+        Villain::Infinitor | Villain::HeroicInfinitor => items.has_villain(Villain::Infinitor) || items.has_villain(Villain::HeroicInfinitor),
+        Villain::Ambuscade => items.has_villain(Villain::Ambuscade) || items.has_team_villain(TeamVillain::Ambuscade),
+        Villain::LaCapitan => items.has_villain(Villain::LaCapitan) || items.has_team_villain(TeamVillain::LaCapitan),
+        Villain::MissInformation => items.has_villain(Villain::MissInformation) || items.has_team_villain(TeamVillain::MissInformation),
+        Villain::PlagueRat => items.has_villain(Villain::PlagueRat) || items.has_team_villain(TeamVillain::PlagueRat),
+        v => items.has_villain(v),
+    }
 }
 
 fn freedom_five_reqs(items: &Items) -> bool {
