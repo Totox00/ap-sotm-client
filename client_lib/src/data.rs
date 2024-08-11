@@ -1,6 +1,6 @@
 use generate_data::generate_data;
-use num_derive::FromPrimitive;
-use std::hash::Hash;
+use num::FromPrimitive;
+use num_derive::{FromPrimitive, ToPrimitive};
 use strum::EnumIter;
 
 generate_data!(
@@ -88,7 +88,7 @@ generate_data!(
     (ArgentAdept, Hero, "Argent Adept"),
     (Nightmist, Hero, "Nightmist"),
     (TheScholar, Hero, "The Scholar"),
-    (ChronoRanger, Hero, "Chrono Ranger"),
+    (ChronoRanger, Hero, "Chrono-Ranger"),
     (OmnitronX, Hero, "Omnitron-X"),
     (CaptainCosmic, Hero, "Captain Cosmic"),
     (SkyScraper, Hero, "Sky-Scraper"),
@@ -313,21 +313,21 @@ generate_data!(
     (OmnitronXI, Variant, OmnitronX, "Omnitron-XI"),
     (StartHandsize, Filler, Hero, "Starting Handsize +[COUNT]", "Starting Handsize -[COUNT]", "Draw [COUNT] additional cards at the start of the game", "Draw [COUNT] fewer cards at the start of the game"),
     (HeroHp, Filler, Hero, "Hero Toughness [COUNT]", "Hero Fragility [COUNT]", "Increase the starting and maximum HP of hero targets by [COUNT]", "Reduce the starting and maximum HP of hero targets by [COUNT]"),
-    (Mulligan, Filler, Hero, "[COUNT] Mulligan", "[COUNT] Mulligan", "Up to [COUNT] times, you may discard your opening hand and draw a new one. Then, shuffle your trash into your deck", "Up to [COUNT] times, you may discard your opening hand and draw a new one. Then, shuffle your trash into your deck"),
+    (Mulligan, Filler, Hero, "[COUNT] Mulligan", "", "Up to [COUNT] times, you may discard your opening hand and draw a new one. Then, shuffle your trash into your deck", ""),
     (HeroDamageDealt, Filler, Hero, DamageType, "Hero [TYPE]Strength [COUNT]", "Hero [TYPE]Weakness [COUNT]", "Increase [TYPE]damage dealt by hero targets by [COUNT]", "Reduce [TYPE]damage dealt by hero targets by [COUNT]"),
     (HeroDamageTaken, Filler, Hero, DamageType, "Hero [TYPE]Fortification [COUNT]", "Hero [TYPE]Vulnerability [COUNT]", "Reduce [TYPE]damage taken by hero targets by [COUNT]", "Increase [TYPE]damage taken by hero targets by [COUNT]"),
     (HeroCardPlay, Filler, Hero, "Haste [COUNT]", "Slowness [COUNT]", "You may play up to [COUNT] additional cards during your play phase", "You may play up to [COUNT] fewer cards during your play phase"),
     (HeroPower, Filler, Hero, "Power use +[COUNT]", "Power use -[COUNT]", "You may use up to [COUNT] additional powers during your power phase", "You may use up to [COUNT] fewer powers during your power phase"),
     (HeroCardDraw, Filler, Hero, "Ingenuity [COUNT]", "Stupidity [COUNT]", "You may draw up to [COUNT] additional cards during your draw phase", "You may draw up to [COUNT] fewer cards during your draw phase"),
-    (VillainHp, Filler, Villain, "Villain Toughness [COUNT]", "Villain Fragility [COUNT]", "Increase the starting and maximum HP of villain targets by [COUNT]", "Reduce the starting and maximum HP of villain targets by [COUNT]"),
-    (VillainDamageDealt, Filler, Villain, DamageType, "Villain [TYPE]Strength [COUNT]", "Villain [TYPE]Weakness [COUNT]", "Increase [TYPE]damage dealt by villain targets by [COUNT]", "Reduce [TYPE]damage dealt by villain targets by [COUNT]"),
-    (VillainDamageTaken, Filler, Villain, DamageType, "Villain [TYPE]Fortification [COUNT]", "Villain [TYPE]Vulnerability [COUNT]", "Increase [TYPE]damage taken by villain targets by [COUNT]", "Reduce [TYPE]damage taken by villain targets by [COUNT]"),
-    (VillainCardPlays, Filler, Villain, "Horde [COUNT]", "Horde [COUNT]", "Play [COUNT] additional cards from the villain deck during the villain play phase", "Play [COUNT] additional cards from the villain deck during the villain play phase"),
-    (VillainStartCardPlays, Filler, Villain, "Rapid Deployment [COUNT]", "Rapid Deployment [COUNT]", "Play [COUNT] cards from the top of the villain deck and the start of the first villain turn", "Play [COUNT] cards from the top of the villain deck and the start of the first villain turn"),
-    (HeroCannotPlay, Filler, Other, "Slowing Assault [COUNT]", "Slowing Assault [COUNT]", "At the start of each round, choose [COUNT] heroes. Those heroes cannot play cards until the end of the round", "At the start of each round, choose [COUNT] heroes. Those heroes cannot play cards until the end of the round"),
-    (HeroCannotPower, Filler, Other, "Power Assault [COUNT]", "Power Assault [COUNT]", "At the start of each round, choose [COUNT] heroes. Those heroes cannot use powers until the end of the round", "At the start of each round, choose [COUNT] heroes. Those heroes cannot use powers until the end of the round"),
-    (HeroCannotDraw, Filler, Other, "Mental Assault [COUNT]", "Mental Assault [COUNT]", "At the start of each round, choose [COUNT] heroes. Those heroes cannot draw cards until the end of the round", "At the start of each round, choose [COUNT] heroes. Those heroes cannot draw cards until the end of the round"),
-    (HeroCannotDamage, Filler, Other, "Weakening Assault [COUNT]", "Weakening Assault [COUNT]", "At the start of each round, choose [COUNT] heroes. Those heroes cannot deal damage until the end of the round", "At the start of each round, choose [COUNT] heroes. Those heroes cannot deal damage until the end of the round")
+    (VillainHp, Filler, Villain, "Villain Fragility [COUNT]", "Villain Toughness [COUNT]", "Reduce the starting and maximum HP of villain targets by [COUNT]", "Increase the starting and maximum HP of villain targets by [COUNT]"),
+    (VillainDamageDealt, Filler, Villain, DamageType, "Villain [TYPE]Weakness [COUNT]", "Villain [TYPE]Strength [COUNT]", "Reduce [TYPE]damage dealt by villain targets by [COUNT]", "Increase [TYPE]damage dealt by villain targets by [COUNT]"),
+    (VillainDamageTaken, Filler, Villain, DamageType, "Villain [TYPE]Vulnerability [COUNT]", "Villain [TYPE]Fortification [COUNT]", "Reduce [TYPE]damage taken by villain targets by [COUNT]", "Increase [TYPE]damage taken by villain targets by [COUNT]"),
+    (VillainCardPlays, Filler, Villain, "Horde -[COUNT]", "Horde +[COUNT]", "Play [COUNT] fewer cards from the villain deck during the villain play phase", "Play [COUNT] additional cards from the villain deck during the villain play phase"),
+    (VillainStartCardPlays, Filler, Villain, "", "Rapid Deployment [COUNT]", "", "Play [COUNT] cards from the top of the villain deck and the start of the first villain turn"),
+    (HeroCannotPlay, Filler, Other, "", "Slowing Assault [COUNT]", "", "At the start of each round, choose [COUNT] heroes. Those heroes cannot play cards until the end of the round"),
+    (HeroCannotPower, Filler, Other, "", "Power Assault [COUNT]", "", "At the start of each round, choose [COUNT] heroes. Those heroes cannot use powers until the end of the round"),
+    (HeroCannotDraw, Filler, Other, "", "Mental Assault [COUNT]", "", "At the start of each round, choose [COUNT] heroes. Those heroes cannot draw cards until the end of the round"),
+    (HeroCannotDamage, Filler, Other, "", "Weakening Assault [COUNT]", "", "At the start of each round, choose [COUNT] heroes. Those heroes cannot deal damage until the end of the round")
 );
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -338,10 +338,10 @@ pub enum Item {
     TeamVillain(TeamVillain),
     Environment(Environment),
     Scion,
-    Filler(Filler),
+    Filler((Filler, i32)),
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Location {
     Variant(Variant),
     Villain((Villain, u8)),
@@ -350,7 +350,7 @@ pub enum Location {
     Victory,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, EnumIter, FromPrimitive, ToPrimitive, Hash)]
 pub enum DamageType {
     All,
     Cold,
@@ -399,19 +399,6 @@ pub enum VillainLike {
     TeamVillain(TeamVillain),
 }
 
-impl Hash for Location {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        match self {
-            Location::Variant(v) => *v as usize,
-            Location::Villain((v, d)) => (*v as usize) * 4 + *d as usize + Variant::variant_count(),
-            Location::TeamVillain((v, d)) => (*v as usize) * 4 + *d as usize + Variant::variant_count() + Villain::variant_count() * 4,
-            Location::Environment(v) => *v as usize + Variant::variant_count() + Villain::variant_count() * 4 + TeamVillain::variant_count() * 4,
-            Location::Victory => Environment::variant_count() + Variant::variant_count() + Villain::variant_count() * 4 + TeamVillain::variant_count() * 4,
-        }
-        .hash(state);
-    }
-}
-
 impl Filler {
     pub fn as_str(&self, count: i8) -> String {
         match self {
@@ -452,5 +439,44 @@ impl Item {
             Item::Scion => "Scion of Oblivaeon",
             Item::Filler(_) => "Filler",
         }
+    }
+
+    pub fn from_id(id: i64) -> Item {
+        match (id & (0b11111 << 48)) >> 48 {
+            0b00001 => Item::Villain(Villain::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown villain ID")),
+            0b00011 => Item::TeamVillain(TeamVillain::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown team villain ID")),
+            0b00010 => {
+                let hero = Hero::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown hero ID");
+                let variant_i = ((id as u32) & (0b1111_1111 << 16)) >> 16;
+
+                if variant_i == 0 {
+                    Item::Hero(hero)
+                } else {
+                    Item::Variant(Variant::from_hero(hero, variant_i).expect("Unknown variant ID"))
+                }
+            }
+            0b00100 => Item::Environment(Environment::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown environment ID")),
+            0b01000 | 0b01001 => Item::Filler(Filler::from_id(id)),
+            0b00000 => {
+                if id == 1 {
+                    Item::Scion
+                } else {
+                    panic!("Unknown item ID")
+                }
+            }
+            _ => panic!("Unknown item ID"),
+        }
+    }
+}
+
+impl Location {
+    pub fn as_id(&self, n: i64) -> i64 {
+        (match self {
+            Location::Villain((v, d)) => (0b0001 << 48) | *v as i64 | ((*d as i64) << 22),
+            Location::TeamVillain((v, d)) => (0b0011 << 48) | *v as i64 | ((*d as i64) << 22),
+            Location::Variant(v) => (0b0010 << 48) | if let Some(h) = v.as_normal() { h as i64 | (v.as_i() as i64) << 24 } else { v.as_i() as i64 },
+            Location::Environment(v) => (0b0100 << 48) | *v as i64,
+            Location::Victory => 0,
+        }) | n << 16
     }
 }

@@ -1,8 +1,5 @@
 use archipelago_protocol::{Connected, DataPackageObject, GameData as ArchipelagoGameData, RoomInfo};
-use client_lib::{
-    data::{Item, Location},
-    datapackage::DatapackageStore,
-};
+use client_lib::datapackage::DatapackageStore;
 use serde_json::from_str;
 use std::{collections::HashMap, sync::Arc};
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -18,10 +15,6 @@ struct GameData {
 #[wasm_bindgen]
 #[derive(Debug, Clone)]
 pub struct WebDatapackageStore {
-    items_from_id: HashMap<i64, Item>,
-    items_to_id: HashMap<Item, i64>,
-    locations_from_id: HashMap<i64, (Location, u8)>,
-    locations_to_id: HashMap<(Location, u8), i64>,
     data: HashMap<String, Arc<GameData>>,
     missing: Vec<String>,
     missing_checksums: Vec<String>,
@@ -37,22 +30,6 @@ impl WebDatapackageStore {
     }
 
     fn add_game_internal(&mut self, game: String, data: ArchipelagoGameData) {
-        if *game == *"Sentinels of the Multiverse" {
-            for (item, id) in &data.item_name_to_id {
-                if let Some(item) = Item::from_str(item) {
-                    self.items_from_id.insert(*id, item);
-                    self.items_to_id.insert(item, *id);
-                }
-            }
-
-            for (location, id) in &data.location_name_to_id {
-                if let Some(location) = Location::from_str(location) {
-                    self.locations_from_id.insert(*id, location);
-                    self.locations_to_id.insert(location, *id);
-                }
-            }
-        }
-
         let mut item_id_to_name = HashMap::new();
         let mut location_id_to_name = HashMap::new();
 
@@ -94,10 +71,6 @@ impl DatapackageStore for WebDatapackageStore {
             missing: vec![],
             missing_checksums: vec![],
             player_to_game: HashMap::new(),
-            items_from_id: HashMap::new(),
-            items_to_id: HashMap::new(),
-            locations_from_id: HashMap::new(),
-            locations_to_id: HashMap::new(),
         };
 
         for (game, checksum) in requested {
@@ -146,22 +119,6 @@ impl DatapackageStore for WebDatapackageStore {
         }
 
         "Unknown location"
-    }
-
-    fn id_to_own_item(&self, id: i64) -> Option<Item> {
-        self.items_from_id.get(&id).copied()
-    }
-
-    fn id_to_own_location(&self, id: i64) -> Option<Location> {
-        self.locations_from_id.get(&id).map(|(l, _)| *l)
-    }
-
-    fn id_from_own_item(&self, item: Item) -> Option<i64> {
-        self.items_to_id.get(&item).copied()
-    }
-
-    fn id_from_own_location(&self, location: (Location, u8)) -> Option<i64> {
-        self.locations_to_id.get(&location).copied()
     }
 }
 

@@ -4,7 +4,12 @@ mod persistent;
 mod wrap_state;
 
 use archipelago_protocol::{Connected, RoomInfo};
-use client_lib::{data::Location, datapackage::DatapackageStore, persistent::PersistentStore, Session};
+use client_lib::{
+    data::{Item, Location},
+    datapackage::DatapackageStore,
+    persistent::PersistentStore,
+    Session,
+};
 use datapackage::WebDatapackageStore;
 use format_json::format;
 use persistent::WebPersistentStore;
@@ -40,23 +45,19 @@ impl WasmSession {
         }
     }
 
-    pub fn get_location_ids(&mut self, locations: Vec<WasmLocation>) -> Vec<i32> {
+    pub fn get_location_ids(&mut self, locations: Vec<WasmLocation>) -> Vec<i64> {
         let mut location_ids = vec![];
 
         for location in locations.into_iter().map(|l| l.into_inner()) {
             self.inner.state.checked_locations.mark_location(location);
 
-            for n in 0..=self.inner.state.slot_data.locations_per[match location {
+            for n in 0..self.inner.state.slot_data.locations_per[match location {
                 Location::Variant(_) => 5,
                 Location::Villain((_, d)) | Location::TeamVillain((_, d)) => d as usize,
                 Location::Environment(_) => 4,
                 Location::Victory => unreachable!(),
             }] {
-                if n > 0 {
-                    if let Some(id) = self.inner.datapackage_store.id_from_own_location((location, n)) {
-                        location_ids.push(id as i32)
-                    }
-                }
+                location_ids.push(location.as_id(n as i64));
             }
         }
 
@@ -68,8 +69,8 @@ impl WasmSession {
     }
 
     pub fn recieved_items(&mut self, items: Vec<i64>) {
-        for item in items.into_iter().filter_map(|id| self.inner.datapackage_store.id_to_own_item(id)) {
-            self.inner.state.items.set_item(item);
+        for item_id in items {
+            self.inner.state.items.set_item(Item::from_id(item_id));
         }
     }
 

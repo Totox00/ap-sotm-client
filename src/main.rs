@@ -10,7 +10,7 @@ use archipelago_protocol::ClientStatus;
 use clap::Parser;
 use cli::{find_location, print};
 use client_lib::{
-    data::Location,
+    data::{Item, Location},
     datapackage::{DatapackageStore, DefaultDatapackageStore},
     persistent::{DefaultPersistentStore, PersistentStore},
     DisplayUpdate, Session, Update,
@@ -247,9 +247,7 @@ async fn run(
                 Update::Msg(msg) => display_sender.send(DisplayUpdate::Msg(msg)),
                 Update::Items(item_ids) => {
                     for id in item_ids {
-                        if let Some(item) = session.datapackage_store.id_to_own_item(id) {
-                            session.state.items.set_item(item);
-                        }
+                        session.state.items.set_item(Item::from_id(id));
                     }
                     display_sender.send(DisplayUpdate::State(session.state))
                 }
@@ -263,17 +261,13 @@ async fn run(
                                 session.state.checked_locations.victory = true;
                             }
                         } else {
-                            for n in 0..=session.state.slot_data.locations_per[match location {
+                            for n in 0..session.state.slot_data.locations_per[match location {
                                 Location::Variant(_) => 5,
                                 Location::Villain((_, d)) | Location::TeamVillain((_, d)) => *d as usize,
                                 Location::Environment(_) => 4,
                                 Location::Victory => unreachable!(),
                             }] {
-                                if n > 0 {
-                                    if let Some(id) = session.datapackage_store.id_from_own_location((*location, n)) {
-                                        location_ids.push(id)
-                                    }
-                                }
+                                location_ids.push(location.as_id(n as i64));
                             }
                         }
                     }
