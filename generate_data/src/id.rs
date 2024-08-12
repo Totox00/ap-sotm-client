@@ -31,7 +31,7 @@
 
 use std::{fs::OpenOptions, io::Write};
 
-use crate::{Data, EnumData, FillerData, FillerType, VariantData};
+use crate::{Data, EnumData, FillerData, FillerType};
 
 pub fn generate_id_py(data: &Data) {
     if let Ok(mut writer) = OpenOptions::new().write(true).create(true).truncate(true).open("Id.py") {
@@ -40,8 +40,8 @@ pub fn generate_id_py(data: &Data) {
         item_id(&mut writer, &data.villains, 0b0001);
         item_id(&mut writer, &data.team_villains, 0b0011);
         item_id(&mut writer, &data.heroes, 0b0010);
-        for (variant, idx) in data.hero_variants().map(|variant| (variant, get_base_idx(variant, &data.heroes))) {
-            let _ = write!(writer, "\"{}\":{},", variant.display_name, (0b0010 << 48) | idx | ((variant.i as i64) << 16));
+        for variant in data.hero_variants() {
+            let _ = write!(writer, "\"{}\":{},", variant.display_name, (0b0010 << 48) | variant.base_i as i64 | ((variant.i as i64) << 16));
         }
         item_id(&mut writer, &data.environments, 0b0100);
 
@@ -51,14 +51,20 @@ pub fn generate_id_py(data: &Data) {
 
         location_id(&mut writer, &data.villains, 0b0001);
         location_id(&mut writer, &data.team_villains, 0b0011);
-        for (variant, idx) in data.variants.iter().map(|variant| (variant, get_base_idx(variant, &data.heroes))) {
+        for variant in data.variants.iter() {
             for c in 0..5 {
                 let _ = write!(
                     writer,
                     "\"{} - Unlock #{}\":{},",
                     variant.display_name,
                     c + 1,
-                    (0b0010 << 48) | c << 16 | if variant.base == "Villain" { variant.i as i64 } else { idx | (variant.i as i64) << 24 }
+                    (0b0010 << 48)
+                        | c << 16
+                        | if variant.base == "Villain" {
+                            variant.i as i64
+                        } else {
+                            variant.base_i as i64 | (variant.i as i64) << 24
+                        }
                 );
             }
         }
@@ -72,8 +78,8 @@ fn item_id<T>(writer: &mut T, data: &[EnumData], prefix: i64)
 where
     T: Write,
 {
-    for (data, idx) in data.iter().zip(0..) {
-        let _ = write!(writer, "\"{}\":{},", data.display_name, (prefix << 48) | idx);
+    for data in data {
+        let _ = write!(writer, "\"{}\":{},", data.display_name, (prefix << 48) | data.i as i64);
     }
 }
 
@@ -84,7 +90,7 @@ where
     T: Write,
 {
     if (prefix & 1) == 1 {
-        for (data, idx) in data.iter().zip(0..) {
+        for data in data {
             for c in 0..5 {
                 for d in 0..4 {
                     if d >= 2 && data.display_name == "Spite: Agent of Gloom" {
@@ -93,7 +99,7 @@ where
                             "\"Spite: Agent of Gloom and Skinwalker Gloomweaver - {} #{}\":{},",
                             DIFFICULTIES[d as usize],
                             c + 1,
-                            (prefix << 48) | idx | c << 16 | d << 22
+                            (prefix << 48) | data.i as i64 | c << 16 | d << 22
                         );
                     } else if d < 2 || data.display_name != "Skinwalker Gloomweaver" {
                         let _ = write!(
@@ -102,16 +108,16 @@ where
                             data.display_name,
                             DIFFICULTIES[d as usize],
                             c + 1,
-                            (prefix << 48) | idx | c << 16 | d << 22
+                            (prefix << 48) | data.i as i64 | c << 16 | d << 22
                         );
                     }
                 }
             }
         }
     } else {
-        for (data, idx) in data.iter().zip(0..) {
+        for data in data {
             for c in 0..5 {
-                let _ = write!(writer, "\"{} - Any Difficulty #{}\":{},", data.display_name, c + 1, (prefix << 48) | idx | c << 16);
+                let _ = write!(writer, "\"{} - Any Difficulty #{}\":{},", data.display_name, c + 1, (prefix << 48) | data.i as i64 | c << 16);
             }
         }
     }
@@ -141,13 +147,13 @@ where
             FillerType::Hero => handle_pos_neg(filler, |name, b| {
                 handle_damage_types(filler.damage_types, |t| {
                     let _ = write!(writer, "\"{}\":{},", normalize(name, t), 0b1000 << 48 | b | filler.i | t << 24 | 0b1000 << 28);
-                    for (hero, idx) in data.heroes.iter().zip(0..) {
+                    for hero in &data.heroes {
                         let _ = write!(
                             writer,
                             "\"{} (Any {})\":{},",
                             normalize(name, t),
                             hero.display_name,
-                            0b1000 << 48 | b | filler.i | t << 24 | 0b1001 << 28 | idx << 8
+                            0b1000 << 48 | b | filler.i | t << 24 | 0b1001 << 28 | (hero.i as i64) << 8
                         );
                     }
                     for variant in data.hero_variants() {
@@ -156,7 +162,7 @@ where
                             "\"{} ({})\":{},",
                             normalize(name, t),
                             variant.display_name,
-                            0b1000 << 48 | b | filler.i | t << 24 | 0b1010 << 28 | get_base_idx(variant, &data.heroes) << 8 | (variant.i as i64) << 32
+                            0b1000 << 48 | b | filler.i | t << 24 | 0b1010 << 28 | (variant.base_i as i64) << 8 | (variant.i as i64) << 32
                         );
                     }
                 })
@@ -164,22 +170,22 @@ where
             FillerType::Villain => handle_pos_neg(filler, |name, b| {
                 handle_damage_types(filler.damage_types, |t| {
                     let _ = write!(writer, "\"{}\":{},", normalize(name, t), 0b1000 << 48 | b | filler.i | t << 24 | 0b0100 << 28);
-                    for (villain, idx) in data.villains.iter().zip(0..) {
+                    for villain in &data.villains {
                         let _ = write!(
                             writer,
                             "\"{} ({})\":{},",
                             normalize(name, t),
                             villain.display_name,
-                            0b1000 << 48 | b | filler.i | t << 24 | 0b0101 << 28 | idx << 8
+                            0b1000 << 48 | b | filler.i | t << 24 | 0b0101 << 28 | (villain.i as i64) << 8
                         );
                     }
-                    for (villain, idx) in data.team_villains.iter().zip(0..) {
+                    for villain in &data.team_villains {
                         let _ = write!(
                             writer,
                             "\"{} ({})\":{},",
                             normalize(name, t),
                             villain.display_name,
-                            0b1000 << 48 | b | filler.i | t << 24 | 0b0110 << 28 | idx << 8
+                            0b1000 << 48 | b | filler.i | t << 24 | 0b0110 << 28 | (villain.i as i64) << 8
                         );
                     }
                 })
@@ -220,8 +226,4 @@ where
 
 fn normalize(name: &str, t: i64) -> String {
     name.replace("[COUNT]", "1").replace("[TYPE]", DAMAGE_TYPES[t as usize])
-}
-
-fn get_base_idx(variant: &VariantData, heroes: &[EnumData]) -> i64 {
-    heroes.iter().position(|hero| hero.enum_name == variant.base).unwrap_or(0) as i64
 }

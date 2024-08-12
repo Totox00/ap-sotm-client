@@ -50,9 +50,10 @@ where
     for VariantData {
         enum_name,
         base: _,
-        i,
         display_name: _,
         unlock_desc: _,
+        i,
+        base_i: _,
     } in variant_data
     {
         let _ = write!(str, "Variant::{enum_name} => {i},");
@@ -66,6 +67,7 @@ where
         unlock_desc: _,
         display_name: _,
         i: _,
+        base_i: _,
     } in variant_data
     {
         let _ = write!(str, "Variant::{enum_name} => {},", if base == "Villain" { String::from("None") } else { format!("Some(Hero::{base})") });
@@ -79,6 +81,7 @@ where
         enum_name,
         display_name: _,
         unlock_desc: _,
+        base_i: _,
     } in variant_data
     {
         if base.as_str() != "Villain" {
@@ -100,6 +103,7 @@ where
         unlock_desc,
         display_name: _,
         i: _,
+        base_i: _,
     } in variant_data
     {
         if let Some(desc) = unlock_desc {

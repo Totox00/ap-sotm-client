@@ -5,10 +5,10 @@ pub mod persistent;
 pub mod state;
 
 use archipelago_protocol::{Connected, PrintJSON};
-use data::Location;
+use data::{Item, Location};
 use datapackage::DatapackageStore;
 use persistent::PersistentStore;
-use state::State;
+use state::{CleanedSlotData, Locations, State};
 use std::collections::HashMap;
 
 #[derive(Debug)]
@@ -16,14 +16,15 @@ pub enum Update {
     Msg(PrintJSON),
     Items(Vec<i64>),
     Send(Vec<Location>),
-    Exit,
+    Exit(Locations),
 }
 
 #[allow(clippy::large_enum_variant)] // Boxing State wouldn't do much since most updates are state updates anyways
 #[derive(Debug)]
 pub enum DisplayUpdate {
     Msg(PrintJSON),
-    State(State),
+    ReceivedItems(Vec<Item>),
+    CheckedLocations(Vec<Location>),
     Exit,
 }
 
@@ -34,9 +35,10 @@ where
 {
     pub datapackage_store: D,
     pub persistent_store: P,
-    pub state: State,
     pub players: HashMap<i32, String>,
     pub slot: String,
+    pub slot_data: CleanedSlotData,
+    pub state: State,
 }
 
 impl<D, P> Session<D, P>
@@ -59,9 +61,10 @@ where
         Session {
             datapackage_store,
             persistent_store,
-            state,
             players,
             slot: slot.to_string(),
+            slot_data: state.slot_data,
+            state,
         }
     }
 }

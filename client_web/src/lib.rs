@@ -5,7 +5,7 @@ mod wrap_state;
 
 use archipelago_protocol::{Connected, RoomInfo};
 use client_lib::{
-    data::{Item, Location},
+    data::{FillerTarget, HeroLike, Item, Location, VillainLike},
     datapackage::DatapackageStore,
     persistent::PersistentStore,
     Session,
@@ -14,8 +14,9 @@ use datapackage::WebDatapackageStore;
 use format_json::format;
 use persistent::WebPersistentStore;
 use serde_json::from_str;
+use std::fmt::Write;
 use wasm_bindgen::prelude::wasm_bindgen;
-use wrap_state::{wrap_state, WasmLocation, WasmState};
+use wrap_state::{wrap_state, WasmHero, WasmItem, WasmLocation, WasmState};
 
 #[wasm_bindgen]
 pub struct WasmSession {
@@ -27,9 +28,9 @@ pub fn new_session(mut datapackage_store: WebDatapackageStore, room_info: &str, 
     if let (Ok(room_info), Ok(connected)) = (from_str::<RoomInfo>(room_info), from_str::<Connected>(connected)) {
         datapackage_store.build_player_map(&connected);
 
-        WasmSession {
-            inner: Session::new(&room_info.seed_name, datapackage_store, connected, slot),
-        }
+        let session = Session::new(&room_info.seed_name, datapackage_store, connected, slot);
+
+        WasmSession { inner: session }
     } else {
         panic!("Failed to parse session info");
     }
@@ -72,6 +73,130 @@ impl WasmSession {
         for item_id in items {
             self.inner.state.items.set_item(Item::from_id(item_id));
         }
+    }
+
+    pub fn get_filler_for_location(&self, target: &WasmLocation, show_desc: bool) -> String {
+        if let Some(item) = target.as_inner().as_item() {
+            self.get_filler_for_item_internal(item, show_desc)
+        } else {
+            String::new()
+        }
+    }
+
+    pub fn get_filler_for_hero(&self, target: &WasmHero, show_desc: bool) -> String {
+        let mut buf = String::new();
+
+        if show_desc {
+            if self.inner.state.items.has_base_hero(*target.as_inner()) {
+                let mut inner_buf = String::new();
+
+                for (filler, count) in self.inner.state.items.get_filler_for(FillerTarget::Hero(HeroLike::Hero(*target.as_inner()))) {
+                    let _ = write!(
+                        inner_buf,
+                        "<li><span>{}</span><br /><span class=\"desc\">{}</span></li>",
+                        filler.to_string(count),
+                        filler.to_desc(count)
+                    );
+                }
+
+                if !inner_buf.is_empty() {
+                    let _ = write!(buf, "<li><span><b>{}</b></span><ul>{inner_buf}</ul></li>", target.as_inner().as_str());
+                }
+            }
+
+            for variant in self.inner.state.items.variants_of(*target.as_inner()) {
+                let mut inner_buf = String::new();
+
+                for (filler, count) in self.inner.state.items.get_filler_for(FillerTarget::Hero(HeroLike::Variant(variant))) {
+                    let _ = write!(
+                        inner_buf,
+                        "<li><span>{}</span><br /><span class=\"desc\">{}</span></li>",
+                        filler.to_string(count),
+                        filler.to_desc(count)
+                    );
+                }
+
+                if !inner_buf.is_empty() {
+                    let _ = write!(buf, "<li><span><b>{}</b></span><ul>{inner_buf}</ul></li>", variant.as_str());
+                }
+            }
+        } else {
+            if self.inner.state.items.has_base_hero(*target.as_inner()) {
+                let mut inner_buf = String::new();
+
+                for (filler, count) in self.inner.state.items.get_filler_for(FillerTarget::Hero(HeroLike::Hero(*target.as_inner()))) {
+                    let _ = write!(inner_buf, "<li><span>{}</span></li>", filler.to_string(count));
+                }
+
+                if !inner_buf.is_empty() {
+                    let _ = write!(buf, "<li><span><b>{}</b></span><ul>{inner_buf}</ul></li>", target.as_inner().as_str());
+                }
+            }
+
+            for variant in self.inner.state.items.variants_of(*target.as_inner()) {
+                let mut inner_buf = String::new();
+
+                for (filler, count) in self.inner.state.items.get_filler_for(FillerTarget::Hero(HeroLike::Variant(variant))) {
+                    let _ = write!(inner_buf, "<li><span>{}</span></li>", filler.to_string(count));
+                }
+
+                if !inner_buf.is_empty() {
+                    let _ = write!(buf, "<li><span><b>{}</b></span><ul>{inner_buf}</ul></li>", variant.as_str());
+                }
+            }
+        }
+
+        buf
+    }
+
+    pub fn get_filler_for_item(&self, target: &WasmItem, show_desc: bool) -> String {
+        self.get_filler_for_item_internal(*target.as_inner(), show_desc)
+    }
+
+    fn get_filler_for_item_internal(&self, item: Item, show_desc: bool) -> String {
+        let mut buf = String::new();
+
+        if show_desc {
+            match item {
+                Item::Villain(v) => {
+                    for (filler, count) in self.inner.state.items.get_filler_for(FillerTarget::Villain(VillainLike::Villain(v))) {
+                        let _ = write!(buf, "<li><span>{}</span><br /><span class=\"desc\">{}</span></li>", filler.to_string(count), filler.to_desc(count));
+                    }
+                }
+                Item::TeamVillain(v) => {
+                    for (filler, count) in self.inner.state.items.get_filler_for(FillerTarget::Villain(VillainLike::TeamVillain(v))) {
+                        let _ = write!(buf, "<li><span>{}</span><br /><span class=\"desc\">{}</span></li>", filler.to_string(count), filler.to_desc(count));
+                    }
+                }
+                Item::Environment(_) => {
+                    for (filler, count) in self.inner.state.items.get_filler_for(FillerTarget::Other) {
+                        let _ = write!(buf, "<li><span>{}</span><br /><span class=\"desc\">{}</span></li>", filler.to_string(count), filler.to_desc(count));
+                    }
+                }
+                _ => (),
+            }
+        } else {
+            match item {
+                Item::Villain(v) => {
+                    for (filler, count) in self.inner.state.items.get_filler_for(FillerTarget::Villain(VillainLike::Villain(v))) {
+                        let _ = write!(buf, "<li><span>{}</span></li>", filler.to_string(count));
+                    }
+                }
+                Item::TeamVillain(v) => {
+                    for (filler, count) in self.inner.state.items.get_filler_for(FillerTarget::Villain(VillainLike::TeamVillain(v))) {
+                        let _ = write!(buf, "<li><span>{}</span></li>", filler.to_string(count));
+                    }
+                }
+                Item::Environment(_) => {
+                    for (filler, count) in self.inner.state.items.get_filler_for(FillerTarget::Other) {
+                        let _ = write!(buf, "<li><span>{}</span></li>", filler.to_string(count));
+                    }
+                }
+                _ => (),
+            }
+        }
+
+        buf
     }
 
     pub fn exit(&self) {

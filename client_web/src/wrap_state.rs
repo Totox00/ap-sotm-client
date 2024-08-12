@@ -1,5 +1,5 @@
 use client_lib::{
-    data::{Environment, Hero, Location, TeamVillain, Variant, Villain},
+    data::{Environment, Hero, Item, Location, TeamVillain, Variant, Villain},
     state::State,
 };
 use num::FromPrimitive;
@@ -10,10 +10,10 @@ use wasm_bindgen::prelude::wasm_bindgen;
 #[wasm_bindgen]
 pub struct WasmState {
     available: WasmAvailable,
-    villains: Vec<String>,
-    team_villains: Vec<String>,
-    environments: Vec<String>,
-    heroes: Vec<String>,
+    villains: Vec<WasmItem>,
+    team_villains: Vec<WasmItem>,
+    environments: Vec<WasmItem>,
+    heroes: Vec<WasmHero>,
     pub scions: i32,
 }
 
@@ -31,6 +31,21 @@ pub struct WasmAvailable {
 #[derive(Clone)]
 pub struct WasmLocation {
     inner: Location,
+    name: String,
+}
+
+#[wasm_bindgen]
+#[derive(Clone)]
+pub struct WasmItem {
+    inner: Item,
+    name: String,
+}
+
+#[wasm_bindgen]
+#[derive(Clone)]
+pub struct WasmHero {
+    inner: Hero,
+    bitfield: u8,
     name: String,
 }
 
@@ -73,9 +88,27 @@ pub fn wrap_state(state: &State) -> WasmState {
                 })
                 .collect(),
         },
-        villains: Villain::iter().filter(|v| state.items.has_villain(*v)).map(|v| v.as_str().to_owned()).collect(),
-        team_villains: TeamVillain::iter().filter(|v| state.items.has_team_villain(*v)).map(|v| v.as_str().to_owned()).collect(),
-        environments: Environment::iter().filter(|e| state.items.has_environment(*e)).map(|e| e.as_str().to_owned()).collect(),
+        villains: Villain::iter()
+            .filter(|v| state.items.has_villain(*v))
+            .map(|v| WasmItem {
+                inner: Item::Villain(v),
+                name: v.as_str().to_owned(),
+            })
+            .collect(),
+        team_villains: TeamVillain::iter()
+            .filter(|v| state.items.has_team_villain(*v))
+            .map(|v| WasmItem {
+                inner: Item::TeamVillain(v),
+                name: v.as_str().to_owned(),
+            })
+            .collect(),
+        environments: Environment::iter()
+            .filter(|e| state.items.has_environment(*e))
+            .map(|e| WasmItem {
+                inner: Item::Environment(e),
+                name: e.as_str().to_owned(),
+            })
+            .collect(),
         heroes: state
             .items
             .heroes
@@ -83,8 +116,10 @@ pub fn wrap_state(state: &State) -> WasmState {
             .zip(0..)
             .filter_map(|(b, h)| Hero::from_i32(h).map(|hero| (b, hero)))
             .filter(|(b, _)| b.count_ones() > 0)
-            .map(|(bitfield, hero)| {
-                if *bitfield == 1 {
+            .map(|(bitfield, hero)| WasmHero {
+                inner: hero,
+                bitfield: *bitfield,
+                name: if *bitfield == 1 {
                     hero.as_str().to_owned()
                 } else if bitfield.count_ones() == 1 {
                     if let Some(variant) = Variant::from_hero(hero, bitfield.trailing_zeros()) {
@@ -107,7 +142,7 @@ pub fn wrap_state(state: &State) -> WasmState {
                     let _ = write!(&mut buf, "</ul>");
 
                     buf
-                }
+                },
             })
             .collect(),
         scions: state.items.scions as i32,
@@ -115,8 +150,53 @@ pub fn wrap_state(state: &State) -> WasmState {
 }
 
 impl WasmLocation {
+    pub fn as_inner(&self) -> &Location {
+        &self.inner
+    }
+
     pub fn into_inner(self) -> Location {
         self.inner
+    }
+}
+
+#[wasm_bindgen]
+impl WasmLocation {
+    pub fn name(&self) -> String {
+        self.name.clone()
+    }
+}
+
+impl WasmItem {
+    pub fn as_inner(&self) -> &Item {
+        &self.inner
+    }
+    
+    pub fn into_inner(self) -> Item {
+        self.inner
+    }
+}
+
+#[wasm_bindgen]
+impl WasmItem {
+    pub fn name(&self) -> String {
+        self.name.clone()
+    }
+}
+
+impl WasmHero {
+    pub fn as_inner(&self) -> &Hero {
+        &self.inner
+    }
+
+    pub fn into_inner(self) -> (Hero, u8) {
+        (self.inner, self.bitfield)
+    }
+}
+
+#[wasm_bindgen]
+impl WasmHero {
+    pub fn name(&self) -> String {
+        self.name.clone()
     }
 }
 
@@ -126,19 +206,19 @@ impl WasmState {
         self.available.clone()
     }
 
-    pub fn villains(&self) -> Vec<String> {
+    pub fn villains(&self) -> Vec<WasmItem> {
         self.villains.clone()
     }
 
-    pub fn team_villains(&self) -> Vec<String> {
+    pub fn team_villains(&self) -> Vec<WasmItem> {
         self.team_villains.clone()
     }
 
-    pub fn environments(&self) -> Vec<String> {
+    pub fn environments(&self) -> Vec<WasmItem> {
         self.environments.clone()
     }
 
-    pub fn heroes(&self) -> Vec<String> {
+    pub fn heroes(&self) -> Vec<WasmHero> {
         self.heroes.clone()
     }
 }
@@ -159,13 +239,6 @@ impl WasmAvailable {
 
     pub fn variants(&self) -> Vec<WasmLocation> {
         self.variants.clone()
-    }
-}
-
-#[wasm_bindgen]
-impl WasmLocation {
-    pub fn name(&self) -> String {
-        format!("<li>{}</li>", self.name)
     }
 }
 

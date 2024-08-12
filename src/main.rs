@@ -13,6 +13,7 @@ use client_lib::{
     data::{Item, Location},
     datapackage::{DatapackageStore, DefaultDatapackageStore},
     persistent::{DefaultPersistentStore, PersistentStore},
+    state::State,
     DisplayUpdate, Session, Update,
 };
 use console::Term;
@@ -54,7 +55,7 @@ fn main() {
     let runtime = Builder::new_multi_thread().enable_io().build().unwrap();
     let (server, port, slot, pass) = get_server_info();
 
-    let (client, session) = runtime.block_on(connect(&server, port, &slot, pass.as_deref(), true)).unwrap_or_else(|_| {
+    let (client, session, mut state) = runtime.block_on(connect(&server, port, &slot, pass.as_deref(), true)).unwrap_or_else(|_| {
         runtime.block_on(connect(&server, port, &slot, pass.as_deref(), false)).unwrap_or_else(|err| {
             println!("Failed to connect to archipelago server");
             dbg!(err);
@@ -67,7 +68,6 @@ fn main() {
     let datapackage_store = session.datapackage_store.clone();
     let slot = session.slot.clone();
     let players = session.players.clone();
-    let mut state = session.state;
     let mut filter = String::new();
     let mut cursor_x = 0;
     let mut cursor_y = 0;
@@ -94,8 +94,15 @@ fn main() {
                         }
                         msg_buffer.push_back(format(&datapackage_store, msg, &players, &slot));
                     }
-                    DisplayUpdate::State(new_state) => {
-                        state = new_state;
+                    DisplayUpdate::ReceivedItems(items) => {
+                        for item in items {
+                            state.items.set_item(item);
+                        }
+                    }
+                    DisplayUpdate::CheckedLocations(locations) => {
+                        for location in locations {
+                            state.checked_locations.mark_location(location);
+                        }
                     }
                     DisplayUpdate::Exit => {
                         let _ = term.show_cursor();
@@ -134,7 +141,7 @@ fn main() {
                         }
                     }
                     Input::Exit => {
-                        if ap_sender.send(Update::Exit).is_err() {
+                        if ap_sender.send(Update::Exit(state.checked_locations)).is_err() {
                             println!("Failed to exit cleanly. Checked locations may have failed to save");
                             exit(1);
                         }
@@ -203,7 +210,7 @@ fn resolve_multi_send(location: Location) -> Vec<Location> {
     }
 }
 
-async fn connect(server: &str, port: u16, slot: &str, pass: Option<&str>, secure: bool) -> Result<(Client, Session<DefaultDatapackageStore, DefaultPersistentStore>)> {
+async fn connect(server: &str, port: u16, slot: &str, pass: Option<&str>, secure: bool) -> Result<(Client, Session<DefaultDatapackageStore, DefaultPersistentStore>, State)> {
     let (mut client, room_info) = Client::new(&format!("{}://{server}:{port}", if secure { "wss" } else { "ws" })).await?;
 
     let mut datapackage_store = DefaultDatapackageStore::new(room_info.datapackage_checksums);
@@ -224,15 +231,13 @@ async fn connect(server: &str, port: u16, slot: &str, pass: Option<&str>, secure
 
     client.sync().await?;
 
-    Ok((client, Session::new(&room_info.seed_name, datapackage_store, connected, slot)))
+    let session = Session::new(&room_info.seed_name, datapackage_store, connected, slot);
+    let state = session.state;
+
+    Ok((client, session, state))
 }
 
-async fn run(
-    mut session: Session<DefaultDatapackageStore, DefaultPersistentStore>,
-    client: Client,
-    mut locations_to_send: UnboundedReceiver<Update>,
-    display_sender: UnboundedSender<DisplayUpdate>,
-) -> ! {
+async fn run(session: Session<DefaultDatapackageStore, DefaultPersistentStore>, client: Client, mut locations_to_send: UnboundedReceiver<Update>, display_sender: UnboundedSender<DisplayUpdate>) -> ! {
     let (mut ap_sender, ap_receiver) = client.split();
     let (sender, mut receiver) = unbounded_channel::<Update>();
 
@@ -245,23 +250,19 @@ async fn run(
         } {
             let _ = match update {
                 Update::Msg(msg) => display_sender.send(DisplayUpdate::Msg(msg)),
-                Update::Items(item_ids) => {
-                    for id in item_ids {
-                        session.state.items.set_item(Item::from_id(id));
-                    }
-                    display_sender.send(DisplayUpdate::State(session.state))
-                }
+                Update::Items(item_ids) => display_sender.send(DisplayUpdate::ReceivedItems(item_ids.into_iter().map(Item::from_id).collect())),
                 Update::Send(locations) => {
                     let mut location_ids = vec![];
+                    let mut checked_locations = vec![];
 
                     for location in locations.iter() {
                         if *location == Location::Victory {
                             let res = ap_sender.status_update(ClientStatus::Goal).await;
                             if res.is_ok() {
-                                session.state.checked_locations.victory = true;
+                                checked_locations.push(Location::Victory);
                             }
                         } else {
-                            for n in 0..session.state.slot_data.locations_per[match location {
+                            for n in 0..session.slot_data.locations_per[match location {
                                 Location::Variant(_) => 5,
                                 Location::Villain((_, d)) | Location::TeamVillain((_, d)) => *d as usize,
                                 Location::Environment(_) => 4,
@@ -274,15 +275,13 @@ async fn run(
 
                     let res = ap_sender.location_checks(location_ids).await;
                     if res.is_ok() {
-                        for location in locations {
-                            session.state.checked_locations.mark_location(location);
-                        }
+                        checked_locations.extend(locations);
                     }
 
-                    display_sender.send(DisplayUpdate::State(session.state))
+                    display_sender.send(DisplayUpdate::CheckedLocations(checked_locations))
                 }
-                Update::Exit => {
-                    session.persistent_store.save(&session.state.checked_locations);
+                Update::Exit(locations) => {
+                    session.persistent_store.save(&locations);
                     display_sender.send(DisplayUpdate::Exit)
                 }
             };

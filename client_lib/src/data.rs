@@ -319,9 +319,9 @@ generate_data!(
     (HeroCardPlay, Filler, Hero, "Haste [COUNT]", "Slowness [COUNT]", "You may play up to [COUNT] additional cards during your play phase", "You may play up to [COUNT] fewer cards during your play phase"),
     (HeroPower, Filler, Hero, "Power use +[COUNT]", "Power use -[COUNT]", "You may use up to [COUNT] additional powers during your power phase", "You may use up to [COUNT] fewer powers during your power phase"),
     (HeroCardDraw, Filler, Hero, "Ingenuity [COUNT]", "Stupidity [COUNT]", "You may draw up to [COUNT] additional cards during your draw phase", "You may draw up to [COUNT] fewer cards during your draw phase"),
-    (VillainHp, Filler, Villain, "Villain Fragility [COUNT]", "Villain Toughness [COUNT]", "Reduce the starting and maximum HP of villain targets by [COUNT]", "Increase the starting and maximum HP of villain targets by [COUNT]"),
+    (VillainHp, Filler, Villain, "Villain Fragility [COUNT]", "Villain Toughness [COUNT]", "Increase the starting and maximum HP of villain targets by [COUNT]", "Reduce the starting and maximum HP of villain targets by [COUNT]"),
     (VillainDamageDealt, Filler, Villain, DamageType, "Villain [TYPE]Weakness [COUNT]", "Villain [TYPE]Strength [COUNT]", "Reduce [TYPE]damage dealt by villain targets by [COUNT]", "Increase [TYPE]damage dealt by villain targets by [COUNT]"),
-    (VillainDamageTaken, Filler, Villain, DamageType, "Villain [TYPE]Vulnerability [COUNT]", "Villain [TYPE]Fortification [COUNT]", "Reduce [TYPE]damage taken by villain targets by [COUNT]", "Increase [TYPE]damage taken by villain targets by [COUNT]"),
+    (VillainDamageTaken, Filler, Villain, DamageType, "Villain [TYPE]Vulnerability [COUNT]", "Villain [TYPE]Fortification [COUNT]", "Increase [TYPE]damage taken by villain targets by [COUNT]", "Reduce [TYPE]damage taken by villain targets by [COUNT]"),
     (VillainCardPlays, Filler, Villain, "Horde -[COUNT]", "Horde +[COUNT]", "Play [COUNT] fewer cards from the villain deck during the villain play phase", "Play [COUNT] additional cards from the villain deck during the villain play phase"),
     (VillainStartCardPlays, Filler, Villain, "", "Rapid Deployment [COUNT]", "", "Play [COUNT] cards from the top of the villain deck and the start of the first villain turn"),
     (HeroCannotPlay, Filler, Other, "", "Slowing Assault [COUNT]", "", "At the start of each round, choose [COUNT] heroes. Those heroes cannot play cards until the end of the round"),
@@ -330,7 +330,7 @@ generate_data!(
     (HeroCannotDamage, Filler, Other, "", "Weakening Assault [COUNT]", "", "At the start of each round, choose [COUNT] heroes. Those heroes cannot deal damage until the end of the round")
 );
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Item {
     Hero(Hero),
     Variant(Variant),
@@ -348,6 +348,13 @@ pub enum Location {
     TeamVillain((TeamVillain, u8)),
     Environment(Environment),
     Victory,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct DeconstructedFiller {
+    pub r#type: FillerType,
+    pub target: FillerTarget,
+    pub damage_type: Option<DamageType>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, EnumIter, FromPrimitive, ToPrimitive, Hash)]
@@ -386,6 +393,23 @@ impl DamageType {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum FillerTarget {
+    Hero(HeroLike),
+    Villain(VillainLike),
+    Other,
+}
+
+impl FillerTarget {
+    pub fn relevant_filler(&self) -> Vec<Filler> {
+        match self {
+            FillerTarget::Hero(hero) => Filler::hero_filler(*hero),
+            FillerTarget::Villain(villain) => Filler::villain_filler(*villain),
+            FillerTarget::Other => Filler::other_filler(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum HeroLike {
     All,
     Hero(Hero),
@@ -397,15 +421,6 @@ pub enum VillainLike {
     All,
     Villain(Villain),
     TeamVillain(TeamVillain),
-}
-
-impl Filler {
-    pub fn as_str(&self, count: i8) -> String {
-        match self {
-            Filler::HeroDamageDealt((hero, damage_type)) => format!("{}Weakness (Hero) {}{}", damage_type.as_str(), count.abs(), hero.as_str()),
-            _ => String::new(),
-        }
-    }
 }
 
 impl HeroLike {
@@ -478,5 +493,15 @@ impl Location {
             Location::Environment(v) => (0b0100 << 48) | *v as i64,
             Location::Victory => 0,
         }) | n << 16
+    }
+
+    pub fn as_item(&self) -> Option<Item> {
+        match self {
+            Location::Variant(v) => Some(Item::Variant(*v)),
+            Location::Villain((v, _)) => Some(Item::Villain(*v)),
+            Location::TeamVillain((v, _)) => Some(Item::TeamVillain(*v)),
+            Location::Environment(v) => Some(Item::Environment(*v)),
+            Location::Victory => None,
+        }
     }
 }

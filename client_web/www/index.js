@@ -13,6 +13,7 @@ const villainLocations = document.getElementById("villain-locations");
 const environmentLocations = document.getElementById("environment-locations");
 const variantLocations = document.getElementById("variant-locations");
 const disconnect = document.getElementById("disconnect");
+const tooltip = document.getElementById("tooltip");
 
 server.value = localStorage.getItem("server") ?? "archipelago.gg";
 port.value = localStorage.getItem("port") ?? "38281";
@@ -58,6 +59,8 @@ let state;
 let roomInfo;
 let datapackageStore;
 let session;
+let receivedItemIndex = 0;
+let showDesc = true;
 
 async function run() {
   await init();
@@ -129,8 +132,6 @@ function datapackageConnect(datapackage) {
 }
 
 function connectedConnect(connected) {
-  console.log(connected);
-
   session = new_session(
     datapackageStore,
     JSON.stringify(roomInfo),
@@ -147,7 +148,6 @@ function connectedConnect(connected) {
 
 function handleEvent(event) {
   const data = JSON.parse(event.data);
-  console.log(event);
 
   for (const msg of data) {
     switch (msg.cmd) {
@@ -168,7 +168,11 @@ function handleEvent(event) {
         printJson(msg);
         break;
       case "ReceivedItems":
-        session.recieved_items(msg.items.map((item) => BigInt(item.item)));
+        const skip = receivedItemIndex - msg.index;
+        session.recieved_items(
+          msg.items.slice(skip).map((item) => BigInt(item.item))
+        );
+        receivedItemIndex += msg.items.length - skip;
         state = session.get_state();
         updateState();
         break;
@@ -186,25 +190,32 @@ function updateState() {
 
   for (const item of state.villains()) {
     const newElem = document.createElement("li");
-    newElem.innerText = item;
+    newElem.innerText = item.name();
+    newElem.addEventListener("mouseenter", itemTooltip(item));
     villains.appendChild(newElem);
   }
 
   for (const item of state.team_villains()) {
     const newElem = document.createElement("li");
-    newElem.innerText = item;
+    newElem.innerText = item.name();
+    newElem.addEventListener("mouseenter", itemTooltip(item));
     villains.appendChild(newElem);
   }
 
   for (const item of state.environments()) {
     const newElem = document.createElement("li");
-    newElem.innerText = item;
+    newElem.innerText = item.name();
+    newElem.addEventListener("mouseenter", itemTooltip(item));
     environments.appendChild(newElem);
   }
 
   for (const item of state.heroes()) {
     const newElem = document.createElement("li");
-    newElem.innerHTML = item;
+    newElem.innerHTML = item.name();
+    newElem.addEventListener("mouseenter", (e) => {
+      tooltip.innerHTML = session.get_filler_for_hero(item, showDesc);
+      moveTooltip(e);
+    });    
     heroes.appendChild(newElem);
   }
 
@@ -217,6 +228,7 @@ function updateState() {
       sendLocation(location);
       newElem.remove();
     });
+    newElem.addEventListener("mouseenter", locationTooltip(location));
     villainLocations.appendChild(newElem);
   }
 
@@ -227,6 +239,7 @@ function updateState() {
       sendLocation(location);
       newElem.remove();
     });
+    newElem.addEventListener("mouseenter", locationTooltip(location));
     villainLocations.appendChild(newElem);
   }
 
@@ -248,6 +261,7 @@ function updateState() {
       sendLocation(location);
       newElem.remove();
     });
+    newElem.addEventListener("mouseenter", locationTooltip(location));
     environmentLocations.appendChild(newElem);
   }
 
@@ -258,6 +272,7 @@ function updateState() {
       sendLocation(location);
       newElem.remove();
     });
+    newElem.addEventListener("mouseenter", locationTooltip(location));
     variantLocations.appendChild(newElem);
   }
 }
@@ -265,6 +280,33 @@ function updateState() {
 function sendLocation(location) {
   const ids = session.get_location_ids([location]);
   client.send(
-    JSON.stringify([{ cmd: "LocationChecks", locations: Array.from(ids) }])
+    JSON.stringify([
+      { cmd: "LocationChecks", locations: Array.from(ids).map(Number) },
+    ])
   );
+}
+
+function itemTooltip(item) {
+  return (e) => {
+    tooltip.innerHTML = session.get_filler_for_item(item, showDesc);
+    moveTooltip(e);
+  };
+}
+
+function locationTooltip(location) {
+  return (e) => {
+    tooltip.innerHTML = session.get_filler_for_location(location, showDesc);
+    moveTooltip(e);
+  };
+}
+
+function moveTooltip(e) {
+  if (tooltip.childNodes.length > 0) {
+    tooltip.hidden = false;
+  } else {
+    tooltip.hidden = true;
+  }
+
+  tooltip.style.left = `${e.pageX + 25}px`;
+  tooltip.style.top = `${e.pageY}px`;
 }

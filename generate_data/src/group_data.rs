@@ -18,18 +18,22 @@ pub fn group_data(stream: TokenStream) -> Data {
                     "Villain" => villains.push(EnumData {
                         enum_name: enum_name.to_string(),
                         display_name: trim_quotes(display_name),
+                        i: villains.len(),
                     }),
                     "TeamVillain" => team_villains.push(EnumData {
                         enum_name: enum_name.to_string(),
                         display_name: trim_quotes(display_name),
+                        i: team_villains.len(),
                     }),
                     "Hero" => heroes.push(EnumData {
                         enum_name: enum_name.to_string(),
                         display_name: trim_quotes(display_name),
+                        i: heroes.len(),
                     }),
                     "Environment" => environments.push(EnumData {
                         enum_name: enum_name.to_string(),
                         display_name: trim_quotes(display_name),
+                        i: environments.len(),
                     }),
                     "Variant" => panic!("Variant is missing a base"),
                     _ => panic!("Invalid type"),
@@ -41,6 +45,7 @@ pub fn group_data(stream: TokenStream) -> Data {
                         unlock_desc: None,
                         display_name: trim_quotes(display_name),
                         i: 0,
+                        base_i: 0,
                     })
                 }
                 [TokenTree::Ident(enum_name), TokenTree::Ident(r#type), TokenTree::Ident(base), TokenTree::Literal(display_name), TokenTree::Literal(unlock_desc)]
@@ -52,6 +57,7 @@ pub fn group_data(stream: TokenStream) -> Data {
                         unlock_desc: Some(trim_quotes(unlock_desc)),
                         display_name: trim_quotes(display_name),
                         i: 0,
+                        base_i: 0,
                     })
                 }
                 [TokenTree::Ident(enum_name), TokenTree::Ident(r#type), TokenTree::Ident(group), TokenTree::Literal(display_name_pos), TokenTree::Literal(display_name_neg), TokenTree::Literal(desc_pos), TokenTree::Literal(desc_neg)]
@@ -98,20 +104,9 @@ pub fn group_data(stream: TokenStream) -> Data {
     }
 
     for i in 0..variants.len() {
-        let new_i = variants
-            .iter()
-            .take(i + 1)
-            .filter(
-                |VariantData {
-                     enum_name: _,
-                     base: b,
-                     unlock_desc: _,
-                     display_name: _,
-                     i: _,
-                 }| *b == variants[i].base,
-            )
-            .count();
+        let new_i = variants.iter().take(i + 1).filter(|variant| variant.base == variants[i].base).count();
         variants[i].i = new_i;
+        variants[i].base_i = heroes.iter().find(|hero| hero.enum_name == variants[i].base).map(|hero| hero.i).unwrap_or(0)
     }
 
     Data {
