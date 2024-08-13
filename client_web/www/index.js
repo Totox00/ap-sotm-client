@@ -14,6 +14,7 @@ const environmentLocations = document.getElementById("environment-locations");
 const variantLocations = document.getElementById("variant-locations");
 const disconnect = document.getElementById("disconnect");
 const tooltip = document.getElementById("tooltip");
+const descToggle = document.getElementById("desc-toggle");
 
 server.value = localStorage.getItem("server") ?? "archipelago.gg";
 port.value = localStorage.getItem("port") ?? "38281";
@@ -48,6 +49,15 @@ disconnect.addEventListener("click", () => {
   session = null;
 });
 
+descToggle.addEventListener("click", () => {
+  showDesc = !showDesc;
+  if (showDesc) {
+    descToggle.innerText = "Hide Descriptions"
+  } else {
+    descToggle.innerText = "Show Descriptions"
+  }
+})
+
 let tryConnect = (e) => console.log("Please wait for wasm to initialise.");
 let printJson = (data) => console.log(data);
 
@@ -60,7 +70,7 @@ let roomInfo;
 let datapackageStore;
 let session;
 let receivedItemIndex = 0;
-let showDesc = true;
+let showDesc = false;
 
 async function run() {
   await init();
