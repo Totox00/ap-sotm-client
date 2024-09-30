@@ -123,7 +123,7 @@ pub fn can_unlock(variant: Variant, items: &Items) -> bool {
         Variant::TricksterKismet => {
             items.has_villain(Villain::Kismet) && items.has_environment(Environment::TheBlock) && items.has_hero(Hero::Knyfe) && items.has_hero(Hero::ArgentAdept) && items.has_hero(Hero::Fanatic)
         }
-        Variant::HeroicInfinitor => (any_similar(items, Villain::Infinitor)) && items.has_hero(Hero::CaptainCosmic),
+        Variant::HeroicInfinitor => items.has_villain(Villain::Infinitor) && items.has_hero(Hero::CaptainCosmic),
         _ => false,
     }
 }
