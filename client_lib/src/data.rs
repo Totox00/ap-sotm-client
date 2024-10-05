@@ -323,7 +323,7 @@ generate_data!(
     (VillainDamageDealt, Filler, Villain, DamageType, "Villain [TYPE]Weakness [COUNT]", "Villain [TYPE]Strength [COUNT]", "Reduce [TYPE]damage dealt by villain targets by [COUNT]", "Increase [TYPE]damage dealt by villain targets by [COUNT]"),
     (VillainDamageTaken, Filler, Villain, DamageType, "Villain [TYPE]Vulnerability [COUNT]", "Villain [TYPE]Fortification [COUNT]", "Increase [TYPE]damage taken by villain targets by [COUNT]", "Reduce [TYPE]damage taken by villain targets by [COUNT]"),
     (VillainCardPlays, Filler, Villain, "Horde -[COUNT]", "Horde +[COUNT]", "Play [COUNT] fewer cards from the villain deck during the villain play phase", "Play [COUNT] additional cards from the villain deck during the villain play phase"),
-    (VillainStartCardPlays, Filler, Villain, "", "Rapid Deployment [COUNT]", "", "Play [COUNT] cards from the top of the villain deck and the start of the first villain turn"),
+    (VillainStartCardPlays, Filler, Villain, "", "Rapid Deployment [COUNT]", "", "At the start of the [COUNT] first villain turns, play the top card of the villain deck"),
     (HeroCannotPlay, Filler, Other, "", "Slowing Assault [COUNT]", "", "At the start of each round, choose [COUNT] heroes. Those heroes cannot play cards until the end of the round"),
     (HeroCannotPower, Filler, Other, "", "Power Assault [COUNT]", "", "At the start of each round, choose [COUNT] heroes. Those heroes cannot use powers until the end of the round"),
     (HeroCannotDraw, Filler, Other, "", "Mental Assault [COUNT]", "", "At the start of each round, choose [COUNT] heroes. Those heroes cannot draw cards until the end of the round"),
