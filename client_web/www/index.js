@@ -59,7 +59,7 @@ descToggle.addEventListener("click", () => {
   }
 });
 
-deathlink.addEventListener("click", () => {
+deathlink.addEventListener("click", async () => {
   let cause;
   let hero;
   let villain;
@@ -67,12 +67,15 @@ deathlink.addEventListener("click", () => {
   switch (deathlinkType) {
     case 1:
       hero = window.prompt("Which hero was defeated?");
+      if (hero == null) return;
       villain = window.prompt(`Which villain defeated ${hero}?`);
+      if (villain == null) return;
       if (hero && villain)
         cause = `${slot.value} let ${hero} be defeated by ${villain}`;
       break;
     case 2:
       villain = window.prompt("Which villain did you lose to?");
+      if (villain == null) return;
       if (villain) cause = `${slot.value} was defeated by ${villain}`;
       break;
   }
