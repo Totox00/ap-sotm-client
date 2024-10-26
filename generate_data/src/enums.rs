@@ -37,8 +37,8 @@ where
         "#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, EnumIter, FromPrimitive, ToPrimitive, Hash)]pub enum Variant {{Base,"
     );
 
-    for data in variant_data {
-        let _ = write!(str, "{},", data.enum_name);
+    for variant in variant_data {
+        let _ = write!(str, "{},", variant.enum_name);
     }
 
     let _ = write!(
@@ -47,69 +47,62 @@ where
         variant_data.len()
     );
 
-    for VariantData {
-        enum_name,
-        base: _,
-        display_name: _,
-        unlock_desc: _,
-        i,
-        base_i: _,
-    } in variant_data
-    {
+    for variant in variant_data {
+        let enum_name = &variant.enum_name;
+        let i = variant.i;
+
         let _ = write!(str, "Variant::{enum_name} => {i},");
     }
 
     let _ = write!(str, "}}}}pub fn as_normal(&self) -> Option<Hero> {{match self {{Variant::Base => None,");
 
-    for VariantData {
-        enum_name,
-        base,
-        unlock_desc: _,
-        display_name: _,
-        i: _,
-        base_i: _,
-    } in variant_data
-    {
-        let _ = write!(str, "Variant::{enum_name} => {},", if base == "Villain" { String::from("None") } else { format!("Some(Hero::{base})") });
+    for variant in variant_data {
+        let enum_name = &variant.enum_name;
+        let base = &variant.base;
+        let is_villain = variant.is_villain;
+
+        let _ = write!(str, "Variant::{enum_name} => {},", if is_villain { String::from("None") } else { format!("Some(Hero::{base})") });
     }
 
     let _ = write!(str, "}}}}pub fn from_hero(hero: Hero, i: u32) -> Option<Variant> {{match (hero, i) {{");
 
-    for VariantData {
-        base,
-        i,
-        enum_name,
-        display_name: _,
-        unlock_desc: _,
-        base_i: _,
-    } in variant_data
-    {
-        if base.as_str() != "Villain" {
+    for variant in variant_data {
+        let enum_name = &variant.enum_name;
+        let i = variant.i;
+        let base = &variant.base;
+        let is_villain = variant.is_villain;
+
+        if !is_villain {
             let _ = write!(str, "(Hero::{base}, {i}) => Some(Variant::{enum_name}),");
         }
     }
 
     let _ = write!(str, "_ => None}}}}pub fn as_str(&self) -> &str {{match self {{Variant::Base => \"Base\",");
 
-    for data in variant_data {
-        let _ = write!(str, "Variant::{} => \"{}\",", data.enum_name, data.display_name);
+    for variant in variant_data {
+        let _ = write!(str, "Variant::{} => \"{}\",", variant.enum_name, variant.display_name);
     }
 
     let _ = write!(str, "}}}}pub fn as_desc(&self) -> &str {{match self {{");
 
-    for VariantData {
-        enum_name,
-        base: _,
-        unlock_desc,
-        display_name: _,
-        i: _,
-        base_i: _,
-    } in variant_data
-    {
+    for variant in variant_data {
+        let enum_name = &variant.enum_name;
+        let unlock_desc = &variant.unlock_desc;
+
         if let Some(desc) = unlock_desc {
             let _ = write!(str, "Variant::{enum_name} => \"{desc}\",");
         }
     }
 
-    let _ = write!(str, "_ => \"\",}}}}}}");
+    let _ = write!(str, "_ => \"\",}}}}pub fn can_unlock(&self, items: &Items) -> bool {{match self {{");
+    
+    for variant in variant_data {
+        let enum_name = &variant.enum_name;
+
+        if let Some(logic) = &variant.logic {
+            let _ = write!(str, "Variant::{enum_name} => {},", logic.as_rust_expr());
+        }
+    }
+    
+    let _ = write!(str, "_ => false,}}}}}}");
 }

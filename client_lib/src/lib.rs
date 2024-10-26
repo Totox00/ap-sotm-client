@@ -1,6 +1,5 @@
 pub mod data;
 pub mod datapackage;
-mod logic;
 pub mod persistent;
 pub mod state;
 
@@ -47,7 +46,7 @@ where
     P: PersistentStore,
 {
     pub fn new(seed_name: &str, datapackage_store: D, connected: Connected, slot: &str) -> Session<D, P> {
-        let persistent_store = P::new(seed_name);
+        let persistent_store = P::new(seed_name, slot);
 
         let mut state = State::new(connected.slot_data);
 

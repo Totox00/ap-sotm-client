@@ -8,6 +8,7 @@ use client_lib::{
     data::{FillerTarget, HeroLike, Item, Location, VillainLike},
     datapackage::DatapackageStore,
     persistent::PersistentStore,
+    state::DeathlinkType,
     Session,
 };
 use datapackage::WebDatapackageStore;
@@ -27,7 +28,6 @@ pub struct WasmSession {
 pub fn new_session(mut datapackage_store: WebDatapackageStore, room_info: &str, connected: &str, slot: &str) -> WasmSession {
     if let (Ok(room_info), Ok(connected)) = (from_str::<RoomInfo>(room_info), from_str::<Connected>(connected)) {
         datapackage_store.build_player_map(&connected);
-
         let session = Session::new(&room_info.seed_name, datapackage_store, connected, slot);
 
         WasmSession { inner: session }
@@ -199,11 +199,26 @@ impl WasmSession {
         buf
     }
 
+    pub fn get_variant_desc(&self, target: &WasmLocation) -> String {
+        match target.as_inner().as_item() {
+            Some(Item::Variant(v)) => v.as_desc().to_string(),
+            _ => String::new(),
+        }
+    }
+
     pub fn exit(&self) {
         self.inner.persistent_store.save(&self.inner.state.checked_locations);
     }
 
     pub fn victory(&mut self) {
         self.inner.state.checked_locations.victory = true;
+    }
+
+    pub fn deathlink(&self) -> u8 {
+        match self.inner.slot_data.deathlink {
+            DeathlinkType::None => 0,
+            DeathlinkType::Individual => 1,
+            DeathlinkType::Team => 2,
+        }
     }
 }

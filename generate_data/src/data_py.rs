@@ -1,0 +1,121 @@
+use crate::Data;
+use std::{fs::OpenOptions, io::Write};
+
+const PREFIX: &str = include_str!("prefix.py");
+const SUFFIX: &str = include_str!("suffix.py");
+
+pub fn generate_data_py(data: &Data) {
+    if let Ok(mut writer) = OpenOptions::new().write(true).create(true).truncate(true).open("Data.py") {
+        let _ = writeln!(writer, "{PREFIX}\nclass SotmSource(IntEnum):");
+
+        for (i, source) in data.sources.iter().enumerate() {
+            let _ = writeln!(writer, "    {} = {i}", source.enum_name);
+        }
+
+        let _ = write!(writer, "sources={{");
+
+        for source in &data.sources {
+            let _ = write!(
+                writer,
+                "SotmSource.{}:{{\"name\":\"{}\",\"default\":{}}},",
+                source.enum_name,
+                source.display_name,
+                if source.default { "True" } else { "False" }
+            );
+        }
+
+        let _ = write!(writer, "}}\nclass SotmData(NamedTuple):\n    name: str\n    sources: list[SotmSource]\n    category: SotmCategory\n    base: Optional[str] = None\n    rule: Optional[Callable[[CollectionState | SotmState, int], bool]] = None\n    dependencies: Optional[list[str]] = None\ndata=[");
+
+        for villain in &data.villains {
+            if let Some(variant) = data.villain_variants().find(|variant| villain.enum_name == variant.enum_name) {
+                if let Some(logic) = &variant.logic {
+                    let base = data.villains.iter().find(|villain| villain.enum_name == variant.base).expect("Failed to find base for variant");
+
+                    let _ = write!(
+                        writer,
+                        "SotmData(\"{}\",[{}],SotmCategory.VillainVariant,\"{}\",lambda state,player:{},[{}]),",
+                        villain.display_name,
+                        map_source(&villain.source),
+                        base.display_name,
+                        logic.as_py_expr(),
+                        logic.as_dependencies(data).iter().map(|dependency| format!("\"{dependency}\"")).collect::<Vec<_>>().join(",")
+                    );
+                } else {
+                    let _ = write!(writer, "SotmData(\"{}\",[{}],SotmCategory.Villain),", villain.display_name, map_source(&villain.source));
+                }
+            } else {
+                let _ = write!(writer, "SotmData(\"{}\",[{}],SotmCategory.Villain),", villain.display_name, map_source(&villain.source));
+            }
+        }
+
+        for team_villain in &data.team_villains {
+            let _ = write!(writer, "SotmData(\"{}\",[{}],SotmCategory.TeamVillain),", team_villain.display_name, map_source(&team_villain.source));
+        }
+
+        for hero in &data.heroes {
+            let _ = write!(writer, "SotmData(\"{}\",[{}],SotmCategory.Hero),", hero.display_name, map_source(&hero.source));
+        }
+
+        for environment in &data.environments {
+            let _ = write!(writer, "SotmData(\"{}\",[{}],SotmCategory.Environment),", environment.display_name, map_source(&environment.source));
+        }
+
+        for variant in data.hero_variants() {
+            let base = data.heroes.iter().find(|hero| hero.enum_name == variant.base).expect("Failed to find base for variant");
+            if let Some(logic) = &variant.logic {
+                let _ = write!(
+                    writer,
+                    "SotmData(\"{}\",[{}],SotmCategory.Variant,\"{}\",lambda state,player:{},[{}]),",
+                    variant.display_name,
+                    map_source(&variant.source),
+                    base.display_name,
+                    logic.as_py_expr(),
+                    logic.as_dependencies(data).iter().map(|dependency| format!("\"{dependency}\"")).collect::<Vec<_>>().join(",")
+                );
+            } else {
+                let _ = write!(
+                    writer,
+                    "SotmData(\"{}\",[{}],SotmCategory.Variant,\"{}\"),",
+                    variant.display_name,
+                    map_source(&variant.source),
+                    base.display_name
+                );
+            }
+        }
+
+        let _ = write!(writer, "]\nfiller=[");
+
+        for filler in &data.filler {
+            let _ = write!(
+                writer,
+                "FillerData(\"{}\",FillerType.{}{}{}),",
+                filler.enum_name,
+                match filler.r#type {
+                    crate::FillerType::Hero => "Hero",
+                    crate::FillerType::Villain => "Villain",
+                    crate::FillerType::Other => "Other",
+                },
+                if let Some(name_pos) = &filler.display_name_pos {
+                    format!(",name_pos=\"{}\"", name_pos.replace("[COUNT]", "1"))
+                } else {
+                    String::new()
+                },
+                if let Some(name_neg) = &filler.display_name_neg {
+                    format!(",name_neg=\"{}\"", name_neg.replace("[COUNT]", "1"))
+                } else {
+                    String::new()
+                },
+            );
+        }
+
+        let _ = write!(writer, "FillerData(\"Scion\", FillerType.Other, name_pos=\"Scion of Oblivaeon\")]\n{SUFFIX}");
+    }
+}
+
+fn map_source(source: &str) -> String {
+    if source.is_empty() {
+        String::new()
+    } else {
+        source.split(' ').map(|source| format!("SotmSource.{source}")).collect::<Vec<_>>().join(",")
+    }
+}

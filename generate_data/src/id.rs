@@ -26,7 +26,7 @@
 //                villain ____0001 00000000 00000000 00000000 zzyyyyyy xxxxxxxx xxxxxxxx (x: villain index, y: check #, z: difficulty)
 //           team villain ____0011 00000000 00000000 00000000 zzyyyyyy xxxxxxxx xxxxxxxx (x: team villain index, y: check #, z: difficulty)
 //           hero variant ____0010 00000000 00000000 zzzzzzzz 00yyyyyy xxxxxxxx xxxxxxxx (x: hero index, y: check #, z: variant index)
-//        villain variant ____0010 00000000 00000000 00000000 00yyyyyy xxxxxxxx xxxxxxxx (x: variant index, y: check #)
+//        villain variant ____0010 00000000 00000000 00000000 01yyyyyy xxxxxxxx xxxxxxxx (x: variant index, y: check #)
 //            environment ____0100 00000000 00000000 00000000 00yyyyyy xxxxxxxx xxxxxxxx (x: environment index, y: check #)
 
 use std::{fs::OpenOptions, io::Write};
@@ -60,8 +60,8 @@ pub fn generate_id_py(data: &Data) {
                     c + 1,
                     (0b0010 << 48)
                         | c << 16
-                        | if variant.base == "Villain" {
-                            variant.i as i64
+                        | if variant.is_villain {
+                            variant.i as i64 | 1 << 22
                         } else {
                             variant.base_i as i64 | (variant.i as i64) << 24
                         }
@@ -93,7 +93,7 @@ where
         for data in data {
             for c in 0..5 {
                 for d in 0..4 {
-                    if d >= 2 && data.display_name == "Spite: Agent of Gloom" {
+                    if d >= 2 && data.enum_name == "SpiteAgentOfGloom" {
                         let _ = write!(
                             writer,
                             "\"Spite: Agent of Gloom and Skinwalker Gloomweaver - {} #{}\":{},",
@@ -101,7 +101,7 @@ where
                             c + 1,
                             (prefix << 48) | data.i as i64 | c << 16 | d << 22
                         );
-                    } else if d < 2 || data.display_name != "Skinwalker Gloomweaver" {
+                    } else if d < 2 || data.enum_name != "SkinwalkerGloomweaver" {
                         let _ = write!(
                             writer,
                             "\"{} - {} #{}\":{},",
@@ -146,14 +146,14 @@ where
         match filler.r#type {
             FillerType::Hero => handle_pos_neg(filler, |name, b| {
                 handle_damage_types(filler.damage_types, |t| {
-                    let _ = write!(writer, "\"{}\":{},", normalize(name, t), 0b1000 << 48 | b | filler.i | t << 24 | 0b1000 << 28);
+                    let _ = write!(writer, "\"{}\":{},", normalize(name, t), 0b1000 << 48 | b | filler.i as i64 | t << 24 | 0b1000 << 28);
                     for hero in &data.heroes {
                         let _ = write!(
                             writer,
                             "\"{} (Any {})\":{},",
                             normalize(name, t),
                             hero.display_name,
-                            0b1000 << 48 | b | filler.i | t << 24 | 0b1001 << 28 | (hero.i as i64) << 8
+                            0b1000 << 48 | b | filler.i as i64 | t << 24 | 0b1001 << 28 | (hero.i as i64) << 8
                         );
                     }
                     for variant in data.hero_variants() {
@@ -162,21 +162,21 @@ where
                             "\"{} ({})\":{},",
                             normalize(name, t),
                             variant.display_name,
-                            0b1000 << 48 | b | filler.i | t << 24 | 0b1010 << 28 | (variant.base_i as i64) << 8 | (variant.i as i64) << 32
+                            0b1000 << 48 | b | filler.i as i64 | t << 24 | 0b1010 << 28 | (variant.base_i as i64) << 8 | (variant.i as i64) << 32
                         );
                     }
                 })
             }),
             FillerType::Villain => handle_pos_neg(filler, |name, b| {
                 handle_damage_types(filler.damage_types, |t| {
-                    let _ = write!(writer, "\"{}\":{},", normalize(name, t), 0b1000 << 48 | b | filler.i | t << 24 | 0b0100 << 28);
+                    let _ = write!(writer, "\"{}\":{},", normalize(name, t), 0b1000 << 48 | b | filler.i as i64 | t << 24 | 0b0100 << 28);
                     for villain in &data.villains {
                         let _ = write!(
                             writer,
                             "\"{} ({})\":{},",
                             normalize(name, t),
                             villain.display_name,
-                            0b1000 << 48 | b | filler.i | t << 24 | 0b0101 << 28 | (villain.i as i64) << 8
+                            0b1000 << 48 | b | filler.i as i64 | t << 24 | 0b0101 << 28 | (villain.i as i64) << 8
                         );
                     }
                     for villain in &data.team_villains {
@@ -185,14 +185,14 @@ where
                             "\"{} ({})\":{},",
                             normalize(name, t),
                             villain.display_name,
-                            0b1000 << 48 | b | filler.i | t << 24 | 0b0110 << 28 | (villain.i as i64) << 8
+                            0b1000 << 48 | b | filler.i as i64 | t << 24 | 0b0110 << 28 | (villain.i as i64) << 8
                         );
                     }
                 })
             }),
             FillerType::Other => handle_pos_neg(filler, |name, b| {
                 handle_damage_types(filler.damage_types, |t| {
-                    let _ = write!(writer, "\"{}\":{},", normalize(name, t), 0b1000 << 48 | b | filler.i | t << 24);
+                    let _ = write!(writer, "\"{}\":{},", normalize(name, t), 0b1000 << 48 | b | filler.i as i64 | t << 24);
                 })
             }),
         }
@@ -203,11 +203,11 @@ fn handle_pos_neg<F>(filler: &FillerData, mut r#fn: F)
 where
     F: FnMut(&str, i64),
 {
-    if !filler.display_name_pos.is_empty() {
-        r#fn(&filler.display_name_pos, 0)
+    if let Some(pos) = &filler.display_name_pos {
+        r#fn(pos, 0)
     }
-    if !filler.display_name_neg.is_empty() {
-        r#fn(&filler.display_name_neg, 1 << 48)
+    if let Some(neg) = &filler.display_name_neg {
+        r#fn(neg, 1 << 48)
     }
 }
 

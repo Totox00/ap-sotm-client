@@ -7,34 +7,18 @@ where
 {
     let _ = write!(str, "#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]pub enum FillerType {{");
 
-    for FillerData {
-        enum_name,
-        damage_types: _,
-        r#type: _,
-        display_name_pos: _,
-        display_name_neg: _,
-        desc_pos: _,
-        desc_neg: _,
-        i: _,
-    } in &data.filler
-    {
-        let _ = write!(str, "{enum_name},");
+    for filler in &data.filler {
+        let _ = write!(str, "{},", filler.enum_name);
     }
 
     let _ = write!(str, "}}#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]pub enum Filler {{");
 
-    for FillerData {
-        enum_name,
-        damage_types,
-        r#type,
-        display_name_pos: _,
-        display_name_neg: _,
-        desc_pos: _,
-        desc_neg: _,
-        i: _,
-    } in &data.filler
-    {
-        let _ = match (r#type, *damage_types) {
+    for filler in &data.filler {
+        let r#type = filler.r#type;
+        let damage_types = filler.damage_types;
+        let enum_name = &filler.enum_name;
+
+        let _ = match (r#type, damage_types) {
             (FillerType::Hero, true) => write!(str, "{enum_name}((HeroLike, DamageType)),"),
             (FillerType::Hero, false) => write!(str, "{enum_name}(HeroLike),"),
             (FillerType::Villain, true) => write!(str, "{enum_name}((VillainLike, DamageType)),"),
@@ -46,52 +30,21 @@ where
 
     let _ = write!(str, "}}impl FillerType {{pub fn as_i(&self) -> usize {{match self {{");
 
-    for FillerData {
-        enum_name,
-        damage_types: _,
-        r#type: _,
-        display_name_pos: _,
-        display_name_neg: _,
-        desc_pos: _,
-        desc_neg: _,
-        i,
-    } in &data.filler
-    {
+    for filler in &data.filler {
+        let enum_name = &filler.enum_name;
+        let i = filler.i;
+
         let _ = write!(str, "FillerType::{enum_name} => {i},");
     }
 
     let _ = write!(str, "}}}}pub fn as_idx(&self) -> usize {{match self {{");
 
-    for (
-        FillerData {
-            enum_name,
-            damage_types: _,
-            r#type: _,
-            display_name_pos: _,
-            display_name_neg: _,
-            desc_pos: _,
-            desc_neg: _,
-            i: _,
-        },
-        idx,
-    ) in data.filler.iter().filter(|filler| !filler.damage_types).zip(0..)
-    {
+    for (filler, idx) in data.filler.iter().filter(|filler| !filler.damage_types).zip(0..) {
+        let enum_name = &filler.enum_name;
         let _ = write!(str, "FillerType::{enum_name} => {idx},");
     }
-    for (
-        FillerData {
-            enum_name,
-            damage_types: _,
-            r#type: _,
-            display_name_pos: _,
-            display_name_neg: _,
-            desc_pos: _,
-            desc_neg: _,
-            i: _,
-        },
-        idx,
-    ) in data.filler.iter().filter(|filler| filler.damage_types).zip(0..)
-    {
+    for (filler, idx) in data.filler.iter().filter(|filler| filler.damage_types).zip(0..) {
+        let enum_name = &filler.enum_name;
         let _ = write!(str, "FillerType::{enum_name} => {idx},");
     }
 
@@ -101,18 +54,12 @@ where
         data.filler.iter().filter(|filler| filler.damage_types).count()
     );
 
-    for FillerData {
-        enum_name,
-        damage_types,
-        r#type,
-        display_name_pos: _,
-        display_name_neg: _,
-        desc_pos: _,
-        desc_neg: _,
-        i: _,
-    } in &data.filler
-    {
-        if *damage_types {
+    for filler in &data.filler {
+        let r#type = filler.r#type;
+        let damage_types = filler.damage_types;
+        let enum_name = &filler.enum_name;
+
+        if damage_types {
             let _ = match r#type {
                 FillerType::Hero => write!(str, "Filler::{enum_name}((hero, _)) => Filler::{enum_name}((hero, damage_type)),"),
                 FillerType::Villain => write!(str, "Filler::{enum_name}((villain, _)) => Filler::{enum_name}((villain, damage_type)),"),
@@ -123,48 +70,44 @@ where
 
     let _ = write!(str, "_ => self}}}}pub fn to_string(&self, count: i32) -> String {{match self {{",);
 
-    for FillerData {
-        enum_name,
-        damage_types,
-        r#type,
-        display_name_pos,
-        display_name_neg,
-        desc_pos: _,
-        desc_neg: _,
-        i: _,
-    } in &data.filler
-    {
-        match (r#type, *damage_types) {
+    for filler in &data.filler {
+        let r#type = filler.r#type;
+        let damage_types = filler.damage_types;
+        let enum_name = &filler.enum_name;
+        let display_name_pos = &filler.display_name_pos;
+        let display_name_neg = &filler.display_name_neg;
+
+        match (r#type, damage_types) {
             (FillerType::Hero, true) | (FillerType::Villain, true) => {
                 let _ = write!(
-                        str,
-                        "Filler::{enum_name}((variant, damage_type)) => if count > 0 {{format!(\"{}\", damage_type.as_str(), count.abs())}} else {{format!(\"{}\", damage_type.as_str(), count.abs())}},",
-                        handle_pos_neg(display_name_pos, display_name_neg).replace("[COUNT]", "{}").replace("[TYPE]", "{}"),
-                        handle_pos_neg(display_name_neg, display_name_pos).replace("[COUNT]", "{}").replace("[TYPE]", "{}")
-                    );
+                    str,
+                    "Filler::{enum_name}((variant, damage_type)) => if count > 0 {{format!(\"{}\", damage_type.as_str(), count.abs())}} else {{format!(\"{}\", damage_type.as_str(), count.abs())}},",
+                    handle_pos_neg(display_name_pos.as_ref(), display_name_neg.as_ref()).replace("[COUNT]", "{}").replace("[TYPE]", "{}"),
+                    handle_pos_neg(display_name_neg.as_ref(), display_name_pos.as_ref()).replace("[COUNT]", "{}").replace("[TYPE]", "{}")
+                );
             }
             (FillerType::Hero, false) | (FillerType::Villain, false) => {
                 let _ = write!(
                     str,
                     "Filler::{enum_name}(variant) => if count > 0 {{format!(\"{}\", count.abs())}} else {{format!(\"{}\", count.abs())}},",
-                    handle_pos_neg(display_name_pos, display_name_neg).replace("[COUNT]", "{}"),
-                    handle_pos_neg(display_name_neg, display_name_pos).replace("[COUNT]", "{}")
+                    handle_pos_neg(display_name_pos.as_ref(), display_name_neg.as_ref()).replace("[COUNT]", "{}"),
+                    handle_pos_neg(display_name_neg.as_ref(), display_name_pos.as_ref()).replace("[COUNT]", "{}")
                 );
             }
             (FillerType::Other, true) => {
                 let _ = write!(
                     str,
                     "Filler::{enum_name}(damage_type) => if count > 0 {{format!(\"{}\", damage_type.as_str(), count.abs())}} else {{format!(\"{}\", damage_type.as_str(), count.abs())}},",
-                    handle_pos_neg(display_name_pos, display_name_neg).replace("[COUNT]", "{}").replace("[TYPE]", "{}"),
-                    handle_pos_neg(display_name_neg, display_name_pos).replace("[COUNT]", "{}").replace("[TYPE]", "{}")
+                    handle_pos_neg(display_name_pos.as_ref(), display_name_neg.as_ref()).replace("[COUNT]", "{}").replace("[TYPE]", "{}"),
+                    handle_pos_neg(display_name_neg.as_ref(), display_name_pos.as_ref()).replace("[COUNT]", "{}").replace("[TYPE]", "{}")
                 );
             }
             (FillerType::Other, false) => {
                 let _ = write!(
                     str,
                     "Filler::{enum_name} => if count > 0 {{format!(\"{}\", count.abs())}} else {{format!(\"{}\", count.abs())}},",
-                    handle_pos_neg(display_name_pos, display_name_neg).replace("[COUNT]", "{}"),
-                    handle_pos_neg(display_name_neg, display_name_pos).replace("[COUNT]", "{}")
+                    handle_pos_neg(display_name_pos.as_ref(), display_name_neg.as_ref()).replace("[COUNT]", "{}"),
+                    handle_pos_neg(display_name_neg.as_ref(), display_name_pos.as_ref()).replace("[COUNT]", "{}")
                 );
             }
         }
@@ -172,48 +115,44 @@ where
 
     let _ = write!(str, "}}}}pub fn to_desc(&self, count: i32) -> String {{match self {{");
 
-    for FillerData {
-        enum_name,
-        damage_types,
-        r#type,
-        display_name_pos: _,
-        display_name_neg: _,
-        desc_pos,
-        desc_neg,
-        i: _,
-    } in &data.filler
-    {
-        match (r#type, *damage_types) {
+    for filler in &data.filler {
+        let r#type = filler.r#type;
+        let damage_types = filler.damage_types;
+        let enum_name = &filler.enum_name;
+        let desc_pos = &filler.desc_pos;
+        let desc_neg = &filler.desc_neg;
+
+        match (r#type, damage_types) {
             (FillerType::Hero, true) | (FillerType::Villain, true) => {
                 let _ = write!(
-                        str,
-                        "Filler::{enum_name}((variant, damage_type)) => if count > 0 {{format!(\"{}\", damage_type.as_str(), count.abs())}} else {{format!(\"{}\", damage_type.as_str(), count.abs())}},",
-                        handle_pos_neg(desc_pos, desc_neg).replace("[COUNT]", "{}").replace("[TYPE]", "{}"),
-                        handle_pos_neg(desc_neg, desc_pos).replace("[COUNT]", "{}").replace("[TYPE]", "{}")
-                    );
+                    str,
+                    "Filler::{enum_name}((variant, damage_type)) => if count > 0 {{format!(\"{}\", damage_type.as_str(), count.abs())}} else {{format!(\"{}\", damage_type.as_str(), count.abs())}},",
+                    handle_pos_neg(desc_pos.as_ref(), desc_neg.as_ref()).replace("[COUNT]", "{}").replace("[TYPE]", "{}"),
+                    handle_pos_neg(desc_neg.as_ref(), desc_pos.as_ref()).replace("[COUNT]", "{}").replace("[TYPE]", "{}")
+                );
             }
             (FillerType::Hero, false) | (FillerType::Villain, false) => {
                 let _ = write!(
                     str,
                     "Filler::{enum_name}(variant) => if count > 0 {{format!(\"{}\", count.abs())}} else {{format!(\"{}\", count.abs())}},",
-                    handle_pos_neg(desc_pos, desc_neg).replace("[COUNT]", "{}"),
-                    handle_pos_neg(desc_neg, desc_pos).replace("[COUNT]", "{}")
+                    handle_pos_neg(desc_pos.as_ref(), desc_neg.as_ref()).replace("[COUNT]", "{}"),
+                    handle_pos_neg(desc_neg.as_ref(), desc_pos.as_ref()).replace("[COUNT]", "{}")
                 );
             }
             (FillerType::Other, true) => {
                 let _ = write!(
                     str,
                     "Filler::{enum_name}(damage_type) => if count > 0 {{format!(\"{}\", damage_type.as_str(), count.abs())}} else {{format!(\"{}\", damage_type.as_str(), count.abs())}},",
-                    handle_pos_neg(desc_pos, desc_neg).replace("[COUNT]", "{}").replace("[TYPE]", "{}"),
-                    handle_pos_neg(desc_neg, desc_pos).replace("[COUNT]", "{}").replace("[TYPE]", "{}")
+                    handle_pos_neg(desc_pos.as_ref(), desc_neg.as_ref()).replace("[COUNT]", "{}").replace("[TYPE]", "{}"),
+                    handle_pos_neg(desc_neg.as_ref(), desc_pos.as_ref()).replace("[COUNT]", "{}").replace("[TYPE]", "{}")
                 );
             }
             (FillerType::Other, false) => {
                 let _ = write!(
                     str,
                     "Filler::{enum_name} => if count > 0 {{format!(\"{}\", count.abs())}} else {{format!(\"{}\", count.abs())}},",
-                    handle_pos_neg(desc_pos, desc_neg).replace("[COUNT]", "{}"),
-                    handle_pos_neg(desc_neg, desc_pos).replace("[COUNT]", "{}")
+                    handle_pos_neg(desc_pos.as_ref(), desc_neg.as_ref()).replace("[COUNT]", "{}"),
+                    handle_pos_neg(desc_neg.as_ref(), desc_pos.as_ref()).replace("[COUNT]", "{}")
                 );
             }
         }
@@ -237,18 +176,13 @@ where
         "pub fn from_id(id: i64) -> (Filler, i32) {{let count = 1 - (((id >> 48) & 1) << 1) as i32; (match ((id & (0b1111 << 28)) >> 28, id & 0b1111_1111) {{"
     );
 
-    for FillerData {
-        enum_name,
-        display_name_pos: _,
-        display_name_neg: _,
-        damage_types,
-        r#type,
-        desc_pos: _,
-        desc_neg: _,
-        i,
-    } in data
-    {
-        match (r#type, *damage_types) {
+    for filler in data {
+        let r#type = filler.r#type;
+        let damage_types = filler.damage_types;
+        let enum_name = &filler.enum_name;
+        let i = filler.i;
+
+        match (r#type, damage_types) {
             (FillerType::Hero, true) => {
                 let _ = write!(
                     str,
@@ -302,18 +236,12 @@ where
 {
     let _ = write!(str, "pub fn deconstruct(self) -> DeconstructedFiller {{match self {{");
 
-    for FillerData {
-        enum_name,
-        damage_types,
-        r#type,
-        display_name_pos: _,
-        display_name_neg: _,
-        desc_pos: _,
-        desc_neg: _,
-        i: _,
-    } in data
-    {
-        let _ = match (r#type, *damage_types) {
+    for filler in data {
+        let r#type = filler.r#type;
+        let damage_types = filler.damage_types;
+        let enum_name = &filler.enum_name;
+
+        let _ = match (r#type, damage_types) {
             (FillerType::Hero, true) => write!(
                 str,
                 "Filler::{enum_name}((hero, damage_type)) => DeconstructedFiller {{r#type: FillerType::{enum_name}, target: FillerTarget::Hero(hero), damage_type: Some(damage_type)}},"
@@ -350,19 +278,13 @@ where
 {
     let _ = write!(str, "pub fn hero_filler(hero: HeroLike) -> Vec<Filler> {{vec![");
 
-    for FillerData {
-        enum_name,
-        damage_types,
-        r#type,
-        display_name_pos: _,
-        display_name_neg: _,
-        desc_pos: _,
-        desc_neg: _,
-        i: _,
-    } in data
-    {
-        if *r#type == FillerType::Hero {
-            if *damage_types {
+    for filler in data {
+        let r#type = filler.r#type;
+        let damage_types = filler.damage_types;
+        let enum_name = &filler.enum_name;
+
+        if r#type == FillerType::Hero {
+            if damage_types {
                 let _ = write!(str, "Filler::{enum_name}((hero, DamageType::All)),");
             } else {
                 let _ = write!(str, "Filler::{enum_name}(hero),");
@@ -372,19 +294,13 @@ where
 
     let _ = write!(str, "]}}pub fn villain_filler(villain: VillainLike) -> Vec<Filler> {{vec![");
 
-    for FillerData {
-        enum_name,
-        damage_types,
-        r#type,
-        display_name_pos: _,
-        display_name_neg: _,
-        desc_pos: _,
-        desc_neg: _,
-        i: _,
-    } in data
-    {
-        if *r#type == FillerType::Villain {
-            if *damage_types {
+    for filler in data {
+        let r#type = filler.r#type;
+        let damage_types = filler.damage_types;
+        let enum_name = &filler.enum_name;
+
+        if r#type == FillerType::Villain {
+            if damage_types {
                 let _ = write!(str, "Filler::{enum_name}((villain, DamageType::All)),");
             } else {
                 let _ = write!(str, "Filler::{enum_name}(villain),");
@@ -394,19 +310,13 @@ where
 
     let _ = write!(str, "]}}pub fn other_filler() -> Vec<Filler> {{vec![");
 
-    for FillerData {
-        enum_name,
-        damage_types,
-        r#type,
-        display_name_pos: _,
-        display_name_neg: _,
-        desc_pos: _,
-        desc_neg: _,
-        i: _,
-    } in data
-    {
-        if *r#type == FillerType::Other {
-            if *damage_types {
+    for filler in data {
+        let r#type = filler.r#type;
+        let damage_types = filler.damage_types;
+        let enum_name = &filler.enum_name;
+
+        if r#type == FillerType::Other {
+            if damage_types {
                 let _ = write!(str, "Filler::{enum_name}(DamageType::All),");
             } else {
                 let _ = write!(str, "Filler::{enum_name},");
@@ -417,10 +327,10 @@ where
     let _ = write!(str, "]}}");
 }
 
-fn handle_pos_neg<'a>(preferred: &'a str, other: &'a str) -> &'a str {
-    if preferred.is_empty() {
-        other
-    } else {
+fn handle_pos_neg<'a>(preferred: Option<&'a String>, other: Option<&'a String>) -> &'a String {
+    if let Some(preferred) = preferred {
         preferred
+    } else {
+        other.expect("Filler must have either pos, neg, or both")
     }
 }

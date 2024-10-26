@@ -1,7 +1,4 @@
-use crate::{
-    data::{DamageType, DeconstructedFiller, Environment, Filler, FillerTarget, Hero, HeroLike, Item, Location, TeamVillain, Variant, Villain, VillainLike},
-    logic::can_unlock,
-};
+use crate::data::{DamageType, DeconstructedFiller, Environment, Filler, FillerTarget, Hero, HeroLike, Item, Location, TeamVillain, Variant, Villain, VillainLike};
 use archipelago_protocol::SlotData;
 use strum::IntoEnumIterator;
 
@@ -19,6 +16,14 @@ pub struct CleanedSlotData {
     pub required_variants: u32,
     pub villain_difficulty_points: [u32; 4],
     pub locations_per: [u8; 6],
+    pub deathlink: DeathlinkType,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum DeathlinkType {
+    None,
+    Individual,
+    Team,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -126,7 +131,7 @@ impl State {
             },
             variants: Variant::iter()
                 .filter(|v| self.checked_locations.has_unchecked_variant(*v))
-                .filter(|v| can_unlock(*v, &self.items))
+                .filter(|v| v.can_unlock(&self.items))
                 .collect(),
             environments: Environment::iter()
                 .filter(|v| self.checked_locations.has_unchecked_environment(*v))
@@ -166,6 +171,10 @@ impl Items {
 
     pub fn has_team_villain(&self, team_villain: TeamVillain) -> bool {
         self.team_villains & 1 << team_villain as u16 > 0
+    }
+
+    pub fn team_villain_count(&self) -> bool {
+        self.team_villains.count_ones() >= 3
     }
 
     pub fn has_hero(&self, hero: Hero) -> bool {
@@ -499,6 +508,12 @@ impl From<SlotData> for CleanedSlotData {
             required_variants: if value.required_variants < 0 { 0 } else { value.required_variants as u32 },
             villain_difficulty_points: value.villain_difficulty_points.map(|e| if e < 0 { 0 } else { e as u32 }),
             locations_per: value.locations_per.map(|e| if e < 0 { 0 } else { e as u8 }),
+            deathlink: match value.death_link.unwrap_or(0) {
+                0 => DeathlinkType::None,
+                1 => DeathlinkType::Individual,
+                2 => DeathlinkType::Team,
+                _ => unreachable!(),
+            },
         }
     }
 }

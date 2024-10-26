@@ -15,6 +15,7 @@ const variantLocations = document.getElementById("variant-locations");
 const disconnect = document.getElementById("disconnect");
 const tooltip = document.getElementById("tooltip");
 const descToggle = document.getElementById("desc-toggle");
+const deathlink = document.getElementById("deathlink");
 
 server.value = localStorage.getItem("server") ?? "archipelago.gg";
 port.value = localStorage.getItem("port") ?? "38281";
@@ -52,11 +53,52 @@ disconnect.addEventListener("click", () => {
 descToggle.addEventListener("click", () => {
   showDesc = !showDesc;
   if (showDesc) {
-    descToggle.innerText = "Hide Descriptions"
+    descToggle.innerText = "Hide Descriptions";
   } else {
-    descToggle.innerText = "Show Descriptions"
+    descToggle.innerText = "Show Descriptions";
   }
-})
+});
+
+deathlink.addEventListener("click", () => {
+  let cause;
+  let hero;
+  let villain;
+
+  switch (deathlinkType) {
+    case 1:
+      hero = window.prompt("Which hero was defeated?");
+      villain = window.prompt(`Which villain defeated ${hero}?`);
+      if (hero && villain)
+        cause = `${slot.value} let ${hero} be defeated by ${villain}`;
+      break;
+    case 2:
+      villain = window.prompt("Which villain did you lose to?");
+      if (villain) cause = `${slot.value} was defeated by ${villain}`;
+      break;
+  }
+
+  console.log([
+    {
+      cmd: "Bounce",
+      tags: ["DeathLink"],
+      time: Date.now(),
+      cause: cause,
+      source: slot.value,
+    },
+  ]);
+
+  client.send(
+    JSON.stringify([
+      {
+        cmd: "Bounce",
+        tags: ["DeathLink"],
+        time: Date.now(),
+        cause: cause,
+        source: slot.value,
+      },
+    ])
+  );
+});
 
 let tryConnect = (e) => console.log("Please wait for wasm to initialise.");
 let printJson = (data) => console.log(data);
@@ -71,6 +113,7 @@ let datapackageStore;
 let session;
 let receivedItemIndex = 0;
 let showDesc = false;
+let deathlinkType = 0;
 
 async function run() {
   await init();
@@ -154,6 +197,18 @@ function connectedConnect(connected) {
     msgBuffer.appendChild(newMsg);
   };
   client.send(JSON.stringify([{ cmd: "Sync" }]));
+  deathlinkType = session.deathlink();
+  if (deathlinkType > 0) {
+    client.send(
+      JSON.stringify([{ cmd: "ConnectUpdate", tags: ["DeathLink"] }])
+    );
+    deathlink.hidden = false;
+    deathlink.innerText = [
+      "Deathlink Inactive",
+      "Send Deathlink (Individual)",
+      "Send Deathlink (Team)",
+    ][deathlinkType];
+  }
 }
 
 function handleEvent(event) {
@@ -186,6 +241,19 @@ function handleEvent(event) {
         state = session.get_state();
         updateState();
         break;
+      case "Bounced":
+        console.log(msg);
+        const { time, cause, source } = msg;
+        if (Date.now() - time < 60000 && source != slot.value) {
+          window.alert(
+            `Deathlink received: ${cause ?? `${source} died`}\n${
+              [
+                "Your hero with the lowest hp is incapacitated",
+                "Your team is defeated",
+              ][deathlinkType - 1]
+            }`
+          );
+        }
     }
   }
 }
@@ -225,7 +293,7 @@ function updateState() {
     newElem.addEventListener("mouseenter", (e) => {
       tooltip.innerHTML = session.get_filler_for_hero(item, showDesc);
       moveTooltip(e);
-    });    
+    });
     heroes.appendChild(newElem);
   }
 
@@ -282,7 +350,7 @@ function updateState() {
       sendLocation(location);
       newElem.remove();
     });
-    newElem.addEventListener("mouseenter", locationTooltip(location));
+    newElem.addEventListener("mouseenter", variantTooltip(location));
     variantLocations.appendChild(newElem);
   }
 }
@@ -306,6 +374,13 @@ function itemTooltip(item) {
 function locationTooltip(location) {
   return (e) => {
     tooltip.innerHTML = session.get_filler_for_location(location, showDesc);
+    moveTooltip(e);
+  };
+}
+
+function variantTooltip(location) {
+  return (e) => {
+    tooltip.innerHTML = session.get_variant_desc(location);
     moveTooltip(e);
   };
 }

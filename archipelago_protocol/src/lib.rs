@@ -222,6 +222,7 @@ pub struct SlotData {
     pub required_variants: i32,
     pub villain_difficulty_points: [i32; 4],
     pub locations_per: [i8; 6],
+    pub death_link: Option<i8>
 }
 
 #[derive(Debug, Serialize, Deserialize)]

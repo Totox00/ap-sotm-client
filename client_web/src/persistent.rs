@@ -7,18 +7,18 @@ use client_lib::{
 use web_sys::window;
 
 pub struct WebPersistentStore {
-    seed: String,
+    key: String,
 }
 
 impl PersistentStore for WebPersistentStore {
-    fn new(seed: &str) -> Self {
-        WebPersistentStore { seed: seed.to_string() }
+    fn new(seed: &str, name: &str) -> Self {
+        WebPersistentStore { key: format!("{seed}-{name}") }
     }
 
     fn load(&self) -> Locations {
         if let Some(window) = window() {
             if let Ok(Some(local_storage)) = window.local_storage() {
-                if let Ok(Some(base64)) = local_storage.get_item(&self.seed) {
+                if let Ok(Some(base64)) = local_storage.get_item(&self.key) {
                     if let Ok(buf) = BASE64_STANDARD.decode(&base64) {
                         if buf.len() != 1 + Villain::variant_count() + TeamVillain::variant_count() + 16 + 8 {
                             return Locations::new();
@@ -52,7 +52,7 @@ impl PersistentStore for WebPersistentStore {
                 buf.extend(locations.variants.to_le_bytes());
                 buf.extend(locations.environments.to_le_bytes());
 
-                let _ = local_storage.set_item(&self.seed, &BASE64_STANDARD.encode(&buf));
+                let _ = local_storage.set_item(&self.key, &BASE64_STANDARD.encode(&buf));
             }
         }
     }

@@ -1,15 +1,23 @@
+#![feature(proc_macro_span)]
+
+mod data_py;
 mod enums;
 mod filler;
 mod group_data;
 mod id;
+mod logic;
 
+use data_py::generate_data_py;
 use enums::{push_enum_defs, push_variant_defs};
 use filler::push_filler;
 use group_data::group_data;
 use id::generate_id_py;
+use logic::LogicTerm;
 use proc_macro::TokenStream;
 
+#[derive(Debug)]
 struct Data {
+    sources: Vec<SourceData>,
     villains: Vec<EnumData>,
     team_villains: Vec<EnumData>,
     heroes: Vec<EnumData>,
@@ -18,33 +26,48 @@ struct Data {
     filler: Vec<FillerData>,
 }
 
+#[derive(Debug)]
+struct SourceData {
+    enum_name: String,
+    display_name: String,
+    default: bool
+}
+
+#[derive(Debug, Clone)]
 struct EnumData {
     enum_name: String,
     display_name: String,
+    source: String,
     i: usize,
 }
 
+#[derive(Debug, Clone)]
 struct VariantData {
     enum_name: String,
     display_name: String,
+    source: String,
     base: String,
     unlock_desc: Option<String>,
+    unparsed_logic: Option<String>,
+    logic: Option<Box<LogicTerm>>,
     i: usize,
     base_i: usize,
+    is_villain: bool,
 }
 
+#[derive(Debug)]
 struct FillerData {
     enum_name: String,
-    display_name_pos: String,
-    display_name_neg: String,
+    display_name_pos: Option<String>,
+    display_name_neg: Option<String>,
     damage_types: bool,
     r#type: FillerType,
-    desc_pos: String,
-    desc_neg: String,
-    i: i64,
+    desc_pos: Option<String>,
+    desc_neg: Option<String>,
+    i: usize,
 }
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum FillerType {
     Hero,
     Villain,
@@ -53,11 +76,13 @@ enum FillerType {
 
 /// # Panics
 ///
-/// Panics if the input table cannot be parsed into valid item data
+/// Panics if the input file cannot be parsed into valid item data
 #[proc_macro]
-pub fn generate_data(stream: TokenStream) -> TokenStream {
-    let data = group_data(stream);
+pub fn generate_data(_stream: TokenStream) -> TokenStream {
+    let data = group_data();
+
     generate_id_py(&data);
+    generate_data_py(&data);
 
     let mut str = String::new();
 
@@ -73,6 +98,10 @@ pub fn generate_data(stream: TokenStream) -> TokenStream {
 
 impl Data {
     pub fn hero_variants(&self) -> impl Iterator<Item = &VariantData> {
-        self.variants.iter().filter(|variant| variant.base != "Villain")
+        self.variants.iter().filter(|variant| !variant.is_villain)
+    }
+
+    pub fn villain_variants(&self) -> impl Iterator<Item = &VariantData> {
+        self.variants.iter().filter(|variant| variant.is_villain)
     }
 }

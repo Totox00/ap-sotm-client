@@ -9,27 +9,27 @@ use std::{
 };
 
 pub trait PersistentStore {
-    fn new(seed: &str) -> Self;
+    fn new(seed: &str, name: &str) -> Self;
     fn load(&self) -> Locations;
     fn save(&self, locations: &Locations);
 }
 
 pub struct DefaultPersistentStore {
-    seed: String,
+    key: String,
 }
 
 impl PersistentStore for DefaultPersistentStore {
-    fn new(seed: &str) -> Self {
-        DefaultPersistentStore { seed: seed.to_string() }
+    fn new(seed: &str, name: &str) -> Self {
+        DefaultPersistentStore { key: format!("{seed}-{name}") }
     }
 
     fn load(&self) -> Locations {
-        if let Ok(mut reader) = File::open(Path::new("./persistent").join(&self.seed)) {
+        if let Ok(mut reader) = File::open(Path::new("./persistent").join(&self.key)) {
             let mut buf = vec![];
             if let Ok(len) = reader.read_to_end(&mut buf) {
                 if len != 1 + Villain::variant_count() + TeamVillain::variant_count() + 16 + 8 {
                     println!("Save file is invalid. Was it made with an older version?");
-                    let _ = rename(Path::new("./persistent").join(&self.seed), Path::new("./persistent").join(format!("{}-backup", self.seed)));
+                    let _ = rename(Path::new("./persistent").join(&self.key), Path::new("./persistent").join(format!("{}-backup", self.key)));
                     return Locations::new();
                 } else {
                     let mut locations = Locations::new();
@@ -55,7 +55,7 @@ impl PersistentStore for DefaultPersistentStore {
             println!("Failed to create persistent storage with error {err}");
         }
 
-        match File::create(Path::new("./persistent").join(&self.seed)) {
+        match File::create(Path::new("./persistent").join(&self.key)) {
             Ok(mut writer) => {
                 let mut buf = vec![if locations.victory { 1 } else { 0 }];
                 buf.extend(locations.villains);
