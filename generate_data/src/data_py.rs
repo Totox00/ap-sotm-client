@@ -6,13 +6,15 @@ const SUFFIX: &str = include_str!("suffix.py");
 
 pub fn generate_data_py(data: &Data) {
     if let Ok(mut writer) = OpenOptions::new().write(true).create(true).truncate(true).open("Data.py") {
-        let _ = writeln!(writer, "{PREFIX}\nclass SotmSource(IntEnum):");
+        let _ = write!(writer, "{PREFIX}\nclass SotmSource(IntEnum):");
 
-        for (i, source) in data.sources.iter().enumerate() {
-            let _ = writeln!(writer, "    {} = {i}", source.enum_name);
-        }
+        let _ = write!(
+            writer,
+            "{}",
+            data.sources.iter().enumerate().map(|(i, source)| format!("{}={i}", source.enum_name)).collect::<Vec<_>>().join(";")
+        );
 
-        let _ = write!(writer, "sources={{");
+        let _ = write!(writer, "\nsources={{");
 
         for source in &data.sources {
             let _ = write!(
@@ -24,7 +26,7 @@ pub fn generate_data_py(data: &Data) {
             );
         }
 
-        let _ = write!(writer, "}}\nclass SotmData(NamedTuple):\n    name: str\n    sources: list[SotmSource]\n    category: SotmCategory\n    base: Optional[str] = None\n    rule: Optional[Callable[[CollectionState | SotmState, int], bool]] = None\n    dependencies: Optional[list[str]] = None\ndata=[");
+        let _ = write!(writer, "}}\nclass SotmData(NamedTuple):name:str;sources:list[SotmSource];category:SotmCategory;base:Optional[str]=None;rule:Optional[Callable[[CollectionState|SotmState,int],bool]]=None;dependencies:Optional[list[str]]=None\ndata=[");
 
         for villain in &data.villains {
             if let Some(variant) = data.villain_variants().find(|variant| villain.enum_name == variant.enum_name) {

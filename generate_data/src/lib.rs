@@ -4,14 +4,14 @@ mod data_py;
 mod enums;
 mod filler;
 mod group_data;
-mod id;
+mod id_py;
 mod logic;
 
 use data_py::generate_data_py;
 use enums::{push_enum_defs, push_variant_defs};
 use filler::push_filler;
 use group_data::group_data;
-use id::generate_id_py;
+use id_py::generate_id_py;
 use logic::LogicTerm;
 use proc_macro::TokenStream;
 

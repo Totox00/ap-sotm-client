@@ -117,6 +117,7 @@ let session;
 let receivedItemIndex = 0;
 let showDesc = false;
 let deathlinkType = 0;
+let deathlinkGrace = Date.now();
 
 async function run() {
   await init();
@@ -245,9 +246,13 @@ function handleEvent(event) {
         updateState();
         break;
       case "Bounced":
-        console.log(msg);
+        if (Date.now() - deathlinkGrace < 60000) {
+          deathlinkGrace = Date.now();
+          return;
+        }
         const { time, cause, source } = msg;
-        if (Date.now() - time < 60000 && source != slot.value) {
+        if (Date.now() - time > 60000 && source != slot.value) {
+          deathlinkGrace = Date.now();
           window.alert(
             `Deathlink received: ${cause ?? `${source} died`}\n${
               [
