@@ -1,11 +1,11 @@
 // SAVE LAYOUT
 // FIELD                      | TYPE
 // -------------------------- | -----
+// meta                       | [RRRRRRNV] R = reserved, N = new version (should always be 1), V = victory sent
 // villain_locations_len      | u16
 // team_villain_locations_len | u16
 // variant_locations_len      | u16
 // environment_locations_len  | u16
-// victory_sent               | u8
 // villain_locations          | [u8; villain_locations_len]
 // team_villain_locations     | [u8; team_villain_locations_len]
 // variant_locations          | [u8; variant_locations_len]
@@ -44,13 +44,17 @@ impl PersistentStore for DefaultPersistentStore {
                     println!("Save file was made with a newer version and cannot be loaded.");
                     let _ = rename(Path::new("./persistent").join(&self.key), Path::new("./persistent").join(format!("{}-backup", self.key)));
                     return Locations::new();
+                } else if buf[0] & 2 == 0 {
+                    println!("Save file was made with a too old version and cannot be loaded.");
+                    let _ = rename(Path::new("./persistent").join(&self.key), Path::new("./persistent").join(format!("{}-backup", self.key)));
+                    return Locations::new();
                 } else {
                     let mut locations = Locations::new();
-                    let villain_len = u16::from_le_bytes(buf[0..2].try_into().unwrap()) as usize;
-                    let team_villain_len = u16::from_le_bytes(buf[2..4].try_into().unwrap()) as usize;
-                    let variant_len = u16::from_le_bytes(buf[4..6].try_into().unwrap()) as usize;
-                    let environment_len = u16::from_le_bytes(buf[6..8].try_into().unwrap()) as usize;
-                    locations.victory = buf[8] > 0;
+                    locations.victory = buf[0] & 1 > 0;
+                    let villain_len = u16::from_le_bytes(buf[1..3].try_into().unwrap()) as usize;
+                    let team_villain_len = u16::from_le_bytes(buf[3..5].try_into().unwrap()) as usize;
+                    let variant_len = u16::from_le_bytes(buf[5..7].try_into().unwrap()) as usize;
+                    let environment_len = u16::from_le_bytes(buf[7..9].try_into().unwrap()) as usize;
                     let mut start = 9;
                     locations.villains.copy_from_slice(&buf[start..start + villain_len]);
                     start += villain_len;
@@ -75,11 +79,11 @@ impl PersistentStore for DefaultPersistentStore {
         match File::create(Path::new("./persistent").join(&self.key)) {
             Ok(mut writer) => {
                 let mut buf = vec![];
+                buf.push(if locations.victory { 0b11 } else { 0b10 });
                 buf.extend((Villain::variant_count() as u16).to_le_bytes());
                 buf.extend((TeamVillain::variant_count() as u16).to_le_bytes());
                 buf.extend(((Variant::variant_count() / 8 + 1) as u16).to_le_bytes());
                 buf.extend(((Environment::variant_count() / 8 + 1) as u16).to_le_bytes());
-                buf.push(if locations.victory { 1 } else { 0 });
                 buf.extend(locations.villains);
                 buf.extend(locations.team_villains);
                 buf.extend(locations.variants);

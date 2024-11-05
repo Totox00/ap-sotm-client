@@ -23,13 +23,16 @@ impl PersistentStore for WebPersistentStore {
                         if buf.len() > 8 + 1 + Villain::variant_count() + TeamVillain::variant_count() + Variant::variant_count() / 8 + 1 + Environment::variant_count() / 8 + 1 {
                             let _ = window.alert_with_message("Save file was made with a newer version and cannot be loaded.");
                             return Locations::new();
+                        } else if buf[0] & 2 == 0 {
+                            let _ = window.alert_with_message("Save file was made with a too old version and cannot be loaded.");
+                            return Locations::new();
                         } else {
                             let mut locations = Locations::new();
-                            let villain_len = u16::from_le_bytes(buf[0..2].try_into().unwrap()) as usize;
-                            let team_villain_len = u16::from_le_bytes(buf[2..4].try_into().unwrap()) as usize;
-                            let variant_len = u16::from_le_bytes(buf[4..6].try_into().unwrap()) as usize;
-                            let environment_len = u16::from_le_bytes(buf[6..8].try_into().unwrap()) as usize;
-                            locations.victory = buf[8] > 0;
+                            locations.victory = buf[0] & 1 > 0;
+                            let villain_len = u16::from_le_bytes(buf[1..3].try_into().unwrap()) as usize;
+                            let team_villain_len = u16::from_le_bytes(buf[3..5].try_into().unwrap()) as usize;
+                            let variant_len = u16::from_le_bytes(buf[5..7].try_into().unwrap()) as usize;
+                            let environment_len = u16::from_le_bytes(buf[7..9].try_into().unwrap()) as usize;
                             let mut start = 9;
                             locations.villains.copy_from_slice(&buf[start..start + villain_len]);
                             start += villain_len;
@@ -52,11 +55,11 @@ impl PersistentStore for WebPersistentStore {
         if let Some(window) = window() {
             if let Ok(Some(local_storage)) = window.local_storage() {
                 let mut buf = vec![];
+                buf.push(if locations.victory { 0b11 } else { 0b10 });
                 buf.extend((Villain::variant_count() as u16).to_le_bytes());
                 buf.extend((TeamVillain::variant_count() as u16).to_le_bytes());
                 buf.extend(((Variant::variant_count() / 8 + 1) as u16).to_le_bytes());
                 buf.extend(((Environment::variant_count() / 8 + 1) as u16).to_le_bytes());
-                buf.push(if locations.victory { 1 } else { 0 });
                 buf.extend(locations.villains);
                 buf.extend(locations.team_villains);
                 buf.extend(locations.variants);
