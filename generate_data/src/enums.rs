@@ -28,6 +28,19 @@ where
     let _ = write!(str, "}}}}}}");
 }
 
+pub fn push_no_challenge_impl<T>(str: &mut T, ident: &str, enum_data: &[EnumData])
+where
+    T: Write,
+{
+    let _ = write!(str, "impl {ident} {{pub fn no_challenge(&self) -> bool {{match self {{");
+
+    for data in enum_data {
+        let _ = write!(str, "{ident}::{} => {},", data.enum_name, data.no_challenge);
+    }
+
+    let _ = write!(str, "}}}}}}");
+}
+
 pub fn push_variant_defs<T>(str: &mut T, variant_data: &[VariantData])
 where
     T: Write,
@@ -95,7 +108,7 @@ where
     }
 
     let _ = write!(str, "_ => \"\",}}}}pub fn can_unlock(&self, items: &Items) -> bool {{match self {{");
-    
+
     for variant in variant_data {
         let enum_name = &variant.enum_name;
 
@@ -103,6 +116,6 @@ where
             let _ = write!(str, "Variant::{enum_name} => {},", logic.as_rust_expr());
         }
     }
-    
+
     let _ = write!(str, "_ => false,}}}}}}");
 }

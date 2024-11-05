@@ -92,7 +92,7 @@ where
     if (prefix & 1) == 1 {
         for data in data {
             for c in 0..5 {
-                for d in 0..4 {
+                for d in 0..if data.no_challenge { 2 } else { 4 } {
                     if d >= 2 && data.enum_name == "SpiteAgentOfGloom" {
                         let _ = write!(
                             writer,

@@ -75,8 +75,7 @@ impl State {
                 .map(|v| {
                     (
                         v,
-                        [0, 1, 2, 3]
-                            .iter()
+                        if v.no_challenge() { [0, 1].iter() } else { [0, 1, 2, 3].iter() }
                             .filter(|d| self.checked_locations.has_unchecked_villain(v, **d))
                             .map(|d| 1 << d)
                             .fold(0, |acc, x| acc | x),
@@ -101,8 +100,7 @@ impl State {
                     .map(|v| {
                         (
                             v,
-                            [0, 1, 2, 3]
-                                .iter()
+                            if v.no_challenge() { [0, 1].iter() } else { [0, 1, 2, 3].iter() }
                                 .filter(|d| self.checked_locations.has_unchecked_team_villain(v, **d))
                                 .map(|d| 1 << d)
                                 .fold(0, |acc, x| acc | x),

@@ -26,7 +26,7 @@ pub fn generate_data_py(data: &Data) {
             );
         }
 
-        let _ = write!(writer, "}}\nclass SotmData(NamedTuple):name:str;sources:list[SotmSource];category:SotmCategory;base:Optional[str]=None;rule:Optional[Callable[[CollectionState|SotmState,int],bool]]=None;dependencies:Optional[list[str]]=None\ndata=[");
+        let _ = write!(writer, "}}\nclass SotmData(NamedTuple):name:str;sources:list[SotmSource];category:SotmCategory;no_challenge:bool;base:Optional[str]=None;rule:Optional[Callable[[CollectionState|SotmState,int],bool]]=None;dependencies:Optional[list[str]]=None\ndata=[");
 
         for villain in &data.villains {
             if let Some(variant) = data.villain_variants().find(|variant| villain.enum_name == variant.enum_name) {
@@ -35,31 +35,55 @@ pub fn generate_data_py(data: &Data) {
 
                     let _ = write!(
                         writer,
-                        "SotmData(\"{}\",[{}],SotmCategory.VillainVariant,\"{}\",lambda state,player:{},[{}]),",
+                        "SotmData(\"{}\",[{}],SotmCategory.VillainVariant,{},\"{}\",lambda state,player:{},[{}]),",
                         villain.display_name,
                         map_source(&villain.source),
+                        if villain.no_challenge { "True" } else { "False" },
                         base.display_name,
                         logic.as_py_expr(),
                         logic.as_dependencies(data).iter().map(|dependency| format!("\"{dependency}\"")).collect::<Vec<_>>().join(",")
                     );
                 } else {
-                    let _ = write!(writer, "SotmData(\"{}\",[{}],SotmCategory.Villain),", villain.display_name, map_source(&villain.source));
+                    let _ = write!(
+                        writer,
+                        "SotmData(\"{}\",[{}],SotmCategory.Villain,{}),",
+                        villain.display_name,
+                        map_source(&villain.source),
+                        if villain.no_challenge { "True" } else { "False" }
+                    );
                 }
             } else {
-                let _ = write!(writer, "SotmData(\"{}\",[{}],SotmCategory.Villain),", villain.display_name, map_source(&villain.source));
+                let _ = write!(
+                    writer,
+                    "SotmData(\"{}\",[{}],SotmCategory.Villain,{}),",
+                    villain.display_name,
+                    map_source(&villain.source),
+                    if villain.no_challenge { "True" } else { "False" }
+                );
             }
         }
 
         for team_villain in &data.team_villains {
-            let _ = write!(writer, "SotmData(\"{}\",[{}],SotmCategory.TeamVillain),", team_villain.display_name, map_source(&team_villain.source));
+            let _ = write!(
+                writer,
+                "SotmData(\"{}\",[{}],SotmCategory.TeamVillain,{}),",
+                team_villain.display_name,
+                map_source(&team_villain.source),
+                if team_villain.no_challenge { "True" } else { "False" }
+            );
         }
 
         for hero in &data.heroes {
-            let _ = write!(writer, "SotmData(\"{}\",[{}],SotmCategory.Hero),", hero.display_name, map_source(&hero.source));
+            let _ = write!(writer, "SotmData(\"{}\",[{}],SotmCategory.Hero,False),", hero.display_name, map_source(&hero.source));
         }
 
         for environment in &data.environments {
-            let _ = write!(writer, "SotmData(\"{}\",[{}],SotmCategory.Environment),", environment.display_name, map_source(&environment.source));
+            let _ = write!(
+                writer,
+                "SotmData(\"{}\",[{}],SotmCategory.Environment,False),",
+                environment.display_name,
+                map_source(&environment.source)
+            );
         }
 
         for variant in data.hero_variants() {
@@ -67,7 +91,7 @@ pub fn generate_data_py(data: &Data) {
             if let Some(logic) = &variant.logic {
                 let _ = write!(
                     writer,
-                    "SotmData(\"{}\",[{}],SotmCategory.Variant,\"{}\",lambda state,player:{},[{}]),",
+                    "SotmData(\"{}\",[{}],SotmCategory.Variant,False,\"{}\",lambda state,player:{},[{}]),",
                     variant.display_name,
                     map_source(&variant.source),
                     base.display_name,
@@ -77,7 +101,7 @@ pub fn generate_data_py(data: &Data) {
             } else {
                 let _ = write!(
                     writer,
-                    "SotmData(\"{}\",[{}],SotmCategory.Variant,\"{}\"),",
+                    "SotmData(\"{}\",[{}],SotmCategory.Variant,False,\"{}\"),",
                     variant.display_name,
                     map_source(&variant.source),
                     base.display_name

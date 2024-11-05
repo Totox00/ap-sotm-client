@@ -13,6 +13,7 @@ struct Fields {
     display_name: Option<String>,
     source: Option<String>,
     default: Option<bool>,
+    no_challenge: Option<bool>,
     base: Option<String>,
     unlock_desc: Option<String>,
     unlock_logic: Option<String>,
@@ -49,24 +50,28 @@ macro_rules! push_current {
                 display_name: $current.display_name.expect("Villains must have display_name"),
                 source: $current.source.unwrap_or(String::new()),
                 i: $villains.len(),
+                no_challenge: $current.no_challenge.unwrap_or(false),
             }),
             DataType::TeamVillain => $team_villains.push(EnumData {
                 enum_name: $current.enum_name.expect("Team villains must have enum_name"),
                 display_name: $current.display_name.expect("Team villains must have display_name"),
                 source: $current.source.unwrap_or(String::new()),
                 i: $team_villains.len(),
+                no_challenge: $current.no_challenge.unwrap_or(false),
             }),
             DataType::Hero => $heroes.push(EnumData {
                 enum_name: $current.enum_name.expect("Heroes must have enum_name"),
                 display_name: $current.display_name.expect("Heroes must have display_name"),
                 source: $current.source.unwrap_or(String::new()),
                 i: $heroes.len(),
+                no_challenge: false,
             }),
             DataType::Environment => $environments.push(EnumData {
                 enum_name: $current.enum_name.expect("Environments must have enum_name"),
                 display_name: $current.display_name.expect("Environments must have display_name"),
                 source: $current.source.unwrap_or(String::new()),
                 i: $environments.len(),
+                no_challenge: false,
             }),
             DataType::Variant => {
                 let enum_name = $current.enum_name.expect("Variants must have enum_name");
@@ -81,6 +86,7 @@ macro_rules! push_current {
                         display_name: display_name.clone(),
                         source: source.clone(),
                         i: $villains.len(),
+                        no_challenge: $current.no_challenge.unwrap_or(false),
                     })
                 }
 
@@ -162,6 +168,7 @@ pub fn group_data() -> Data {
             match line.as_str() {
                 "damagetypes" => current.damage_types = Some(true),
                 "default" => current.default = Some(true),
+                "nochallenge" => current.no_challenge = Some(true),
                 _ => panic!("Unrecognised bool field {line} at line {i}"),
             }
         }
