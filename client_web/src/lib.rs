@@ -200,7 +200,7 @@ impl WasmSession {
 
     pub fn get_variant_desc(&self, target: &WasmLocation) -> String {
         match target.as_inner().as_item() {
-            Some(Item::Variant(v)) => v.as_desc().to_string(),
+            Some(Item::Variant(v)) => v.as_desc().replace('_', "\u{00A0}").to_string(),
             _ => String::new(),
         }
     }
