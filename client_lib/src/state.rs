@@ -6,24 +6,7 @@ use strum::IntoEnumIterator;
 pub struct State {
     pub items: Items,
     pub checked_locations: Locations,
-    pub slot_data: CleanedSlotData,
-}
-
-#[derive(Debug, Clone, Copy)]
-pub struct CleanedSlotData {
-    pub required_scions: u32,
-    pub required_villains: u32,
-    pub required_variants: u32,
-    pub villain_difficulty_points: [u32; 4],
-    pub locations_per: [u8; 6],
-    pub deathlink: DeathlinkType,
-}
-
-#[derive(Debug, Clone, Copy)]
-pub enum DeathlinkType {
-    None,
-    Individual,
-    Team,
+    pub slot_data: SlotData,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -80,7 +63,7 @@ impl State {
         State {
             items: Items::new(),
             checked_locations: Locations::new(),
-            slot_data: slot_data.into(),
+            slot_data,
         }
     }
 
@@ -497,23 +480,5 @@ impl Locations {
 impl Default for Locations {
     fn default() -> Self {
         Self::new()
-    }
-}
-
-impl From<SlotData> for CleanedSlotData {
-    fn from(value: SlotData) -> Self {
-        Self {
-            required_scions: if value.required_scions < 0 { 0 } else { value.required_scions as u32 },
-            required_villains: if value.required_villains < 0 { 0 } else { value.required_villains as u32 },
-            required_variants: if value.required_variants < 0 { 0 } else { value.required_variants as u32 },
-            villain_difficulty_points: value.villain_difficulty_points.map(|e| if e < 0 { 0 } else { e as u32 }),
-            locations_per: value.locations_per.map(|e| if e < 0 { 0 } else { e as u8 }),
-            deathlink: match value.death_link.unwrap_or(0) {
-                0 => DeathlinkType::None,
-                1 => DeathlinkType::Individual,
-                2 => DeathlinkType::Team,
-                _ => unreachable!(),
-            },
-        }
     }
 }

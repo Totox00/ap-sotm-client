@@ -3,11 +3,11 @@ pub mod datapackage;
 pub mod persistent;
 pub mod state;
 
-use archipelago_protocol::{Connected, PrintJSON};
+use archipelago_protocol::{Connected, PrintJSON, SlotData};
 use data::{Item, Location};
 use datapackage::DatapackageStore;
 use persistent::PersistentStore;
-use state::{CleanedSlotData, Locations, State};
+use state::{Locations, State};
 use std::collections::HashMap;
 
 #[derive(Debug)]
@@ -36,7 +36,7 @@ where
     pub persistent_store: P,
     pub players: HashMap<i32, String>,
     pub slot: String,
-    pub slot_data: CleanedSlotData,
+    pub slot_data: SlotData,
     pub state: State,
 }
 

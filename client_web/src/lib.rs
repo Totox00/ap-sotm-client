@@ -3,12 +3,11 @@ mod format_json;
 mod persistent;
 mod wrap_state;
 
-use archipelago_protocol::{Connected, RoomInfo};
+use archipelago_protocol::{Connected, DeathlinkType, RoomInfo};
 use client_lib::{
     data::{FillerTarget, HeroLike, Item, Location, VillainLike},
     datapackage::DatapackageStore,
     persistent::PersistentStore,
-    state::DeathlinkType,
     Session,
 };
 use datapackage::WebDatapackageStore;
@@ -215,7 +214,7 @@ impl WasmSession {
     }
 
     pub fn deathlink(&self) -> u8 {
-        match self.inner.slot_data.deathlink {
+        match self.inner.slot_data.death_link {
             DeathlinkType::None => 0,
             DeathlinkType::Individual => 1,
             DeathlinkType::Team => 2,

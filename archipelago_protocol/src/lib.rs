@@ -217,12 +217,20 @@ pub struct Connected {
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct SlotData {
-    pub required_scions: i32,
-    pub required_villains: i32,
-    pub required_variants: i32,
-    pub villain_difficulty_points: [i32; 4],
-    pub locations_per: [i8; 6],
-    pub death_link: Option<i8>
+    pub required_scions: u32,
+    pub required_villains: u32,
+    pub required_variants: u32,
+    pub villain_difficulty_points: [u32; 4],
+    pub locations_per: [u8; 6],
+    pub death_link: DeathlinkType,
+}
+
+#[derive(Debug, Clone, Copy, Deserialize_repr, Serialize_repr)]
+#[repr(u8)]
+pub enum DeathlinkType {
+    None = 0,
+    Individual = 1,
+    Team = 2,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
