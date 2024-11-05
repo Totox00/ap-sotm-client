@@ -12,10 +12,10 @@ pub struct State {
 #[derive(Debug, Clone, Copy)]
 pub struct Items {
     pub scions: u32,
-    pub villains: u64,
-    pub team_villains: u16,
+    pub villains: [u8; Villain::variant_count() / 8 + 1],
+    pub team_villains: [u8; TeamVillain::variant_count() / 8 + 1],
     pub heroes: [u8; Hero::variant_count()],
-    pub environments: u64,
+    pub environments: [u8; Environment::variant_count() / 8 + 1],
     pub filler: FillerItems,
 }
 
@@ -45,8 +45,8 @@ pub struct Locations {
     pub victory: bool,
     pub villains: [u8; Villain::variant_count()],
     pub team_villains: [u8; TeamVillain::variant_count()],
-    pub variants: u128,
-    pub environments: u64,
+    pub variants: [u8; Variant::variant_count() / 8 + 1],
+    pub environments: [u8; Environment::variant_count() / 8 + 1],
 }
 
 #[derive(Debug, Clone)]
@@ -93,7 +93,7 @@ impl State {
                 })
                 .flat_map(|(v, b)| [0, 1, 2, 3].iter().filter(move |d| b & 1 << *d > 0).map(move |d| (v, *d)))
                 .collect(),
-            team_villains: if self.items.team_villains.count_ones() < 3 {
+            team_villains: if self.items.team_villains.iter().map(|b| (*b).count_ones()).sum::<u32>() < 3 {
                 vec![]
             } else {
                 TeamVillain::iter()
@@ -125,7 +125,7 @@ impl State {
 
     pub fn victory_available(&self) -> bool {
         self.items.scions >= self.slot_data.required_scions
-            && self.checked_locations.variants.count_ones() >= self.slot_data.required_variants
+            && self.checked_locations.variants.iter().map(|b| b.count_ones()).sum::<u32>() >= self.slot_data.required_variants
             && self
                 .checked_locations
                 .villains
@@ -140,24 +140,24 @@ impl Items {
     pub fn new() -> Self {
         Items {
             scions: 0,
-            villains: 0,
-            team_villains: 0,
+            villains: [0; Villain::variant_count() / 8 + 1],
+            team_villains: [0; TeamVillain::variant_count() / 8 + 1],
             heroes: [0; Hero::variant_count()],
-            environments: 0,
+            environments: [0; Environment::variant_count() / 8 + 1],
             filler: FillerItems::new(),
         }
     }
 
     pub fn has_villain(&self, villain: Villain) -> bool {
-        self.villains & 1 << villain as u64 > 0
+        self.villains[villain as usize >> 3] & 1 << (villain as u8 & 0x7) > 0
     }
 
     pub fn has_team_villain(&self, team_villain: TeamVillain) -> bool {
-        self.team_villains & 1 << team_villain as u16 > 0
+        self.team_villains[team_villain as usize >> 3] & 1 << (team_villain as u8 & 0x7) > 0
     }
 
     pub fn team_villain_count(&self) -> bool {
-        self.team_villains.count_ones() >= 3
+        self.team_villains.iter().map(|b| b.count_ones()).sum::<u32>() >= 3
     }
 
     pub fn has_hero(&self, hero: Hero) -> bool {
@@ -182,15 +182,15 @@ impl Items {
     }
 
     pub fn has_environment(&self, environment: Environment) -> bool {
-        self.environments & 1 << environment as u64 > 0
+        self.environments[environment as usize >> 3] & 1 << (environment as u8 & 0x7) > 0
     }
 
     pub fn set_villain(&mut self, villain: Villain) {
-        self.villains |= 1 << villain as u64;
+        self.villains[villain as usize >> 3] |= 1 << (villain as u8 & 0x7);
     }
 
     pub fn set_team_villain(&mut self, team_villain: TeamVillain) {
-        self.team_villains |= 1 << team_villain as u16;
+        self.team_villains[team_villain as usize >> 3] |= 1 << (team_villain as u8 & 0x7);
     }
 
     pub fn set_hero(&mut self, hero: Hero) {
@@ -204,7 +204,7 @@ impl Items {
     }
 
     pub fn set_environment(&mut self, environment: Environment) {
-        self.environments |= 1 << environment as u64;
+        self.environments[environment as usize >> 3] |= 1 << (environment as u8 & 0x7);
     }
 
     pub fn set_item(&mut self, item: Item) {
@@ -422,8 +422,8 @@ impl Locations {
             victory: false,
             villains: [0; Villain::variant_count()],
             team_villains: [0; TeamVillain::variant_count()],
-            variants: 0,
-            environments: 0,
+            variants: [0; Variant::variant_count() / 8 + 1],
+            environments: [0; Environment::variant_count() / 8 + 1],
         }
     }
 
@@ -439,12 +439,12 @@ impl Locations {
         if variant as usize >= Variant::BaccaratAceOfSwords as usize {
             false
         } else {
-            self.variants & 1 << variant as u128 == 0
+            self.variants[variant as usize >> 3] & 1 << (variant as u8 & 0x7) == 0
         }
     }
 
     pub fn has_unchecked_environment(&self, environment: Environment) -> bool {
-        self.environments & 1 << environment as u64 == 0
+        self.environments[environment as usize >> 3] & 1 << (environment as u8 & 0x7) == 0
     }
 
     pub fn mark_villain(&mut self, villain: Villain, difficulty: u8) {
@@ -459,11 +459,11 @@ impl Locations {
         if variant as usize >= Variant::BaccaratAceOfSwords as usize {
             return;
         }
-        self.variants |= 1 << variant as u128;
+        self.variants[variant as usize >> 3] |= 1 << (variant as u8 & 0x7);
     }
 
     pub fn mark_environment(&mut self, environment: Environment) {
-        self.environments |= 1 << environment as u64;
+        self.environments[environment as usize >> 3] |= 1 << (environment as u8 & 0x7);
     }
 
     pub fn mark_location(&mut self, location: Location) {

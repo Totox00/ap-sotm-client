@@ -1,6 +1,6 @@
 use base64::{prelude::BASE64_STANDARD, Engine};
 use client_lib::{
-    data::{TeamVillain, Villain},
+    data::{Environment, TeamVillain, Variant, Villain},
     persistent::PersistentStore,
     state::Locations,
 };
@@ -20,19 +20,24 @@ impl PersistentStore for WebPersistentStore {
             if let Ok(Some(local_storage)) = window.local_storage() {
                 if let Ok(Some(base64)) = local_storage.get_item(&self.key) {
                     if let Ok(buf) = BASE64_STANDARD.decode(&base64) {
-                        if buf.len() != 1 + Villain::variant_count() + TeamVillain::variant_count() + 16 + 8 {
+                        if buf.len() > 8 + 1 + Villain::variant_count() + TeamVillain::variant_count() + Variant::variant_count() / 8 + 1 + Environment::variant_count() / 8 + 1 {
+                            let _ = window.alert_with_message("Save file was made with a newer version and cannot be loaded.");
                             return Locations::new();
                         } else {
                             let mut locations = Locations::new();
-                            locations.victory = buf[0] > 0;
-                            let mut start = 1;
-                            locations.villains.copy_from_slice(&buf[start..start + Villain::variant_count()]);
-                            start += Villain::variant_count();
-                            locations.team_villains.copy_from_slice(&buf[start..start + TeamVillain::variant_count()]);
-                            start += TeamVillain::variant_count();
-                            locations.variants = u128::from_le_bytes(buf[start..start + 16].try_into().unwrap());
-                            start += 16;
-                            locations.environments = u64::from_le_bytes(buf[start..start + 8].try_into().unwrap());
+                            let villain_len = u16::from_le_bytes(buf[0..2].try_into().unwrap()) as usize;
+                            let team_villain_len = u16::from_le_bytes(buf[2..4].try_into().unwrap()) as usize;
+                            let variant_len = u16::from_le_bytes(buf[4..6].try_into().unwrap()) as usize;
+                            let environment_len = u16::from_le_bytes(buf[6..8].try_into().unwrap()) as usize;
+                            locations.victory = buf[8] > 0;
+                            let mut start = 9;
+                            locations.villains.copy_from_slice(&buf[start..start + villain_len]);
+                            start += villain_len;
+                            locations.team_villains.copy_from_slice(&buf[start..start + team_villain_len]);
+                            start += team_villain_len;
+                            locations.variants.copy_from_slice(&buf[start..start + variant_len]);
+                            start += variant_len;
+                            locations.environments.copy_from_slice(&buf[start..start + environment_len]);
                             return locations;
                         }
                     }
@@ -46,11 +51,16 @@ impl PersistentStore for WebPersistentStore {
     fn save(&self, locations: &Locations) {
         if let Some(window) = window() {
             if let Ok(Some(local_storage)) = window.local_storage() {
-                let mut buf = vec![if locations.victory { 1 } else { 0 }];
+                let mut buf = vec![];
+                buf.extend((Villain::variant_count() as u16).to_le_bytes());
+                buf.extend((TeamVillain::variant_count() as u16).to_le_bytes());
+                buf.extend(((Variant::variant_count() / 8 + 1) as u16).to_le_bytes());
+                buf.extend(((Environment::variant_count() / 8 + 1) as u16).to_le_bytes());
+                buf.push(if locations.victory { 1 } else { 0 });
                 buf.extend(locations.villains);
                 buf.extend(locations.team_villains);
-                buf.extend(locations.variants.to_le_bytes());
-                buf.extend(locations.environments.to_le_bytes());
+                buf.extend(locations.variants);
+                buf.extend(locations.environments);
 
                 let _ = local_storage.set_item(&self.key, &BASE64_STANDARD.encode(&buf));
             }
