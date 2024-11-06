@@ -31,7 +31,7 @@ pub fn generate_data_py(data: &Data) {
         for villain in &data.villains {
             if let Some(variant) = data.villain_variants().find(|variant| villain.enum_name == variant.enum_name) {
                 if let Some(logic) = &variant.logic {
-                    let base = data.villains.iter().find(|villain| villain.enum_name == variant.base).expect("Failed to find base for variant");
+                    let base = data.villains.iter().find(|villain| villain.enum_name == variant.base).unwrap_or_else(|| panic!("Failed to find base for variant {}", variant.enum_name));
 
                     let _ = write!(
                         writer,
@@ -87,7 +87,7 @@ pub fn generate_data_py(data: &Data) {
         }
 
         for variant in data.hero_variants() {
-            let base = data.heroes.iter().find(|hero| hero.enum_name == variant.base).expect("Failed to find base for variant");
+            let base = data.heroes.iter().find(|hero| hero.enum_name == variant.base).unwrap_or_else(|| panic!("Failed to find base for variant {}", variant.enum_name));
             if let Some(logic) = &variant.logic {
                 let _ = write!(
                     writer,
