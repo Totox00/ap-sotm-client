@@ -88,6 +88,51 @@ name The Cauldron
 source CauldronPromos
 name Cauldron Promos
 
+source OrderOfTheStick
+name Order of the Stick
+
+source MagicTheGathering
+name Magic The Gathering
+
+source DarkSouls
+name Dark Souls
+
+source KrumitsTale
+name Krumit's Tale
+
+source DrMcNinja
+name The Adventures of Dr. McNinja
+
+source Fusion
+name Fusion Heroes
+
+source AdelphophagesVillainPromos
+name Adelphophage's Villain Promos
+
+source AdelphophagesHeroPromos
+name Adelphophage's Hero Promos
+
+source TheVentureBrothers
+name The Venture Brothers
+
+source AdelphophagesCustomVillains
+name Adelphophage's Custom Villains
+
+source AdelphophagesCustomHeroes
+name Adelphophage's Custom Heroes
+
+source AdelphophagesCustomEnvironments
+name Adelphophage's Custom Environments
+
+source SentinelsOfTheBuffyverse
+name Sentinels of the Buffyverse
+
+source UnionOfHeroes
+name Union of Heroes
+
+source ThematicallyVariable
+name Thematically Variable Stuff Whose Only True Common Element Is Really Good Design
+
 villain BaronBlade
 name Baron Blade
 
@@ -167,7 +212,7 @@ name Miss Information
 from MissInformation
 
 villain LaCapitan
-name La Capitán
+name La Capitan
 from ShatteredTimelines
 
 villain TheDreamer
@@ -287,8 +332,8 @@ name 1929 Ram
 from TheCauldron
 base TheRam
 
-villain ScreamMachine
-name Scream Machine
+villain ScreaMachine
+name ScreaMachine
 from TheCauldron
 
 villain SwarmEater
@@ -1631,3 +1676,1161 @@ filler HeroCannotDamage
 type Other
 negname Weakening Assault [COUNT]
 negdesc At the start of each round, choose [COUNT] heroes. Those heroes cannot deal damage until the end of the round
+
+hero Belkar
+name Belkar
+from OrderOfTheStick
+
+variant BelkarStealthyRanger
+name Belkar: Stealthy Ranger
+from OrderOfTheStick
+base Belkar
+
+variant BelkarGourmetChef
+name Belkar: Gourmet Chef
+from OrderOfTheStick
+base Belkar
+
+hero Durkon
+name Durkon
+from OrderOfTheStick
+
+variant DurkonHighPriestOfHel
+name Durkon: High Priest of Hel
+from OrderOfTheStick
+base Durkon
+
+hero Elan
+name Elan
+from OrderOfTheStick
+
+variant ElanPunDuelist
+name Elan: Pun Duelist
+from OrderOfTheStick
+base Elan
+
+hero Haley
+name Haley
+from OrderOfTheStick
+
+variant HaleyTheRedBlur
+name Haley: The Red Blur
+from OrderOfTheStick
+base Haley
+
+hero RoyGreenhilt
+name Roy Greenhilt
+from OrderOfTheStick
+
+variant RoyGreenhiltSwordmaster
+name Roy Greenhilt: Swordmaster
+from OrderOfTheStick
+base RoyGreenhilt
+
+variant RoyGreenhiltMba
+name Roy Greenhilt: MBA
+from OrderOfTheStick
+base RoyGreenhilt
+
+hero Vaarsuvius
+name Vaarsuvius
+from OrderOfTheStick
+
+variant VaarsuviusCultRidden
+name Vaarsuvius: Cult-Ridden
+from OrderOfTheStick
+base Vaarsuvius
+
+villain Xykon
+name Xykon
+from OrderOfTheStick
+nochallenge
+
+hero Ajani
+name Ajani
+from MagicTheGathering
+
+variant AjaniWiseCounselor
+name Ajani: Wise Counselor
+from MagicTheGathering
+base Ajani
+
+variant AjaniMentorOfHeroes
+name Ajani: Mentor of Heroes
+from MagicTheGathering
+base Ajani
+
+variant AjaniSleeperAgent
+name Ajani: Sleeper Agent
+from MagicTheGathering
+base Ajani
+
+hero TheBrazenCoalitionBeckettBrass
+name The Brazen Coalition: Beckett Brass
+from MagicTheGathering
+
+variant TheBrazenCoalitionWallisParrish
+name The Brazen Coalition: Wallis Parrish
+from MagicTheGathering
+base TheBrazenCoalitionBeckettBrass
+
+variant TheBrazenCoalitionLanneryStorm
+name The Brazen Coalition: Lannery Storm
+from MagicTheGathering
+base TheBrazenCoalitionBeckettBrass
+
+hero Chandra
+name Chandra
+from MagicTheGathering
+
+variant ChandraHeartOfFire
+name Chandra: Heart of Fire
+from MagicTheGathering
+base Chandra
+
+variant ChandraDressedToKill
+name Chandra: Dressed to Kill
+from MagicTheGathering
+base Chandra
+
+hero Garruk
+name Garruk
+from MagicTheGathering
+
+variant GarrukApexPredator
+name Garruk: Apex Predator
+from MagicTheGathering
+base Garruk
+
+variant GarrukCursedHuntsman
+name Garruk: Cursed Huntsman
+from MagicTheGathering
+base Garruk
+
+hero Gideon
+name Gideon
+from MagicTheGathering
+
+variant GideonDeathSeeker
+name Gideon: Death Seeker
+from MagicTheGathering
+base Gideon
+
+hero Huatli
+name Huatli
+from MagicTheGathering
+
+variant HuatliTheSunsHeart
+name Huatli: The Sun's Heart
+from MagicTheGathering
+base Huatli
+
+variant HuatliWarriorPoet
+name Huatli: Warrior Poet
+from MagicTheGathering
+base Huatli
+
+variant HuatliPoetOfUnity
+name Huatli: Poet of Unity
+from MagicTheGathering
+base Huatli
+
+hero Jace
+name Jace
+from MagicTheGathering
+
+variant JaceTelepathUnbound
+name Jace: Telepath Unbound
+from MagicTheGathering
+base Jace
+
+variant JaceCunningCastaway
+name Jace: Cunning Castaway
+from MagicTheGathering
+base Jace
+
+variant JacePerfectedMind
+name Jace: Perfected Mind
+from MagicTheGathering
+base Jace
+
+hero Karn
+name Karn
+from MagicTheGathering
+
+variant KarnFatherOfMachines
+name Karn: Father of Machines
+from MagicTheGathering
+base Karn
+
+variant KarnLegacyReforged
+name Karn: Legacy Reforged
+from MagicTheGathering
+base Karn
+
+hero Liliana
+name Liliana
+from MagicTheGathering
+
+variant LilianaMasterOfDeath
+name Liliana: Master of Death
+from MagicTheGathering
+base Liliana
+
+variant LilianaDeathWielder
+name Liliana: Death Wielder
+from MagicTheGathering
+base Liliana
+
+hero Nissa
+name Nissa
+from MagicTheGathering
+
+variant NissaSageAnimist
+name Nissa: Sage Animist
+from MagicTheGathering
+base Nissa
+
+variant NissaAscendedAnimist
+name Nissa: Ascended Animist
+from MagicTheGathering
+base Nissa
+
+hero TheRiverHeraldsTishana
+name The River Heralds: Tishana
+from MagicTheGathering
+
+variant TheRiverHeraldsKopala
+name The River Heralds: Kopala
+from MagicTheGathering
+base TheRiverHeraldsTishana
+
+variant TheRiverHeraldsKumena
+name The River Heralds: Kumena
+from MagicTheGathering
+base TheRiverHeraldsTishana
+
+variant TheRiverHeraldsTuvasa
+name The River Heralds: Tuvasa
+from MagicTheGathering
+base TheRiverHeraldsTishana
+
+variant TheRiverHeraldsNicanzil
+name The River Heralds: Nicanzil
+from MagicTheGathering
+base TheRiverHeraldsTishana
+
+hero Saheeli
+name Saheeli
+from MagicTheGathering
+
+variant SaheeliSublimeArtificer
+name Saheeli: Sublime Artificer
+from MagicTheGathering
+base Saheeli
+
+variant SaheeliSunsBrilliance
+name Saheeli: Sun's Brilliance
+from MagicTheGathering
+base Saheeli
+
+hero Teferi
+name Teferi
+from MagicTheGathering
+
+variant TeferiHeroOfDominaria
+name Teferi: Hero of Dominaria
+from MagicTheGathering
+base Teferi
+
+variant TeferiTimebender
+name Teferi: Timebender
+from MagicTheGathering
+base Teferi
+
+villain EleshNorn
+name Elesh Norn
+from MagicTheGathering
+nochallenge
+
+villain Heliod
+name Heliod
+from MagicTheGathering
+nochallenge
+
+variant HeliodRadiantDawn
+name Heliod: Radiant Dawn
+from MagicTheGathering
+base Heliod
+nochallenge
+
+villain Nghathrod
+name N'ghathrod
+from MagicTheGathering
+nochallenge
+
+villain NicolBolas
+name Nicol Bolas
+from MagicTheGathering
+nochallenge
+
+variant NicolBolasRavagingTwin
+name Nicol Bolas: Ravaging Twin
+from MagicTheGathering
+base NicolBolas
+nochallenge
+
+villain ObNixilis
+name Ob Nixilis
+from MagicTheGathering
+nochallenge
+
+variant ObNixilisDemonicKingpin
+name Ob Nixilis: Demonic Kingpin
+from MagicTheGathering
+base ObNixilis
+nochallenge
+
+villain Tezzeret
+name Tezzeret
+from MagicTheGathering
+nochallenge
+
+variant TezzeretAgentOfArtifice
+name Tezzeret: Agent of Artifice
+from MagicTheGathering
+base Tezzeret
+nochallenge
+
+villain Ulamog
+name Ulamog
+from MagicTheGathering
+nochallenge
+
+variant UlamogUlaFalseGod
+name Ulamog: Ula, False God
+from MagicTheGathering
+base Ulamog
+nochallenge
+
+villain Vona
+name Vona
+from MagicTheGathering
+nochallenge
+
+villain Yawgmoth
+name Yawgmoth
+from MagicTheGathering
+nochallenge
+
+environment Ixalan
+name Ixalan
+from MagicTheGathering
+
+environment AzoriusSenate
+name Azorius Senate
+from MagicTheGathering
+
+environment BorosLegion
+name Boros Legion
+from MagicTheGathering
+
+environment CultOfRakdos
+name Cult of Rakdos
+from MagicTheGathering
+
+environment GolgariSwarm
+name Golgari Swarm
+from MagicTheGathering
+
+environment GruulClans
+name Gruul Clans
+from MagicTheGathering
+
+environment HouseDimir
+name House Dimir
+from MagicTheGathering
+
+environment IzzetLeague
+name Izzet League
+from MagicTheGathering
+
+environment OrzhovSyndicate
+name Orzhov Syndicate
+from MagicTheGathering
+
+environment SelesnyaConclave
+name Selesnya Conclave
+from MagicTheGathering
+
+environment SimicCombine
+name Simic Combine
+from MagicTheGathering
+
+environment LoreholdCollegeOfArchaeomancy
+name Lorehold: College of Archaeomancy
+from MagicTheGathering
+
+environment PrismariCollegeOfElementalArts
+name Prismari: College of Elemental Arts
+from MagicTheGathering
+
+environment QuandrixCollegeOfNumeromancy
+name Quandrix: Collage of Numeromancy
+from MagicTheGathering
+
+environment SilverquillCollegeOfEloquence
+name Silverquill: College of Eloquence
+from MagicTheGathering
+
+environment WitherbloomCollegeOfEssenceStudies
+name Witherbloom: College of Essence Studies
+from MagicTheGathering
+
+villain AnorLondo
+name Anor Londo
+from DarkSouls
+nochallenge
+
+variant AnorLondoGuardiansOfGwynevere
+name Anor Londo: Guardians of Gwynevere
+from DarkSouls
+base AnorLondo
+nochallenge
+
+villain Lordran
+name Lordran
+from DarkSouls
+nochallenge
+
+variant LordranTheUndeadAsylum
+name Lordran: The Undead Asylum
+from DarkSouls
+base Lordran
+nochallenge
+
+environment Blighttown
+name Blighttown
+from DarkSouls
+
+environment SensFortress
+name Sen's Fortress
+from DarkSouls
+
+hero Bruno
+name Bruno
+from KrumitsTale
+
+hero Greybeard
+name Greybeard
+from KrumitsTale
+
+hero Mischief
+name Mischief
+from KrumitsTale
+
+hero Muldorf
+name Muldorf
+from KrumitsTale
+
+hero Rose
+name Rose
+from KrumitsTale
+
+variant RoseQueenOfShadow
+name Rose: Queen of Shadow
+from KrumitsTale
+base Rose
+
+hero VarfaAndOrhu
+name Varfa and Orhu
+from KrumitsTale
+
+hero DrMcNinja
+name Dr. McNinja
+from DrMcNinja
+
+variant DrMcNinjaDesperatePartner
+name Dr. McNinja: Desperate Partner
+from DrMcNinja
+base DrMcNinja
+
+variant DrMcLuchador
+name Dr. McLuchador
+from DrMcNinja
+base DrMcNinja
+
+hero DarkSmokePuncher
+name Dark Smoke Puncher
+from DrMcNinja
+
+variant DarkSmokePuncherTechnomage
+name Dark Smoke Puncher: Technomage
+from DrMcNinja
+base DarkSmokePuncher
+
+hero Gordito
+name Gordito
+from DrMcNinja
+
+variant GorditoDinosaurSlayer
+name Gordito: Dinosaur Slayer
+from DrMcNinja
+base Gordito
+
+villain FranzRayner
+name Franz Rayner
+from DrMcNinja
+nochallenge
+
+villain KingRadical
+name King Radical
+from DrMcNinja
+nochallenge
+
+hero AbsoluteRa
+name Absolute Ra
+from Fusion
+
+hero Argentline
+name Argentline
+from Fusion
+
+hero Benchmaka
+name Benchmaka
+from Fusion
+
+hero BunkerTronU
+name Bunker-Tron U
+from Fusion
+
+hero CaptainFanatic
+name Captain Fanatic
+from Fusion
+
+hero CaptainTempest
+name Captain Tempest
+from Fusion
+
+hero Chronomodora
+name Chronomodora
+from Fusion
+
+hero Expatraith
+name Expatraith
+from Fusion
+
+hero FanaticXtremeline
+name Fanatic: Xtremeline
+from Fusion
+
+hero Guisity
+name Guisity
+from Fusion
+
+hero HakaTheInfinite
+name Haka the Infinite
+from Fusion
+
+hero Knyfionary
+name Knyfionary
+from Fusion
+
+hero LegacyAmericasFinestMedic
+name Legacy: America's Finest Medic
+from Fusion
+
+hero Luminodora
+name Luminodora
+from Fusion
+
+hero Mainstaka
+name Mainstaka
+from Fusion
+
+hero MisterRanger
+name Mister Ranger
+from Fusion
+
+hero Omnipatriette
+name Omnipatriette
+from Fusion
+
+hero Parsomodora
+name Parsomodora
+from Fusion
+
+hero RaKashThriya
+name Ra'kash'thriya
+from Fusion
+
+hero Setbackyon
+name Setbackyon
+from Fusion
+
+hero TachyonFugueState
+name Tachyon: Fugue State
+from Fusion
+
+hero TempestChangeFromBetterToWorse
+name Tempest: A Change from Better to Worse
+from Fusion
+
+hero Tempunity
+name Tempunity
+from Fusion
+
+hero Unithe
+name Unithe
+from Fusion
+
+hero TheVisionaryRanger
+name The Visionary Ranger
+from Fusion
+
+hero WraithStuntwoman
+name Wraith: Stuntwoman
+from Fusion
+
+hero WritheGuiseOfShadows
+name Writhe: Guise of Shadows
+from Fusion
+
+variant OmnitronTechnoTerror
+name Omnitron: Techno Terror
+from AdelphophagesVillainPromos
+base Omnitron
+nochallenge
+
+variant GrandWarlordVossGeneBoundGeneral
+name Grand Warlord Voss: Gene-Bound General
+from AdelphophagesVillainPromos
+base GrandWarlordVoss
+nochallenge
+
+variant BaronBladeBlackHoleGenerator
+name Baron Blade: Black Hole Generator
+from AdelphophagesVillainPromos
+base BaronBlade
+nochallenge
+
+variant CitizenDawnSolarEmpress
+name Citizen Dawn: Solar Empress
+from AdelphophagesVillainPromos
+base CitizenDawn
+nochallenge
+
+variant AkashBhutaPrimordialCreator
+name Akash'Bhuta: Primordial Creator
+from AdelphophagesVillainPromos InfernalRelics
+base AkashBhuta
+nochallenge
+
+variant TheEnneadWrathOfTheGods
+name The Ennead: Wrath of the Gods
+from AdelphophagesVillainPromos InfernalRelics
+base TheEnnead
+nochallenge
+
+variant GloomweaverRitualOfGnophos
+name Gloomweaver: Ritual of Gnophos
+from AdelphophagesVillainPromos InfernalRelics
+base Gloomweaver
+nochallenge
+
+variant ApostateDarkAngel
+name Apostate: Dark Angel
+from AdelphophagesVillainPromos InfernalRelics
+base Apostate
+nochallenge
+
+variant SpiteDeathAddict
+name Spite: Death Addict
+from AdelphophagesVillainPromos RookCity
+base Spite
+nochallenge
+
+variant PlagueRatTheNewBreed
+name Plague Rat: The New Breed
+from AdelphophagesVillainPromos RookCity
+base PlagueRat
+nochallenge
+
+variant TheMatriarchRavenQueen
+name The Matriarch: Raven Queen
+from AdelphophagesVillainPromos RookCity
+base TheMatriarch
+nochallenge
+
+variant TheChairmanKingpin
+name The Chairman: Kingpin
+from AdelphophagesVillainPromos RookCity
+base TheChairman
+nochallenge
+
+variant IronLegacyJusticeForAll
+name Iron Legacy: Justice For All
+from AdelphophagesVillainPromos ShatteredTimelines
+base IronLegacy
+nochallenge
+
+variant TheDreamerMindOfAChild
+name The Dreamer: Mind of a Child
+from AdelphophagesVillainPromos ShatteredTimelines
+base TheDreamer
+nochallenge
+
+variant LaCapitanParadoxicalPirate
+name La Capitan: Paradoxical Pirate
+from AdelphophagesVillainPromos ShatteredTimelines
+base LaCapitan
+nochallenge
+
+variant KismetTwistOfFate
+name Kismet: Twist of Fate
+from AdelphophagesVillainPromos ShatteredTimelines
+base Kismet
+nochallenge
+
+variant DeadlineAngelOfExtinction
+name Deadline: Angel of Extinction
+from AdelphophagesVillainPromos WrathOfTheCosmos
+base Deadline
+nochallenge
+
+variant ProgenyTheMessenger
+name Progeny: The Messenger
+from AdelphophagesVillainPromos WrathOfTheCosmos
+base Progeny
+nochallenge
+
+variant KaargraWarfangRulerOfThePit
+name Kaargra Warfang: Ruler of the Pit
+from AdelphophagesVillainPromos WrathOfTheCosmos
+base KaargraWarfang
+nochallenge
+
+variant ChokepointRuthlessTechnopath
+name Chokepoint: Ruthless Technopath
+from AdelphophagesVillainPromos Chokepoint
+base Chokepoint
+nochallenge
+
+variant MissInformationSubtleSaboteur
+name Miss Information: Subtle Saboteur
+from AdelphophagesVillainPromos MissInformation
+base MissInformation
+nochallenge
+
+variant WagerMasterOmnipotentAnnoyance
+name Wager Master: Omnipotent Annoyance
+from AdelphophagesVillainPromos WagerMaster
+base WagerMaster
+nochallenge
+
+variant AmbuscadeThrillOfTheHunt
+name Ambuscade: Thrill of the Hunt
+from AdelphophagesVillainPromos Ambuscade
+base Ambuscade
+nochallenge
+
+variant AbsoluteZeroColdAsIce
+name Absolute Zero: Cold as Ice
+from AdelphophagesHeroPromos
+base AbsoluteZero
+
+variant FieldOfficerBunker
+name Field Officer Bunker
+from AdelphophagesHeroPromos
+base Bunker
+
+variant BulletstormExpatriette
+name Bulletstorm Expatriette
+from AdelphophagesHeroPromos RookCity
+base Expatriette
+
+variant CrusaderFanatic
+name Crusader Fanatic
+from AdelphophagesHeroPromos
+base Fanatic
+
+variant TachyonTheQuickestManOnEarth
+name Tachyon: The Quickest Man on Earth
+from AdelphophagesHeroPromos
+base Tachyon
+
+variant TheGamblerSetback
+name The Gambler Setback
+from AdelphophagesHeroPromos Vengeance
+base Setback
+
+variant TheScholarTheAlchemist
+name The Scholar: The Alchemist
+from AdelphophagesHeroPromos TheScholar
+base TheScholar
+
+variant DarkPactNightmist
+name Dark Pact Nightmist
+from AdelphophagesHeroPromos InfernalRelics
+base Nightmist
+
+variant OmnitronVIHunterKiller
+name Omnitron-VI: Hunter-Killer
+from AdelphophagesHeroPromos ShatteredTimelines
+base OmnitronX
+
+variant TheSentinelsAsOne
+name The Sentinels As One
+from AdelphophagesHeroPromos Vengeance
+base TheSentinels
+
+variant TheThaumaturgyScholar
+name The Thaumaturgy Scholar
+from AdelphophagesHeroPromos TheScholar
+base TheScholar
+
+variant UnityGirlsBestFriend
+name Unity: Girl's Best Friend
+from AdelphophagesHeroPromos Unity
+base Unity
+
+variant EvolvingNaturalist
+name Evolving Naturalist
+from AdelphophagesHeroPromos Vengeance
+base TheNaturalist
+
+variant ArmoredGuise
+name Armored Guise
+from AdelphophagesHeroPromos Guise
+base Guise
+
+variant BerserkHaka
+name Berserk Haka
+from AdelphophagesHeroPromos
+base Haka
+
+variant ZenMisterFixer
+name Zen Mister Fixer
+from AdelphophagesHeroPromos RookCity
+base MisterFixer
+
+hero DrVenture
+name Dr. Venture
+from TheVentureBrothers
+
+variant DrJonasVentureJr
+name Dr. Jonas: Venture Jr.
+from TheVentureBrothers
+base DrVenture
+
+hero BrockSamson
+name Brock Samson
+from TheVentureBrothers
+
+variant BrockSamsonRustysBlanket
+name Brock Samson: Rusty's Blanket
+from TheVentureBrothers
+base BrockSamson
+
+variant BrockSamsonCombatInstincts
+name Brock Samson: Combat Instincts
+from TheVentureBrothers
+base BrockSamson
+
+hero DeffersonTwilight
+name Defferson Twilight
+from TheVentureBrothers
+
+variant DeffersonTwilightTasteForBlood
+name Defferson Twilight: Taste For Blood
+from TheVentureBrothers
+base DeffersonTwilight
+
+hero HunterGathers
+name Hunter Gathers
+from TheVentureBrothers
+
+hero SergeantHatred
+name Sergeant Hatred
+from TheVentureBrothers
+
+variant SergeantHatredDrillSergeant
+name Sergeant Hatred: Drill Sergeant
+from TheVentureBrothers
+base SergeantHatred
+
+variant SergeantHatredEvenUntoDeath
+name Sergeant Hatred: Even Unto Death
+from TheVentureBrothers
+base SergeantHatred
+
+hero TheVentureTwins
+name The Venture Twins
+from TheVentureBrothers
+
+variant TheVentureTwins114
+name The Venture Twins #1-14
+from TheVentureBrothers
+base TheVentureTwins
+
+hero DrOrpheus
+name Dr Orpheus
+from TheVentureBrothers
+
+variant DrOrpheusUnstableMagic
+name Dr Orpheus: Unstable Magic
+from TheVentureBrothers
+base DrOrpheus
+
+environment CastleUnderbheit
+name Castle Underbheit
+from TheVentureBrothers
+
+environment EscapeToTheHouseOfMummies
+name Escape to the House of Mummies
+from TheVentureBrothers
+
+environment WithinTheRusty
+name Within The Rusty
+from TheVentureBrothers
+
+environment TheVentureCompound
+name The Venture Compound
+from TheVentureBrothers
+
+villain TheMonarch
+name The Monarch
+from TheVentureBrothers
+nochallenge
+
+villain TheRevengeSociety
+name The Revenge Society
+from TheVentureBrothers
+nochallenge
+
+villain Molotov
+name Molotov
+from TheVentureBrothers
+nochallenge
+
+villain TheSovereign
+name The Sovereign
+from TheVentureBrothers
+nochallenge
+
+villain Legion
+name Legion
+from AdelphophagesCustomVillains
+nochallenge
+
+villain Heretic
+name Heretic
+from AdelphophagesCustomVillains
+nochallenge
+
+hero TheExecutor
+name The Executor
+from AdelphophagesCustomHeroes
+
+variant TheExecutorAgentOfFate
+name The Executor: Agent of Fate
+from AdelphophagesCustomHeroes
+base TheExecutor
+
+hero Fusion
+name Fusion
+from AdelphophagesCustomHeroes
+
+hero ThePantheon
+name The Pantheon
+from AdelphophagesCustomHeroes
+
+hero Joker
+name Joker
+from AdelphophagesCustomHeroes
+
+hero ThePhantomThieves
+name The Phantom Thieves
+from AdelphophagesCustomHeroes
+
+environment MadameMittermeiersByzantineBazaarOfArcanaAndAttractions
+name Madame Mittermeier's Byzantine Bazaar of Arcana and Attactions
+from AdelphophagesCustomEnvironments
+
+environment OldTownRookCity
+name Old Town Rook City
+from AdelphophagesCustomEnvironments
+
+environment MagmariaShiftingLoyalties
+name Magmaria: Shifting Loyalties
+from AdelphophagesCustomEnvironments
+
+environment HighSecurityWing
+name High Security Wing
+from AdelphophagesCustomEnvironments
+
+environment MobileAssaultPlatform
+name Mobile Assault Platform
+from AdelphophagesCustomEnvironments
+
+villain TheGentlemen
+name The Gentlemen
+from SentinelsOfTheBuffyverse
+nochallenge
+
+villain Angelus
+name Angelus
+from SentinelsOfTheBuffyverse
+nochallenge
+
+villain DarkWillow
+name Dark Willow
+from SentinelsOfTheBuffyverse
+nochallenge
+
+hero Buffy
+name Buffy
+from SentinelsOfTheBuffyverse
+
+variant BuffyNewTownNewRules
+name Buffy: New Town New Rules
+from SentinelsOfTheBuffyverse
+base Buffy
+
+hero Xander
+name Xander
+from SentinelsOfTheBuffyverse
+
+variant XanderHighSchoolSlacker
+name Xander: High School Slacker
+from SentinelsOfTheBuffyverse
+base Xander
+
+hero Willow
+name Willow
+from SentinelsOfTheBuffyverse
+
+hero WillowStarStudent
+name Willow: Star Student
+from SentinelsOfTheBuffyverse
+base Willow
+
+environment SunnydaleHighSchool
+name Sunnydale High School
+from SentinelsOfTheBuffyverse
+
+environment SunnydaleGraveyard
+name Sunnydale Graveyard
+from SentinelsOfTheBuffyverse
+
+villain ThePteranoDon
+name The Pterano-Don
+from UnionOfHeroes
+nochallenge
+
+hero Odysseus
+name Odysseus
+from UnionOfHeroes
+
+hero TheGreenDeath
+name The Green Death
+from UnionOfHeroes
+
+variant SonOfTheGreenDeath
+name Son of The Green Death
+from UnionOfHeroes
+base TheGreenDeath
+
+variant TheXtremeGreenDeath
+name The Xtreme Green Death
+from UnionOfHeroes
+base TheGreenDeath
+
+variant TheGreenDeath2084
+name The Green Death 2084
+from UnionOfHeroes
+base TheGreenDeath
+
+hero Wrangler
+name Wrangler
+from UnionOfHeroes
+
+hero Vishnu
+name Vishnu
+from UnionOfHeroes
+
+hero LadySunbeam
+name Lady Sunbeam
+from UnionOfHeroes
+
+hero DoctorTomorrow
+name Doctor Tomorrow
+from UnionOfHeroes
+
+hero CaptainJupiter
+name Captain Jupiter
+from UnionOfHeroes
+
+environment ThePrincipalityOfVarandova
+name The Principality of Varandova
+from UnionOfHeroes
+
+villain Klarion
+name Klarion
+from ThematicallyVariable
+nochallenge
+
+villain LeagueOfShadows
+name League of Shadows
+from ThematicallyVariable
+nochallenge
+
+villain BlackBeetle
+name Black Beetle
+from ThematicallyVariable
+nochallenge
+
+hero BoosterGold
+name Booster Gold
+from ThematicallyVariable
+
+variant BoosterGoldTheGreatestHeroTheWorldHasNeverKnown
+name Booster Gold: The Greatest Hero The World Has Never Known
+from ThematicallyVariable
+base BoosterGold
+
+hero BlueBeetle
+name Blue Beetle
+from ThematicallyVariable
+
+variant BlueBeetleSilentPartner
+name Blue Beetle: Silent Partner
+from ThematicallyVariable
+base BlueBeetle
+
+variant BlueBeetleKajiDha
+name Blue Beetle: Kaji Dha
+from ThematicallyVariable
+base BlueBeetle
+
+hero Icegirl
+name Icegirl
+from ThematicallyVariable
+
+variant IcegirlWintersWrath
+name Icegirl: Winter's Wrath
+from ThematicallyVariable
+base Icegirl
+
+hero Comrade
+name Comrade
+from ThematicallyVariable
+
+hero RedArrow
+name Red Arrow
+from ThematicallyVariable
+
+hero Wolf
+name Wolf
+from ThematicallyVariable
+
