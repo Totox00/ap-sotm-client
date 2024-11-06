@@ -389,17 +389,23 @@ function locationTooltip(location) {
 function variantTooltip(location) {
   return (e) => {
     tooltip.innerHTML = session.get_variant_desc(location);
-    moveTooltip(e);
+    moveTooltip(e, true);
   };
 }
 
-function moveTooltip(e) {
+function moveTooltip(e, flip = false) {
   if (tooltip.childNodes.length > 0) {
     tooltip.hidden = false;
   } else {
     tooltip.hidden = true;
   }
 
-  tooltip.style.left = `${e.pageX + 25}px`;
+  if (flip) {
+    tooltip.style.right = `${window.innerWidth - e.pageX + 25}px`;
+    tooltip.style.removeProperty("left");
+  } else {
+    tooltip.style.removeProperty("right");
+    tooltip.style.left = `${e.pageX + 25}px`;
+  }
   tooltip.style.top = `${e.pageY}px`;
 }
