@@ -34,13 +34,13 @@ impl PersistentStore for WebPersistentStore {
                             let variant_len = u16::from_le_bytes(buf[5..7].try_into().unwrap()) as usize;
                             let environment_len = u16::from_le_bytes(buf[7..9].try_into().unwrap()) as usize;
                             let mut start = 9;
-                            locations.villains.copy_from_slice(&buf[start..start + villain_len]);
+                            locations.villains[0..villain_len].copy_from_slice(&buf[start..start + villain_len]);
                             start += villain_len;
-                            locations.team_villains.copy_from_slice(&buf[start..start + team_villain_len]);
+                            locations.team_villains[0..team_villain_len].copy_from_slice(&buf[start..start + team_villain_len]);
                             start += team_villain_len;
-                            locations.variants.copy_from_slice(&buf[start..start + variant_len]);
+                            locations.variants[0..variant_len].copy_from_slice(&buf[start..start + variant_len]);
                             start += variant_len;
-                            locations.environments.copy_from_slice(&buf[start..start + environment_len]);
+                            locations.environments[0..environment_len].copy_from_slice(&buf[start..start + environment_len]);
                             return locations;
                         }
                     }
