@@ -1,8 +1,8 @@
-name: Deploy browser-based client
+name: Deploy browser-based legacy client
 
 on:
   push:
-    branches: [ "dedicated-apworld" ]
+    branches: [ "legacy" ]
 
   workflow_dispatch:
 
@@ -23,7 +23,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}legacy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
