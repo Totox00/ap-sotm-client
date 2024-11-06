@@ -1,5 +1,3 @@
-#![feature(proc_macro_span)]
-
 mod data_py;
 mod enums;
 mod filler;
