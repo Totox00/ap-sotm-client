@@ -44,3 +44,50 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+---
+name: Deploy browser-based legacy client
+
+on:
+  push:
+    branches: [ "legacy" ]
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}legacy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh"
+      - name: Build
+        run: ./build.sh
+        working-directory: client_web
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Sanity check
+        run: ls -R ./client_web/www
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: client_web/www
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
