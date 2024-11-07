@@ -48,6 +48,8 @@ disconnect.addEventListener("click", () => {
   roomInfo = null;
   datapackageStore = null;
   session = null;
+  receivedItemIndex = 0;
+  deathlinkType = 0;
 });
 
 descToggle.addEventListener("click", () => {
