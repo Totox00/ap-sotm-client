@@ -60,7 +60,7 @@ impl DatapackageStore for DefaultDatapackageStore {
 
         for (game, checksum) in requested {
             if let Ok(reader) = File::open(Path::new("./datapackage").join(&game).join(&checksum)) {
-                if let Ok(data) = from_reader::<File, archipelago_protocol::GameData>(reader) {
+                if let Ok(data) = from_reader::<File, ArchipelagoGameData>(reader) {
                     new.add_game(game, data);
                 } else {
                     new.missing.push(game);

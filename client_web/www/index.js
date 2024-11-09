@@ -157,22 +157,27 @@ function initialConnect(secure) {
   });
 }
 
-function roomInfoConnect() {
+async function roomInfoConnect() {
   datapackageStore = new_datapackage_store(JSON.stringify(roomInfo));
+  await datapackageStore.get_fs();
+  await datapackageStore.load_cached_datapackages();
   const missing = datapackageStore.get_missing_games();
   if (missing.length > 0) {
+    console.log(`Missing datapackages for games ${missing}`);
     client.send(JSON.stringify([{ cmd: "GetDataPackage", games: missing }]));
   } else {
     datapackageConnect();
   }
 }
 
-function datapackageConnect(datapackage) {
+async function datapackageConnect(datapackage) {
   if (datapackage) {
     for (const [game, data] of Object.entries(datapackage.data.games)) {
-      datapackageStore.add_game(game, JSON.stringify(data));
+      await datapackageStore.add_game(game, JSON.stringify(data));
     }
   }
+  if (!localStorage.getItem("apSotmUuid"))
+    localStorage.setItem("apSotmUuid", Math.random() * (1 << 16));
   client.send(
     JSON.stringify([
       {
@@ -180,7 +185,7 @@ function datapackageConnect(datapackage) {
         password: password.value,
         game: "Sentinels of the Multiverse",
         name: slot.value,
-        uuid: "",
+        uuid: localStorage.getItem("apSotmUuid"),
         version: { major: 0, minor: 4, build: 6, class: "Version" },
         items_handling: 7,
         tags: [],

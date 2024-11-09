@@ -3,6 +3,8 @@ use client_lib::datapackage::DatapackageStore;
 use serde_json::from_str;
 use std::{collections::HashMap, sync::Arc};
 use wasm_bindgen::prelude::wasm_bindgen;
+use wasm_bindgen_futures::JsFuture;
+use web_sys::{js_sys::ArrayBuffer, window, File, FileSystemDirectoryHandle, FileSystemFileHandle, FileSystemGetDirectoryOptions, FileSystemGetFileOptions, FileSystemWritableFileStream, TextDecoder};
 
 pub type Requested = HashMap<String, String>;
 
@@ -15,17 +17,71 @@ struct GameData {
 #[wasm_bindgen]
 #[derive(Debug, Clone)]
 pub struct WebDatapackageStore {
+    fs: Option<FileSystemDirectoryHandle>,
     data: HashMap<String, Arc<GameData>>,
-    missing: Vec<String>,
-    missing_checksums: Vec<String>,
+    missing: Vec<(String, String)>,
     player_to_game: HashMap<i32, Arc<GameData>>,
 }
 
 #[wasm_bindgen]
 impl WebDatapackageStore {
-    pub fn add_game(&mut self, game: String, data: &str) {
-        if let Ok(data) = from_str(data) {
-            self.add_game_internal(game, data)
+    pub async fn get_fs(&mut self) {
+        if let Some(window) = window() {
+            let promise = JsFuture::from(window.navigator().storage().get_directory());
+            self.fs = promise.await.map(FileSystemDirectoryHandle::from).ok();
+        }
+    }
+
+    pub async fn load_cached_datapackages(&mut self) {
+        let mut to_load = HashMap::new();
+
+        if let Some(fs) = &self.fs {
+            for (game, checksum) in &self.missing {
+                if let Ok(game_dir) = JsFuture::from(fs.get_directory_handle_with_options(game, &create_dir())).await.map(FileSystemDirectoryHandle::from) {
+                    if let Ok(file_handle) = JsFuture::from(game_dir.get_file_handle_with_options(checksum, &create_file())).await.map(FileSystemFileHandle::from) {
+                        if let Ok(file) = JsFuture::from(file_handle.get_file()).await.map(File::from) {
+                            if file.size() > 0.0 {
+                                if let Ok(content) = JsFuture::from(file.array_buffer()).await.map(ArrayBuffer::from) {
+                                    if let Ok(decoder) = TextDecoder::new() {
+                                        if let Ok(str) = decoder.decode_with_buffer_source(&content) {
+                                            if let Ok(data) = from_str::<ArchipelagoGameData>(&str) {
+                                                to_load.insert(game.to_owned(), data);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        self.missing.retain(|(game, _)| !to_load.contains_key(game));
+        for (game, data) in to_load {
+            self.add_game_internal(game, data);
+        }
+    }
+
+    pub async fn add_game(&mut self, game: String, data: &str) {
+        if let Ok(game_data) = from_str(data) {
+            if let Some(fs) = &self.fs {
+                for (game, checksum) in &self.missing {
+                    if let Ok(game_dir) = JsFuture::from(fs.get_directory_handle_with_options(game, &create_dir())).await.map(FileSystemDirectoryHandle::from) {
+                        if let Ok(file_handle) = JsFuture::from(game_dir.get_file_handle_with_options(checksum, &create_file())).await.map(FileSystemFileHandle::from) {
+                            if let Ok(writable) = JsFuture::from(file_handle.create_writable()).await.map(FileSystemWritableFileStream::from) {
+                                if let Ok(res) = writable.write_with_str(data) {
+                                    if JsFuture::from(res).await.is_ok() {
+                                        let _ = JsFuture::from(writable.close()).await;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            self.add_game_internal(game, game_data)
         }
     }
 
@@ -67,22 +123,21 @@ impl WebDatapackageStore {
 impl DatapackageStore for WebDatapackageStore {
     fn new(requested: Requested) -> Self {
         let mut new = Self {
+            fs: None,
             data: HashMap::new(),
             missing: vec![],
-            missing_checksums: vec![],
             player_to_game: HashMap::new(),
         };
 
         for (game, checksum) in requested {
-            new.missing.push(game);
-            new.missing_checksums.push(checksum);
+            new.missing.push((game, checksum));
         }
 
         new
     }
 
     fn missing_games(&self) -> Box<[String]> {
-        self.missing.clone().into()
+        self.missing.iter().map(|(game, _)| game).cloned().collect()
     }
 
     fn cache(&mut self, data: DataPackageObject) {
@@ -129,4 +184,16 @@ pub fn new_datapackage_store(room_info: &str) -> WebDatapackageStore {
     } else {
         panic!("Failed to parse room_info")
     }
+}
+
+fn create_dir() -> FileSystemGetDirectoryOptions {
+    let mut options = FileSystemGetDirectoryOptions::new();
+    options.create(true);
+    options
+}
+
+fn create_file() -> FileSystemGetFileOptions {
+    let mut options = FileSystemGetFileOptions::new();
+    options.create(true);
+    options
 }
