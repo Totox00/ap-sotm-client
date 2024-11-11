@@ -1,4 +1,4 @@
-use crate::data::{DamageType, DeconstructedFiller, Environment, Filler, FillerTarget, Hero, HeroLike, Item, Location, TeamVillain, Variant, Villain, VillainLike};
+use crate::data::{Contender, DamageType, DeconstructedFiller, Environment, Filler, FillerTarget, Hero, HeroLike, Item, Location, TeamVillain, Variant, Villain, VillainLike};
 use archipelago_protocol::SlotData;
 use strum::IntoEnumIterator;
 
@@ -15,6 +15,7 @@ pub struct Items {
     pub villains: [u8; Villain::variant_count() / 8 + 1],
     pub team_villains: [u8; TeamVillain::variant_count() / 8 + 1],
     pub heroes: [u8; Hero::variant_count()],
+    pub contenders: [u8; Contender::variant_count() / 8 + 1],
     pub environments: [u8; Environment::variant_count() / 8 + 1],
     pub filler: FillerItems,
 }
@@ -141,6 +142,7 @@ impl Items {
             villains: [0; Villain::variant_count() / 8 + 1],
             team_villains: [0; TeamVillain::variant_count() / 8 + 1],
             heroes: [0; Hero::variant_count()],
+            contenders: [0; Contender::variant_count() / 8 + 1],
             environments: [0; Environment::variant_count() / 8 + 1],
             filler: FillerItems::new(),
         }
@@ -160,6 +162,10 @@ impl Items {
 
     pub fn has_hero(&self, hero: Hero) -> bool {
         self.heroes[hero as usize] > 0
+    }
+
+    pub fn has_contender(&self, contender: Contender) -> bool {
+        self.contenders[contender as usize >> 3] & 1 << (contender as u8 & 0x7) > 0
     }
 
     pub fn has_base_hero(&self, hero: Hero) -> bool {
@@ -195,6 +201,10 @@ impl Items {
         self.heroes[hero as usize] |= 1;
     }
 
+    pub fn set_contender(&mut self, contender: Contender) {
+        self.contenders[contender as usize >> 3] |= 1 << (contender as u8 & 0x7);
+    }
+
     pub fn set_hero_variant(&mut self, variant: Variant) {
         if let Some(normal) = variant.as_normal() {
             self.heroes[normal as usize] |= 1 << variant.as_i();
@@ -208,6 +218,7 @@ impl Items {
     pub fn set_item(&mut self, item: Item) {
         match item {
             Item::Hero(v) => self.set_hero(v),
+            Item::Contender(v) => self.set_contender(v),
             Item::Variant(v) => self.set_hero_variant(v),
             Item::Villain(v) => self.set_villain(v),
             Item::TeamVillain(v) => self.set_team_villain(v),

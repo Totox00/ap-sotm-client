@@ -19,6 +19,7 @@ struct Data {
     villains: Vec<EnumData>,
     team_villains: Vec<EnumData>,
     heroes: Vec<EnumData>,
+    contenders: Vec<EnumData>,
     environments: Vec<EnumData>,
     variants: Vec<VariantData>,
     filler: Vec<FillerData>,
@@ -88,6 +89,7 @@ pub fn generate_data(_stream: TokenStream) -> TokenStream {
     push_enum_defs(&mut str, "Villain", &data.villains);
     push_enum_defs(&mut str, "TeamVillain", &data.team_villains);
     push_enum_defs(&mut str, "Hero", &data.heroes);
+    push_enum_defs(&mut str, "Contender", &data.contenders);
     push_enum_defs(&mut str, "Environment", &data.environments);
     push_no_challenge_impl(&mut str, "Villain", &data.villains);
     push_no_challenge_impl(&mut str, "TeamVillain", &data.team_villains);

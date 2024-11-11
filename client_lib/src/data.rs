@@ -9,6 +9,7 @@ generate_data!();
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Item {
     Hero(Hero),
+    Contender(Contender),
     Variant(Variant),
     Villain(Villain),
     TeamVillain(TeamVillain),
@@ -123,6 +124,7 @@ impl Item {
     pub fn as_str(&self) -> &str {
         match self {
             Item::Hero(i) => i.as_str(),
+            Item::Contender(i) => i.as_str(),
             Item::Variant(i) => i.as_str(),
             Item::Villain(i) => i.as_str(),
             Item::TeamVillain(i) => i.as_str(),
@@ -133,10 +135,10 @@ impl Item {
     }
 
     pub fn from_id(id: i64) -> Item {
-        match (id & (0b11111 << 48)) >> 48 {
-            0b00001 => Item::Villain(Villain::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown villain ID")),
-            0b00011 => Item::TeamVillain(TeamVillain::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown team villain ID")),
-            0b00010 => {
+        match (id & (0b1111 << 48)) >> 48 {
+            0b0001 => Item::Villain(Villain::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown villain ID")),
+            0b0011 => Item::TeamVillain(TeamVillain::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown team villain ID")),
+            0b0010 => {
                 let hero = Hero::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown hero ID");
                 let variant_i = ((id as u32) & (0b1111_1111 << 16)) >> 16;
 
@@ -146,9 +148,10 @@ impl Item {
                     Item::Variant(Variant::from_hero(hero, variant_i).expect("Unknown variant ID"))
                 }
             }
-            0b00100 => Item::Environment(Environment::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown environment ID")),
-            0b01000 | 0b01001 => Item::Filler(Filler::from_id(id)),
-            0b00000 => {
+            0b0110 => Item::Contender(Contender::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown contender ID")),
+            0b0100 => Item::Environment(Environment::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown environment ID")),
+            0b1000 | 0b1001 => Item::Filler(Filler::from_id(id)),
+            0b0000 => {
                 if id == 1 {
                     Item::Scion
                 } else {

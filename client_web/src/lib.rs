@@ -83,6 +83,10 @@ impl WasmSession {
     }
 
     pub fn get_filler_for_hero(&self, target: &WasmHero, show_desc: bool) -> String {
+        if !target.real {
+            return String::new();
+        }
+
         let mut buf = String::new();
 
         if show_desc {

@@ -5,6 +5,7 @@
 //           team villain ____0011 00000000 00000000 00000000 00000000 xxxxxxxx xxxxxxxx (x: team villain index)
 //                   hero ____0010 00000000 00000000 00000000 00000000 xxxxxxxx xxxxxxxx (x: hero index)
 //                variant ____0010 00000000 00000000 00000000 yyyyyyyy xxxxxxxx xxxxxxxx (x: hero index, y: variant index)
+//              contender ____0110 00000000 00000000 00000000 00000000 xxxxxxxx xxxxxxxx (x: contender index)
 //            environment ____0100 00000000 00000000 00000000 00000000 xxxxxxxx xxxxxxxx (x: environment index)
 //        all hero filler ____1000 00000000 00000000 1000aaaa yyyyyyyy yyyyyyyy xxxxxxxx (x: filler index, y: hero index, a: damage type index)
 //       hero hero filler ____1000 00000000 00000000 1001aaaa yyyyyyyy yyyyyyyy xxxxxxxx (x: filler index, y: hero index, a: damage type index)
@@ -40,6 +41,7 @@ pub fn generate_id_py(data: &Data) {
         item_id(&mut writer, &data.villains, 0b0001);
         item_id(&mut writer, &data.team_villains, 0b0011);
         item_id(&mut writer, &data.heroes, 0b0010);
+        item_id(&mut writer, &data.contenders, 0b0110);
         for variant in data.hero_variants() {
             let _ = write!(writer, "\"{}\":{},", variant.display_name, (0b0010 << 48) | variant.base_i as i64 | ((variant.i as i64) << 16));
         }

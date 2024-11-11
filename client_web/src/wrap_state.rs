@@ -1,5 +1,5 @@
 use client_lib::{
-    data::{Environment, Hero, Item, Location, TeamVillain, Variant, Villain},
+    data::{Contender, Environment, Hero, Item, Location, TeamVillain, Variant, Villain},
     state::State,
 };
 use num::FromPrimitive;
@@ -47,10 +47,70 @@ pub struct WasmHero {
     inner: Hero,
     bitfield: u8,
     name: String,
+    pub real: bool,
 }
 
 pub fn wrap_state(state: &State) -> WasmState {
     let available = state.available_locations();
+    let mut heroes: Vec<WasmHero> = state
+        .items
+        .heroes
+        .iter()
+        .zip(0..)
+        .filter_map(|(b, h)| Hero::from_i32(h).map(|hero| (b, hero)))
+        .filter(|(b, _)| b.count_ones() > 0)
+        .map(|(bitfield, hero)| WasmHero {
+            inner: hero,
+            bitfield: *bitfield,
+            name: if *bitfield == 1 {
+                hero.as_str().to_owned()
+            } else if bitfield.count_ones() == 1 {
+                if let Some(variant) = Variant::from_hero(hero, bitfield.trailing_zeros()) {
+                    variant.as_str().to_owned()
+                } else {
+                    String::new()
+                }
+            } else {
+                let mut buf = String::new();
+
+                let _ = write!(&mut buf, "{}<ul>", hero.as_str());
+                if bitfield & 1 > 0 {
+                    let _ = write!(&mut buf, "<li class=\"variant\">{}</li>", hero.as_str());
+                }
+                for variant in (1..7).filter(|o| bitfield & 1 << o > 1) {
+                    if let Some(variant) = Variant::from_hero(hero, variant) {
+                        let _ = write!(&mut buf, "<li class=\"variant\">{}</li>", variant.as_str());
+                    }
+                }
+                let _ = write!(&mut buf, "</ul>");
+
+                buf
+            },
+            real: true,
+        })
+        .collect();
+    if state.items.contenders.iter().copied().map(u8::count_ones).sum::<u32>() >= 3 {
+        heroes.push(WasmHero {
+            inner: Hero::Legacy,
+            bitfield: 0,
+            name: {
+                let mut buf = String::new();
+
+                let _ = write!(&mut buf, "The Contenders<ul>");
+                for contender in 0..Contender::variant_count() {
+                    if let Some(contender) = Contender::from_usize(contender) {
+                        if state.items.has_contender(contender) {
+                            let _ = write!(&mut buf, "<li class=\"variant\">{}</li>", contender.as_str());
+                        }
+                    }
+                }
+                let _ = write!(&mut buf, "</ul>");
+
+                buf
+            },
+            real: false,
+        });
+    }
 
     WasmState {
         available: WasmAvailable {
@@ -109,42 +169,7 @@ pub fn wrap_state(state: &State) -> WasmState {
                 name: e.as_str().to_owned(),
             })
             .collect(),
-        heroes: state
-            .items
-            .heroes
-            .iter()
-            .zip(0..)
-            .filter_map(|(b, h)| Hero::from_i32(h).map(|hero| (b, hero)))
-            .filter(|(b, _)| b.count_ones() > 0)
-            .map(|(bitfield, hero)| WasmHero {
-                inner: hero,
-                bitfield: *bitfield,
-                name: if *bitfield == 1 {
-                    hero.as_str().to_owned()
-                } else if bitfield.count_ones() == 1 {
-                    if let Some(variant) = Variant::from_hero(hero, bitfield.trailing_zeros()) {
-                        variant.as_str().to_owned()
-                    } else {
-                        String::new()
-                    }
-                } else {
-                    let mut buf = String::new();
-
-                    let _ = write!(&mut buf, "{}<ul>", hero.as_str());
-                    if bitfield & 1 > 0 {
-                        let _ = write!(&mut buf, "<li class=\"variant\">{}</li>", hero.as_str());
-                    }
-                    for variant in (1..7).filter(|o| bitfield & 1 << o > 1) {
-                        if let Some(variant) = Variant::from_hero(hero, variant) {
-                            let _ = write!(&mut buf, "<li class=\"variant\">{}</li>", variant.as_str());
-                        }
-                    }
-                    let _ = write!(&mut buf, "</ul>");
-
-                    buf
-                },
-            })
-            .collect(),
+        heroes,
         scions: state.items.scions as i32,
     }
 }
@@ -170,7 +195,7 @@ impl WasmItem {
     pub fn as_inner(&self) -> &Item {
         &self.inner
     }
-    
+
     pub fn into_inner(self) -> Item {
         self.inner
     }
