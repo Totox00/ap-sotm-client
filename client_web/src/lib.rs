@@ -162,11 +162,23 @@ impl WasmSession {
         if show_desc {
             match item {
                 Item::Villain(v) => {
+                    if let Some((name, desc)) = v.challenge_desc() {
+                        let _ = write!(buf, "<h3>Challenge - {name}</h3>");
+                        for paragraph in desc {
+                            let _ = write!(buf, "<p>{paragraph}</p>");
+                        }
+                    }
                     for (filler, count) in self.inner.state.items.get_filler_for(FillerTarget::Villain(VillainLike::Villain(v))) {
                         let _ = write!(buf, "<li><span>{}</span><br /><span class=\"desc\">{}</span></li>", filler.to_string(count), filler.to_desc(count));
                     }
                 }
                 Item::TeamVillain(v) => {
+                    if let Some((name, desc)) = v.challenge_desc() {
+                        let _ = write!(buf, "<h3>Challenge - {name}</h3>");
+                        for paragraph in desc {
+                            let _ = write!(buf, "<p>{paragraph}</p>");
+                        }
+                    }
                     for (filler, count) in self.inner.state.items.get_filler_for(FillerTarget::Villain(VillainLike::TeamVillain(v))) {
                         let _ = write!(buf, "<li><span>{}</span><br /><span class=\"desc\">{}</span></li>", filler.to_string(count), filler.to_desc(count));
                     }

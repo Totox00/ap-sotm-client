@@ -1,10 +1,10 @@
-use crate::{Data, EnumData, VariantData};
+use crate::{Data, EnumData, VariantData, VillainData};
 
 #[derive(Debug, Clone)]
 pub enum LogicTerm {
     AnyHero(EnumData),
-    Villain(EnumData),
-    TeamVillain(EnumData),
+    Villain(VillainData),
+    TeamVillain(VillainData),
     Hero(EnumData),
     Variant(VariantData),
     Environment(EnumData),
@@ -91,7 +91,8 @@ impl LogicTerm {
         match self {
             LogicTerm::AnyHero(enum_data) => format!("state.has(\"Any {}\",player)", enum_data.display_name),
             LogicTerm::TeamVillain(enum_data) => format!("state.has(\"{}\",player) and team_villain_count(state,player)", enum_data.display_name),
-            LogicTerm::Villain(enum_data) | LogicTerm::Hero(enum_data) | LogicTerm::Environment(enum_data) => format!("state.has(\"{}\",player)", enum_data.display_name),
+            LogicTerm::Villain(enum_data) => format!("state.has(\"{}\",player)", enum_data.display_name),
+            LogicTerm::Hero(enum_data) | LogicTerm::Environment(enum_data) => format!("state.has(\"{}\",player)", enum_data.display_name),
             LogicTerm::Variant(variant_data) => format!("state.has(\"{}\",player)", variant_data.display_name),
             LogicTerm::Or(terms) => terms.iter().map(|term| term.as_py_expr()).collect::<Vec<_>>().join(" or "),
             LogicTerm::And(terms) => terms.iter().map(|term| format!("({})", term.as_py_expr())).collect::<Vec<_>>().join(" and "),
@@ -117,7 +118,8 @@ impl LogicTerm {
                 }
                 dependencies
             }
-            LogicTerm::Villain(enum_data) | LogicTerm::Hero(enum_data) | LogicTerm::Environment(enum_data) => vec![enum_data.display_name.clone()],
+            LogicTerm::Villain(enum_data) => vec![enum_data.display_name.clone()],
+            LogicTerm::Hero(enum_data) | LogicTerm::Environment(enum_data) => vec![enum_data.display_name.clone()],
             LogicTerm::Variant(variant_data) => vec![variant_data.display_name.clone()],
             LogicTerm::Or(terms) | LogicTerm::And(terms) => {
                 let mut dependencies = vec![];

@@ -42,7 +42,7 @@ pub fn generate_data_py(data: &Data) {
                         "SotmData(\"{}\",[{}],SotmCategory.VillainVariant,{},\"{}\",lambda state,player:{},[{}]),",
                         villain.display_name,
                         map_source(&villain.source),
-                        if villain.no_challenge { "True" } else { "False" },
+                        if villain.challenge.is_none() { "True" } else { "False" },
                         base.display_name,
                         logic.as_py_expr(),
                         logic.as_dependencies(data).iter().map(|dependency| format!("\"{dependency}\"")).collect::<Vec<_>>().join(",")
@@ -53,7 +53,7 @@ pub fn generate_data_py(data: &Data) {
                         "SotmData(\"{}\",[{}],SotmCategory.Villain,{}),",
                         villain.display_name,
                         map_source(&villain.source),
-                        if villain.no_challenge { "True" } else { "False" }
+                        if villain.challenge.is_none() { "True" } else { "False" }
                     );
                 }
             } else {
@@ -62,7 +62,7 @@ pub fn generate_data_py(data: &Data) {
                     "SotmData(\"{}\",[{}],SotmCategory.Villain,{}),",
                     villain.display_name,
                     map_source(&villain.source),
-                    if villain.no_challenge { "True" } else { "False" }
+                    if villain.challenge.is_none() { "True" } else { "False" }
                 );
             }
         }
@@ -73,7 +73,7 @@ pub fn generate_data_py(data: &Data) {
                 "SotmData(\"{}\",[{}],SotmCategory.TeamVillain,{}),",
                 team_villain.display_name,
                 map_source(&team_villain.source),
-                if team_villain.no_challenge { "True" } else { "False" }
+                if team_villain.challenge.is_none() { "True" } else { "False" }
             );
         }
 

@@ -18,6 +18,7 @@ main > * {
   border: 5px solid blue;
   border-radius: 5px;
   max-width: 35rem;
+  padding: 0 15px 0 30px;
 }
 
 .desc {

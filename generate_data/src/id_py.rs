@@ -32,14 +32,14 @@
 
 use std::{fs::OpenOptions, io::Write};
 
-use crate::{Data, EnumData, FillerData, FillerType};
+use crate::{Data, EnumData, FillerData, FillerType, VillainData};
 
 pub fn generate_id_py(data: &Data) {
     if let Ok(mut writer) = OpenOptions::new().write(true).create(true).truncate(true).open("Id.py") {
         let _ = write!(writer, "# This file is generated as part of the compilation of the client\nitem_name_to_id={{\"Scion of Oblivaeon\":1,");
 
-        item_id(&mut writer, &data.villains, 0b0001);
-        item_id(&mut writer, &data.team_villains, 0b0011);
+        villain_item_id(&mut writer, &data.villains, 0b0001);
+        villain_item_id(&mut writer, &data.team_villains, 0b0011);
         item_id(&mut writer, &data.heroes, 0b0010);
         item_id(&mut writer, &data.contenders, 0b0110);
         for variant in data.hero_variants() {
@@ -51,8 +51,8 @@ pub fn generate_id_py(data: &Data) {
 
         let _ = write!(writer, "}}\nlocation_name_to_id={{");
 
-        location_id(&mut writer, &data.villains, 0b0001);
-        location_id(&mut writer, &data.team_villains, 0b0011);
+        villain_location_id(&mut writer, &data.villains, 0b0001);
+        villain_location_id(&mut writer, &data.team_villains, 0b0011);
         for variant in data.variants.iter() {
             for c in 0..5 {
                 let _ = write!(
@@ -85,41 +85,53 @@ where
     }
 }
 
+fn villain_item_id<T>(writer: &mut T, data: &[VillainData], prefix: i64)
+where
+    T: Write,
+{
+    for data in data {
+        let _ = write!(writer, "\"{}\":{},", data.display_name, (prefix << 48) | data.i as i64);
+    }
+}
+
 const DIFFICULTIES: [&str; 4] = ["Normal", "Advanced", "Challenge", "Ultimate"];
 
 fn location_id<T>(writer: &mut T, data: &[EnumData], prefix: i64)
 where
     T: Write,
 {
-    if (prefix & 1) == 1 {
-        for data in data {
-            for c in 0..5 {
-                for d in 0..if data.no_challenge { 2 } else { 4 } {
-                    if d >= 2 && data.enum_name == "SpiteAgentOfGloom" {
-                        let _ = write!(
-                            writer,
-                            "\"Spite: Agent of Gloom and Skinwalker Gloomweaver - {} #{}\":{},",
-                            DIFFICULTIES[d as usize],
-                            c + 1,
-                            (prefix << 48) | data.i as i64 | c << 16 | d << 22
-                        );
-                    } else if d < 2 || data.enum_name != "SkinwalkerGloomweaver" {
-                        let _ = write!(
-                            writer,
-                            "\"{} - {} #{}\":{},",
-                            data.display_name,
-                            DIFFICULTIES[d as usize],
-                            c + 1,
-                            (prefix << 48) | data.i as i64 | c << 16 | d << 22
-                        );
-                    }
-                }
-            }
+    for data in data {
+        for c in 0..5 {
+            let _ = write!(writer, "\"{} - Any Difficulty #{}\":{},", data.display_name, c + 1, (prefix << 48) | data.i as i64 | c << 16);
         }
-    } else {
-        for data in data {
-            for c in 0..5 {
-                let _ = write!(writer, "\"{} - Any Difficulty #{}\":{},", data.display_name, c + 1, (prefix << 48) | data.i as i64 | c << 16);
+    }
+}
+
+fn villain_location_id<T>(writer: &mut T, data: &[VillainData], prefix: i64)
+where
+    T: Write,
+{
+    for data in data {
+        for c in 0..5 {
+            for d in 0..if data.challenge.is_none() { 2 } else { 4 } {
+                if d >= 2 && data.enum_name == "SpiteAgentOfGloom" {
+                    let _ = write!(
+                        writer,
+                        "\"Spite: Agent of Gloom and Skinwalker Gloomweaver - {} #{}\":{},",
+                        DIFFICULTIES[d as usize],
+                        c + 1,
+                        (prefix << 48) | data.i as i64 | c << 16 | d << 22
+                    );
+                } else if d < 2 || data.enum_name != "SkinwalkerGloomweaver" {
+                    let _ = write!(
+                        writer,
+                        "\"{} - {} #{}\":{},",
+                        data.display_name,
+                        DIFFICULTIES[d as usize],
+                        c + 1,
+                        (prefix << 48) | data.i as i64 | c << 16 | d << 22
+                    );
+                }
             }
         }
     }

@@ -138,47 +138,73 @@ name The Contenders
 
 villain BaronBlade
 name Baron Blade
+challenge Decoy Impulsion Beam
+When Baron Blade flips to his second side, the villain trash is not placed on top of the villain deck and the villain deck is not shuffled.
+At the start of the villain turn, if there are 15 or more cards in the villain trash, Baron Blade's Terralunar Impulsion Beam activates, pulling the moon into the earth. Game Over.
 
 variant MadBomberBaronBlade
 name Mad Bomber Baron Blade
 base BaronBlade
 unlock Defeat standard Baron Blade. Then, while fighting Citizen Dawn, destroy Citizens Blood, Sweat, and Tears in the same round.
 requires BaronBlade CitizenDawn
+challenge Nanobot Power Armor
+Reduce damage dealt to Baron Blade by 2.
 
 villain CitizenDawn
 name Citizen Dawn
+challenge Solar Retribution
+Whenever a Citizen card is destroyed, Citizen Dawn deals the hero target with the highest HP 3 fire damage.
 
 villain GrandWarlordVoss
 name Grand Warlord Voss
+challenge Hostile Take Over
+Whenever Grand Warlord Voss flips, play the top card of the Villain deck.
 
 villain Omnitron
 name Omnitron
+challenge Redundant Systems
+For every 7 damage Omnitron is dealt in a round, the heroes may choose one villain component to be destroyed. Ignore the second line of text on villain component cards.
 
 variant OmnitronII
 name Omnitron II
 base Omnitron
 unlock Defeat standard Omnitron. Then, while fighting Grand Warlord Voss, destroy two spaceships in the same round.
 requires Omnitron GrandWarlordVoss
+challenge Cosmic Overdrive
+The value of (H) is doubled in this game.
 
 villain Ambuscade
 name Ambuscade
 from Ambuscade
+challenge Trap Master
+At the start of the game, all trap cards in Ambuscade's deck are turned face up.
+Whenever a trap card would be discarded, first the top card of the villain deck is played, then the trap card is discarded.
+Whenever the villain trash is shuffled into the villain deck, all trap cards are turned face up.
 
 villain TheChairman
 name The Chairman
 from RookCity
+challenge Chemical Immortality
+At the start of the villain turn, The Chairman regains (H) HP.
+At the start of the villain turn, The Operative regains (H) HP.
 
 villain TheMatriarch
 name The Matriarch
 from RookCity
+challenge Carrion Wasteland
+Domain cards are indestructible.
 
 villain PlagueRat
 name Plague Rat
 from RookCity
+challenge Noxious Stench
+At the start of the villain turn, Plague Rat deals each non-villain target 1 toxic damage.
 
 villain Spite
 name Spite
 from RookCity
+challenge Strung-Out Maniac
+Spite can regain HP past his maximum HP.
 
 variant SpiteAgentOfGloom
 name Spite: Agent of Gloom
@@ -186,22 +212,32 @@ from RookCity
 base Spite
 unlock Defeat standard Spite. Then, defeat GloomWeaver by having 3_villain relics in the villain trash. At least two of the following must be in play: Cursed Acolyte, Profane Zealot, Chosen Disciple, or Ophidia the Deceiver. No Voodoo Pin may be in play.
 requires Spite Gloomweaver
+challenge Summoner and Overlord
+After Spite is defeated, he is immediately replaced by Skinwalker Gloomweaver without altering the environment or any of the heroes or hero cards. Heroes do not regain HP or draw cards. The game resumes at the start of Gloomweaver's turn.
 
 villain AkashBhuta
 name Akash'Bhuta
 from InfernalRelics
+challenge Eco-Titan
+Akash'Bhuta is immune to environment damage and villain damage.
 
 villain Apostate
 name Apostate
 from InfernalRelics
+challenge Demon Lord
+Whenever a demon card enters play, the top card of the villain deck is played.
 
 villain TheEnnead
 name The Ennead
 from InfernalRelics
+challenge Eternal Spellcraft
+Every villain one-shot has all three symbols as keywords.
 
 villain Gloomweaver
 name Gloomweaver
 from InfernalRelics
+challenge Chaos Dimension
+Villain relics are indestructible.
 
 variant SkinwalkerGloomweaver
 name Skinwalker Gloomweaver
@@ -209,26 +245,39 @@ from InfernalRelics
 base Gloomweaver
 unlock Defeat standard Spite and GloomWeaver. Then, do one of the following:\1)_Defeat Spite: Agent of Gloom in Rook City on his "Broken Vessel" side with zero cards under the Safe House and at least five Victims in play. OR\2)_Be defeated by Spite: Agent of Gloom in Rook City on his "Agent_of_Gloom" side with no more than two Drug cardsface up. Spite must have destroyed at least five Victims.
 requires Spite Gloomweaver SpiteAgentOfGloom
+challenge Summoner and Overlord
+The game begins against Spite: Agent of Gloom. After Spite is defeated, he is immediately replaced by Skinwalker Gloomweaver without altering the environment or any of the heroes or hero cards. Heroes do not regain HP or draw cards. The game resumes at the start of Gloomweaver's turn.
 
 villain MissInformation
 name Miss Information
 from MissInformation
+challenge Sloppy Saboteur
+Whenever a clue card enters play, the top card of the villain deck is played.
 
 villain LaCapitan
 name La Capitan
 from ShatteredTimelines
+challenge Timeless Crew
+At the start of the game, cards are revealed from the top of the villain deck until (H) crew cards are revealed and put into play. Other revealed cards are shuffled back into the villain deck.
+Whenever La Capitan flips, the crew card with the highest HP in the villain trash is moved into play.
 
 villain TheDreamer
 name The Dreamer
 from ShatteredTimelines
+challenge Frail Child
+Increase damage dealt to The Dreamer by 5.
 
 villain IronLegacy
 name Iron Legacy
 from ShatteredTimelines
+challenge Final Justice
+At the start of the villain turn, the villain trash is shuffled and cards are revealed until an ongoing card is revealed and put into play. Other revealed cards are returned to the villain trash.
 
 villain Kismet
 name Kismet
 from ShatteredTimelines
+challenge Burning Talisman
+At the start of each hero's turn, if The Talisman is in their play area, it deals that hero character card (H) fire damage.
 
 variant TricksterKismet
 name Trickster Kismet
@@ -236,14 +285,21 @@ from ShatteredTimelines
 base Kismet
 unlock Lose a game against regular Kismet in The Block, with at least K.N.Y.F.E., The Argent Adept, and Fanatic on the team. Over the course of the game, the Talisman must spend more full turns in hero play areas than full turns in the villain play area.
 requires Kismet TheBlock Knyfe? ArgentAdept? Fanatic?
+challenge Patient Punisher
+Whenever a jinx card enters a hero play area, Kismet deals each target in that play area 2 energy damage.
+Whenever Kismet reduces any target to 0 or fewer HP, play the top card of Kismet's deck.
 
 villain Deadline
 name Deadline
 from WrathOfTheCosmos
+challenge Endling Workmanship
+Villain device cards are indestructible.
 
 villain Infinitor
 name Infinitor
 from WrathOfTheCosmos
+challenge Pervasive Horrors
+Reduce damage dealt to manifestation cards by 2.
 
 variant HeroicInfinitor
 name Heroic Infinitor
@@ -251,180 +307,280 @@ from WrathOfTheCosmos
 base Infinitor
 unlock Defeat Infinitor with damage dealt by a Construct. Captain Cosmic must be the first hero and no heroes may be incapacitated. Each different Manifestation must enter play at least once.
 requires Infinitor CaptainCosmic?
+challenge Drawn to the Edge
+At the start of the villain turn, the top card of Infinitor's deck is revealed. If it is a manifestation, it is put into play. If not, it is shuffled back into Infiltrator's deck and each manifestation in play is restored to its maximum HP.
 
 villain KaargraWarfang
 name Kaargra Warfang
 from WrathOfTheCosmos
+challenge Illustrious Bloodsword
+Whenever a gladiator card enters play, the top card of the title deck is revealed and put under that gladiator card with the effects still visible.
 
 villain Progeny
 name Progeny
 from WrathOfTheCosmos
+challenge Ultimate Scion
+Scion cards do not destroy other scion cards upon entering play until there are 5 of more scion cards in play.
 
 villain WagerMaster
 name Wager Master
 from WagerMaster
+challenge All Fun and Pain
+Whenever a villain card is flippedf face-down, each hero target deals itself 1 psychic damage.
 
 villain Chokepoint
 name Chokepoint
 from Chokepoint
+challenge Steel-Singer
+Whenever a non-villain card is destroyed, it is put face-down in the villain play are (unless it is already face-down in the villain play area).
+Whenever a card is put face-down in the villain play area, Chokepoint regains 2 HP and deals each hero target 2 energy damage.
 
 villain Anathema
 name Anathema
 from TheCauldron
+challenge Regenerative Biology
+At the start of the game, put Biofeedback into play.
+Biofeedback is indestructible.
+Anathema is immune to villain damage.
 
 variant EvolvedAnathema
 name Evolved Anathema
 from TheCauldron
 base Anathema
+challenge True Evolution
+Replace both instances of arm or head card on this card with villain target.
 
 villain Celadroch
 name Celadroch
 from TheCauldron
+challenge Shallow Slumber
+At the start of the game, put a token in the storm pool.
 
 villain Dendron
 name Dendron
 from TheCauldron
+challenge Infernal Ink
+Whenever a tattoo enters play, it deals the hero target with the highest HP (H) minus 2 infernal damage.
 
 variant WindcolorDendron
 name Windcolor Dendron
 from TheCauldron
 base Dendron
+challenge Chaotic Colors
+At the start of the game, put 6 random tattoos under Dendron instead. Dendron is immune to villain damage.
 
 villain Dynamo
 name Dynamo
 from TheCauldron
+challenge Camaraderie
+At the start of the game, put Python and Copperhead into play. Dynamo is indestructible as long as there is another villain target in play.
 
 villain Gray
 name Gray
 from TheCauldron
+challenge Decaying World
+At the start of the villain turn, Gray deals each target 1 irreducable energy damage.
 
 villain TheInfernalChoir
 name The Infernal Choir
 from TheCauldron
+challenge Concealed Soul
+When The Infernal Choir flips, reduce damage dealt to The Infernal Choir by 2 until the start of the villain turn.
 
 villain Menagerie
 name Menagerie
 from TheCauldron
+challenge Stressful Containment
+At the end of the villain turn, the captured hero and each hero next to an enclosure deals themself X irreducable psychic damage, where X is the number of enclosures in play.
 
 villain TheMistressOfFate
 name The Mistress of Fate
 from TheCauldron
+challenge Imperfect Loop
+When The Mistress of Fate flips to her "Back to the beginning side", immediately discard the top card of the villain deck for each face-down day card.
 
 villain Mythos
 name Mythos
 from TheCauldron
+challenge Concealed Plots
+You are only allowed to check the symbol on the top card of the villain deck.
 
 villain Oriphel
 name Oriphel
 from TheCauldron
+challenge Rigid Rituals
+Reduce damage dealt to villain relics by 2.
+Oriphel does not flip back to Jade until there are 3 villain relics in the villain trash.
 
 villain Outlander
 name Outlander
 from TheCauldron
+challenge Lingering Influence
+Whenever a villain ongoing is destroyed, other villain ongoings are indestructible until the end of the villain turn.
 
 villain Phase
 name Phase
 from TheCauldron
+challenge Winding Escape Route
+Whenever an obstacle is destroyed, obstacles become immune to damage until the end of the turn.
 
 villain TheRam
 name The Ram
 from TheCauldron
+challenge Tactical Retreat
+The first time in the game that The Ram is reduced to 40 or fewer HP, search the villain deck and trash for a copy of Fall Back and put it into play, then shuffle all cards other than Up Close and Grappling Claw from the villain trash into the villain deck.
 
 variant Ram1929
 name 1929 Ram
 from TheCauldron
 base TheRam
+challenge Reverse Engineering
+At the end of the villain turn, if this card is in play, destroy an equipment card, then put the top card of the villain deck under The Ram.
 
 villain ScreaMachine
 name ScreaMachine
 from TheCauldron
+challenge Star Power
+Band members flip when 2 cards of their corresponding keyword are in play rather than 3.
 
 villain SwarmEater
 name Swarm Eater
 from TheCauldron
+challenge Inescapable Hunter
+Whenever Swarm Eater reduces a target to 2 or fewer HP, Swarm Eater destroys that target.
 
 variant HivemindSwarmEater
 name Hivemind Swarm Eater
 from TheCauldron
 base SwarmEater
+challenge Shared Code
+Activated absorb texts also apply to Swarm Eater.
 
 villain Tiamat
 name Tiamat
 from TheCauldron
+challenge Undying Rage
+Whenever a villain spell card enters play, if the head it names is decapitated, that head flips and is restroted to (H) times 3 HP.
 
 variant HydraTiamat
 name Hydra Tiamat
 from TheCauldron
 base Tiamat
+challenge Resiliance
+villain ongoings are indestructible as long as 2 or more heads are not decapitated.
 
 variant Tiamat2199
 name Tiamat 2199
 from TheCauldron
 base Tiamat
+challenge Reactive Armor
+Whenever a non-villain target deals damage to a dragonscale, Tiamat deals that target (H) minus 1 projectile damage.
 
 villain Vector
 name Vector
 from TheCauldron
+challenge Silent Plague
+At the start of the game, put Supervirus under Vector. It does not count as being in play.
+The first time Vector would be destroyed each game, instead set him to 10 HP and put Supervirus from under him into play.
 
 teamvillain TeamBaronBlade
 name Baron Blade (Team)
 from Vengeance
+challenge Mastermind
+Baron Blade is immune to villain damage.
 
 teamvillain TeamErmine
 name Ermine
 from Vengeance
+challenge Canny Thief
+At the start of the game, Subtle Diversion and Uncatchable are put into play.
 
 teamvillain TeamFriction
 name Friction
 from Vengeance
+challenge Sturdy Tech
+The Shock Dampeners card is indestructible.
 
 teamvillain TeamFrightTrain
 name Fright Train
 from Vengeance
+challenge All Aboard
+As long as Fright Train is a target, redirect all hero damage to Fright Train.
 
 teamvillain TeamProletariat
 name Proletariat
 from Vengeance
+challenge The Will of the People
+Targets named Proletariat are immune to psychic damage.
 
 teamvillain TeamAmbuscade
 name Ambuscade (Team)
 from VillainsOfTheMultiverse
+challenge Slaughterhouse Six's True Leader
+During setup, before revealing cards from the top of Ambuscade's deck, search the deck for Glamour and put her into play.
+As long as there are any other villain targets in this play area, Glamour is indestructible and immune to damage, even if Ambuscade is incapacitated.
 
 teamvillain TeamBiomancer
 name Biomancer
 from VillainsOfTheMultiverse
+challenge All According to Plan
+Whenever a fleshchild is destroyed, Biomancer regains (H) HP. Then, if Biomancer is at his max HP, play the top card of Biomancer's deck.
 
 teamvillain TeamBugbear
 name Bugbear
 from VillainsOfTheMultiverse
+challenge Mystic Hunt
+At the start of the game, note the hero character with the lowest HP. That hero and Bugbear are nenemes this game.
+Whenever bugbear deals damage to a hero target that is not his nenemis, he also deals an equivalent amount of damage to any of his nemeses in the game.
+If Bugbear ever reduces his nemesis to 0 or fewer HP, restore Bugbear to his max HP.
 
 teamvillain TeamLaCapitan
 name La Capitan (Team)
 from VillainsOfTheMultiverse
+challenge Pursued Through Time
+Whenever La Capitan plays a one-shot, La Capitan deals each target 2 psychic damage.
+Whenever one of La Capitan's ongoing cards is destroyed, reveal the top card of La Capitan's deck. If it is not an ongoing card, put it into play. Otherwise, discard it.
 
 teamvillain TeamCitizensHammerAndAnvil
 name Citizens Hammer and Anvil
 from VillainsOfTheMultiverse
+challenge Dawn's Chosen
+Whenever a hero uses a power, discard the top card of that hero's deck. If the discarded card was an ongoing card, Citizen Hammer deals that hero 2 fire damage. Otherwise, Citizen Hammer & Citizen Anvil each regain 2 HP.
 
 teamvillain TeamGreazer
 name Greazer
 from VillainsOfTheMultiverse
+challenge Heels on Fire
+Impeccable Pompadour is no longer indestructible. At the end of Greazer's turn, if the Impeccable Pompadour is not in play, shuffle Greazer's trash into his deck, then play the top card of Greazer's deck.
+Increase damage dealt by Greazer to each hero target in the play area with the Living Paycheck by 1.
 
 teamvillain TeamMissInformation
 name Miss Information (Team)
 from VillainsOfTheMultiverse
+challenge Masked Intentions
+The first time a player discards a card each turn, each villain target regains 1 HP.
+At the end of Miss Information's turn, play the top card of the villain deck belonging to the villain character card in play with the highest HP.
 
 teamvillain TeamTheOperative
 name The Operative
 from VillainsOfTheMultiverse
+challenge Breath of the Dragon
+The Operative's max HP for this game is 20.
+At the start of The Operative's turn, The Operative deals each hero target 3 fire damage.
 
 teamvillain TeamPlagueRat
 name Plague Rat (Team)
 from VillainsOfTheMultiverse
+challenge Delicious Handlers
+Whenever Plague Rat deals damage to a handler, he regains that much HP.
+Whenever a handler is destroyed, reveal the top card of Plague Rat's deck. If it is not a handler or revocorp backup, put it into play. Otherwise, discard it and Plague Rat deals (H) melee damage to the target other than himself with the lowest HP.
 
 teamvillain TeamSergeantSteel
 name Sergeant Steel
 from VillainsOfTheMultiverse
+challenge Combat Maneuvers
+Whenever an agent enters play, reduce damage dealt to that agent by 2 until the start of Sergeant Steel's next turn.
+Whenever an agent's F.I.L.T.E.R. icon is activated, that agent regains 2 HP.
 
 hero AbsoluteZero
 name Absolute Zero
@@ -1747,7 +1903,6 @@ base Vaarsuvius
 villain Xykon
 name Xykon
 from OrderOfTheStick
-nochallenge
 
 hero Ajani
 name Ajani
@@ -1954,77 +2109,63 @@ base Teferi
 villain EleshNorn
 name Elesh Norn
 from MagicTheGathering
-nochallenge
 
 villain Heliod
 name Heliod
 from MagicTheGathering
-nochallenge
 
 variant HeliodRadiantDawn
 name Heliod: Radiant Dawn
 from MagicTheGathering
 base Heliod
-nochallenge
 
 villain Nghathrod
 name N'ghathrod
 from MagicTheGathering
-nochallenge
 
 villain NicolBolas
 name Nicol Bolas
 from MagicTheGathering
-nochallenge
 
 variant NicolBolasRavagingTwin
 name Nicol Bolas: Ravaging Twin
 from MagicTheGathering
 base NicolBolas
-nochallenge
 
 villain ObNixilis
 name Ob Nixilis
 from MagicTheGathering
-nochallenge
 
 variant ObNixilisDemonicKingpin
 name Ob Nixilis: Demonic Kingpin
 from MagicTheGathering
 base ObNixilis
-nochallenge
 
 villain Tezzeret
 name Tezzeret
 from MagicTheGathering
-nochallenge
 
 variant TezzeretAgentOfArtifice
 name Tezzeret: Agent of Artifice
 from MagicTheGathering
 base Tezzeret
-nochallenge
 
 villain Ulamog
 name Ulamog
 from MagicTheGathering
-nochallenge
 
 variant UlamogUlaFalseGod
 name Ulamog: Ula, False God
 from MagicTheGathering
 base Ulamog
-nochallenge
 
 villain Vona
 name Vona
 from MagicTheGathering
-nochallenge
 
 villain Yawgmoth
 name Yawgmoth
 from MagicTheGathering
-nochallenge
 
 environment Ixalan
 name Ixalan
@@ -2093,24 +2234,20 @@ from MagicTheGathering
 villain AnorLondo
 name Anor Londo
 from DarkSouls
-nochallenge
 
 variant AnorLondoGuardiansOfGwynevere
 name Anor Londo: Guardians of Gwynevere
 from DarkSouls
 base AnorLondo
-nochallenge
 
 villain Lordran
 name Lordran
 from DarkSouls
-nochallenge
 
 variant LordranTheUndeadAsylum
 name Lordran: The Undead Asylum
 from DarkSouls
 base Lordran
-nochallenge
 
 environment Blighttown
 name Blighttown
@@ -2184,12 +2321,10 @@ base Gordito
 villain FranzRayner
 name Franz Rayner
 from DrMcNinja
-nochallenge
 
 villain KingRadical
 name King Radical
 from DrMcNinja
-nochallenge
 
 hero AbsoluteRa
 name Absolute Ra
@@ -2303,139 +2438,116 @@ variant OmnitronTechnoTerror
 name Omnitron: Techno Terror
 from AdelphophagesVillainPromos
 base Omnitron
-nochallenge
 
 variant GrandWarlordVossGeneBoundGeneral
 name Grand Warlord Voss: Gene-Bound General
 from AdelphophagesVillainPromos
 base GrandWarlordVoss
-nochallenge
 
 variant BaronBladeBlackHoleGenerator
 name Baron Blade: Black Hole Generator
 from AdelphophagesVillainPromos
 base BaronBlade
-nochallenge
 
 variant CitizenDawnSolarEmpress
 name Citizen Dawn: Solar Empress
 from AdelphophagesVillainPromos
 base CitizenDawn
-nochallenge
 
 variant AkashBhutaPrimordialCreator
 name Akash'Bhuta: Primordial Creator
 from AdelphophagesVillainPromos InfernalRelics
 base AkashBhuta
-nochallenge
 
 variant TheEnneadWrathOfTheGods
 name The Ennead: Wrath of the Gods
 from AdelphophagesVillainPromos InfernalRelics
 base TheEnnead
-nochallenge
 
 variant GloomweaverRitualOfGnophos
 name Gloomweaver: Ritual of Gnophos
 from AdelphophagesVillainPromos InfernalRelics
 base Gloomweaver
-nochallenge
 
 variant ApostateDarkAngel
 name Apostate: Dark Angel
 from AdelphophagesVillainPromos InfernalRelics
 base Apostate
-nochallenge
 
 variant SpiteDeathAddict
 name Spite: Death Addict
 from AdelphophagesVillainPromos RookCity
 base Spite
-nochallenge
 
 variant PlagueRatTheNewBreed
 name Plague Rat: The New Breed
 from AdelphophagesVillainPromos RookCity
 base PlagueRat
-nochallenge
 
 variant TheMatriarchRavenQueen
 name The Matriarch: Raven Queen
 from AdelphophagesVillainPromos RookCity
 base TheMatriarch
-nochallenge
 
 variant TheChairmanKingpin
 name The Chairman: Kingpin
 from AdelphophagesVillainPromos RookCity
 base TheChairman
-nochallenge
 
 variant IronLegacyJusticeForAll
 name Iron Legacy: Justice For All
 from AdelphophagesVillainPromos ShatteredTimelines
 base IronLegacy
-nochallenge
 
 variant TheDreamerMindOfAChild
 name The Dreamer: Mind of a Child
 from AdelphophagesVillainPromos ShatteredTimelines
 base TheDreamer
-nochallenge
 
 variant LaCapitanParadoxicalPirate
 name La Capitan: Paradoxical Pirate
 from AdelphophagesVillainPromos ShatteredTimelines
 base LaCapitan
-nochallenge
 
 variant KismetTwistOfFate
 name Kismet: Twist of Fate
 from AdelphophagesVillainPromos ShatteredTimelines
 base Kismet
-nochallenge
 
 variant DeadlineAngelOfExtinction
 name Deadline: Angel of Extinction
 from AdelphophagesVillainPromos WrathOfTheCosmos
 base Deadline
-nochallenge
 
 variant ProgenyTheMessenger
 name Progeny: The Messenger
 from AdelphophagesVillainPromos WrathOfTheCosmos
 base Progeny
-nochallenge
 
 variant KaargraWarfangRulerOfThePit
 name Kaargra Warfang: Ruler of the Pit
 from AdelphophagesVillainPromos WrathOfTheCosmos
 base KaargraWarfang
-nochallenge
 
 variant ChokepointRuthlessTechnopath
 name Chokepoint: Ruthless Technopath
 from AdelphophagesVillainPromos Chokepoint
 base Chokepoint
-nochallenge
 
 variant MissInformationSubtleSaboteur
 name Miss Information: Subtle Saboteur
 from AdelphophagesVillainPromos MissInformation
 base MissInformation
-nochallenge
 
 variant WagerMasterOmnipotentAnnoyance
 name Wager Master: Omnipotent Annoyance
 from AdelphophagesVillainPromos WagerMaster
 base WagerMaster
-nochallenge
 
 variant AmbuscadeThrillOfTheHunt
 name Ambuscade: Thrill of the Hunt
 from AdelphophagesVillainPromos Ambuscade
 base Ambuscade
-nochallenge
 
 variant AbsoluteZeroColdAsIce
 name Absolute Zero: Cold as Ice
@@ -2604,32 +2716,26 @@ from TheVentureBrothers
 villain TheMonarch
 name The Monarch
 from TheVentureBrothers
-nochallenge
 
 villain TheRevengeSociety
 name The Revenge Society
 from TheVentureBrothers
-nochallenge
 
 villain Molotov
 name Molotov
 from TheVentureBrothers
-nochallenge
 
 villain TheSovereign
 name The Sovereign
 from TheVentureBrothers
-nochallenge
 
 villain Legion
 name Legion
 from AdelphophagesCustomVillains
-nochallenge
 
 villain Heretic
 name Heretic
 from AdelphophagesCustomVillains
-nochallenge
 
 hero TheExecutor
 name The Executor
@@ -2679,17 +2785,14 @@ from AdelphophagesCustomEnvironments
 villain TheGentlemen
 name The Gentlemen
 from SentinelsOfTheBuffyverse
-nochallenge
 
 villain Angelus
 name Angelus
 from SentinelsOfTheBuffyverse
-nochallenge
 
 villain DarkWillow
 name Dark Willow
 from SentinelsOfTheBuffyverse
-nochallenge
 
 hero Buffy
 name Buffy
@@ -2729,7 +2832,6 @@ from SentinelsOfTheBuffyverse
 villain ThePteranoDon
 name The Pterano-Don
 from UnionOfHeroes
-nochallenge
 
 hero Odysseus
 name Odysseus
@@ -2781,17 +2883,14 @@ from UnionOfHeroes
 villain Klarion
 name Klarion
 from ThematicallyVariable
-nochallenge
 
 villain LeagueOfShadows
 name League of Shadows
 from ThematicallyVariable
-nochallenge
 
 villain BlackBeetle
 name Black Beetle
 from ThematicallyVariable
-nochallenge
 
 hero BoosterGold
 name Booster Gold

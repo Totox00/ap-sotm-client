@@ -4,7 +4,7 @@ use std::{
     path::Path,
 };
 
-use crate::{Data, EnumData, FillerData, FillerType, SourceData, VariantData};
+use crate::{Data, EnumData, FillerData, FillerType, SourceData, VariantData, VillainData};
 
 #[derive(Default)]
 struct Fields {
@@ -13,7 +13,7 @@ struct Fields {
     display_name: Option<String>,
     source: Option<String>,
     default: Option<bool>,
-    no_challenge: Option<bool>,
+    challenge: Option<(String, Vec<String>)>,
     base: Option<String>,
     unlock_desc: Option<String>,
     unlock_logic: Option<String>,
@@ -46,40 +46,37 @@ macro_rules! push_current {
                 display_name: $current.display_name.expect("Villains must have display_name"),
                 default: $current.default.unwrap_or(false),
             }),
-            DataType::Villain => $villains.push(EnumData {
+            DataType::Villain => $villains.push(VillainData {
                 enum_name: $current.enum_name.expect("Villains must have enum_name"),
                 display_name: $current.display_name.expect("Villains must have display_name"),
                 source: $current.source.unwrap_or(String::new()),
                 i: $villains.len(),
-                no_challenge: $current.no_challenge.unwrap_or(false),
+                challenge: $current.challenge,
             }),
-            DataType::TeamVillain => $team_villains.push(EnumData {
+            DataType::TeamVillain => $team_villains.push(VillainData {
                 enum_name: $current.enum_name.expect("Team villains must have enum_name"),
                 display_name: $current.display_name.expect("Team villains must have display_name"),
                 source: $current.source.unwrap_or(String::new()),
                 i: $team_villains.len(),
-                no_challenge: $current.no_challenge.unwrap_or(false),
+                challenge: $current.challenge,
             }),
             DataType::Hero => $heroes.push(EnumData {
                 enum_name: $current.enum_name.expect("Heroes must have enum_name"),
                 display_name: $current.display_name.expect("Heroes must have display_name"),
                 source: $current.source.unwrap_or(String::new()),
                 i: $heroes.len(),
-                no_challenge: false,
             }),
             DataType::Contender => $contenders.push(EnumData {
                 enum_name: $current.enum_name.expect("Contenders must have enum_name"),
                 display_name: $current.display_name.expect("Contenders must have display_name"),
                 source: $current.source.unwrap_or(String::new()),
                 i: $contenders.len(),
-                no_challenge: false,
             }),
             DataType::Environment => $environments.push(EnumData {
                 enum_name: $current.enum_name.expect("Environments must have enum_name"),
                 display_name: $current.display_name.expect("Environments must have display_name"),
                 source: $current.source.unwrap_or(String::new()),
                 i: $environments.len(),
-                no_challenge: false,
             }),
             DataType::Variant => {
                 let enum_name = $current.enum_name.expect("Variants must have enum_name");
@@ -89,12 +86,12 @@ macro_rules! push_current {
                 let is_villain = $villains.iter().any(|v| v.enum_name == base);
 
                 if is_villain {
-                    $villains.push(EnumData {
+                    $villains.push(VillainData {
                         enum_name: enum_name.clone(),
                         display_name: display_name.clone(),
                         source: source.clone(),
                         i: $villains.len(),
-                        no_challenge: $current.no_challenge.unwrap_or(false),
+                        challenge: $current.challenge,
                     })
                 }
 
@@ -140,25 +137,72 @@ pub fn group_data() -> Data {
 
     let mut current = Fields::default();
 
-    for (i, line) in BufReader::new(File::open(Path::new(file!()).parent().unwrap().join("data")).expect("Failed to open file"))
+    let mut lines = BufReader::new(File::open(Path::new(file!()).parent().unwrap().join("data")).expect("Failed to open file"))
         .lines()
-        .enumerate()
-        .map(|(i, line)| (i, line.unwrap_or_else(|_| panic!("Failed to read line {i}"))))
-    {
+        .zip(1..)
+        .map(|(line, i)| (line.unwrap_or_else(|_| panic!("Failed to read line {i}")), i));
+
+    while let Some((line, i)) = lines.next() {
         if let Some((field, value)) = line.split_once(' ') {
             match field {
                 "source" => push_current!(DataType::Source, value, current, sources, villains, team_villains, heroes, contenders, environments, variants, filler),
                 "villain" => push_current!(DataType::Villain, value, current, sources, villains, team_villains, heroes, contenders, environments, variants, filler),
-                "teamvillain" => push_current!(DataType::TeamVillain, value, current, sources, villains, team_villains, heroes, contenders, environments, variants, filler),
+                "teamvillain" => push_current!(
+                    DataType::TeamVillain,
+                    value,
+                    current,
+                    sources,
+                    villains,
+                    team_villains,
+                    heroes,
+                    contenders,
+                    environments,
+                    variants,
+                    filler
+                ),
                 "hero" => push_current!(DataType::Hero, value, current, sources, villains, team_villains, heroes, contenders, environments, variants, filler),
-                "environment" => push_current!(DataType::Environment, value, current, sources, villains, team_villains, heroes, contenders, environments, variants, filler),
+                "environment" => push_current!(
+                    DataType::Environment,
+                    value,
+                    current,
+                    sources,
+                    villains,
+                    team_villains,
+                    heroes,
+                    contenders,
+                    environments,
+                    variants,
+                    filler
+                ),
                 "variant" => push_current!(DataType::Variant, value, current, sources, villains, team_villains, heroes, contenders, environments, variants, filler),
                 "filler" => push_current!(DataType::Filler, value, current, sources, villains, team_villains, heroes, contenders, environments, variants, filler),
-                "contender" => push_current!(DataType::Contender, value, current, sources, villains, team_villains, heroes, contenders, environments, variants, filler),
-                "name" => current.display_name = Some(value.to_owned().escape_debug().to_string()),
+                "contender" => push_current!(
+                    DataType::Contender,
+                    value,
+                    current,
+                    sources,
+                    villains,
+                    team_villains,
+                    heroes,
+                    contenders,
+                    environments,
+                    variants,
+                    filler
+                ),
+                "name" => current.display_name = Some(value.escape_debug().to_string()),
                 "from" => current.source = Some(value.to_owned()),
-                "base" => current.base = Some(value.to_owned().escape_debug().to_string()),
-                "unlock" => current.unlock_desc = Some(value.to_owned().escape_debug().to_string()),
+                "base" => current.base = Some(value.escape_debug().to_string()),
+                "challenge" => {
+                    let mut desc = vec![];
+                    for (line, _) in lines.by_ref() {
+                        if line.is_empty() {
+                            break;
+                        }
+                        desc.push(line.escape_debug().to_string())
+                    }
+                    current.challenge = Some((value.escape_debug().to_string(), desc));
+                }
+                "unlock" => current.unlock_desc = Some(value.escape_debug().to_string()),
                 "requires" => current.unlock_logic = Some(value.to_owned()),
                 "type" => {
                     current.r#type = Some(match value {
@@ -168,17 +212,16 @@ pub fn group_data() -> Data {
                         _ => panic!("Invalid filler type"),
                     })
                 }
-                "posname" => current.display_name_pos = Some(value.to_owned().escape_debug().to_string()),
-                "negname" => current.display_name_neg = Some(value.to_owned().escape_debug().to_string()),
-                "posdesc" => current.desc_pos = Some(value.to_owned().escape_debug().to_string()),
-                "negdesc" => current.desc_neg = Some(value.to_owned().escape_debug().to_string()),
+                "posname" => current.display_name_pos = Some(value.escape_debug().to_string()),
+                "negname" => current.display_name_neg = Some(value.escape_debug().to_string()),
+                "posdesc" => current.desc_pos = Some(value.escape_debug().to_string()),
+                "negdesc" => current.desc_neg = Some(value.escape_debug().to_string()),
                 _ => panic!("Unrecognised field {field} at line {i}"),
             }
         } else if !line.is_empty() {
             match line.as_str() {
                 "damagetypes" => current.damage_types = Some(true),
                 "default" => current.default = Some(true),
-                "nochallenge" => current.no_challenge = Some(true),
                 _ => panic!("Unrecognised bool field {line} at line {i}"),
             }
         }

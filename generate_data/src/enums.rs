@@ -1,6 +1,6 @@
 use std::fmt::Write;
 
-use crate::{EnumData, VariantData};
+use crate::{EnumData, VariantData, VillainData};
 
 pub fn push_enum_defs<T>(str: &mut T, ident: &str, enum_data: &[EnumData])
 where
@@ -28,17 +28,44 @@ where
     let _ = write!(str, "}}}}}}");
 }
 
-pub fn push_no_challenge_impl<T>(str: &mut T, ident: &str, enum_data: &[EnumData])
+pub fn push_villain_defs<T>(str: &mut T, ident: &str, enum_data: &[VillainData])
 where
     T: Write,
 {
-    let _ = write!(str, "impl {ident} {{pub fn no_challenge(&self) -> bool {{match self {{");
+    let _ = write!(
+        str,
+        "#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, EnumIter, FromPrimitive, ToPrimitive, Hash)]pub enum {ident} {{"
+    );
 
     for data in enum_data {
-        let _ = write!(str, "{ident}::{} => {},", data.enum_name, data.no_challenge);
+        let _ = write!(str, "{},", data.enum_name);
     }
 
-    let _ = write!(str, "}}}}}}");
+    let _ = write!(
+        str,
+        "}}impl {ident} {{pub const fn variant_count() -> usize {{{}}}pub fn as_str(&self) -> &str {{match self {{",
+        enum_data.len()
+    );
+
+    for data in enum_data {
+        let _ = write!(str, "{ident}::{} => \"{}\",", data.enum_name, data.display_name);
+    }
+
+    let _ = write!(str, "}}}}pub fn no_challenge(&self) -> bool {{match self {{");
+
+    for data in enum_data {
+        let _ = write!(str, "{ident}::{} => {},", data.enum_name, data.challenge.is_none());
+    }
+
+    let _ = write!(str, "}}}}pub fn challenge_desc(&self) -> Option<(&str, &[&str])> {{match self {{");
+
+    for data in enum_data {
+        if let Some((name, desc)) = &data.challenge {
+            let _ = write!(str, "{ident}::{} => Some((\"{}\", &[\"{}\"])),", data.enum_name, name, desc.join("\",\""));
+        }
+    }
+
+    let _ = write!(str, "_=>None}}}}}}");
 }
 
 pub fn push_variant_defs<T>(str: &mut T, variant_data: &[VariantData])

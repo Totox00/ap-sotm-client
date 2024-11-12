@@ -6,7 +6,7 @@ mod id_py;
 mod logic;
 
 use data_py::generate_data_py;
-use enums::{push_enum_defs, push_no_challenge_impl, push_variant_defs};
+use enums::{push_enum_defs, push_variant_defs, push_villain_defs};
 use filler::push_filler;
 use group_data::group_data;
 use id_py::generate_id_py;
@@ -16,8 +16,8 @@ use proc_macro::TokenStream;
 #[derive(Debug)]
 struct Data {
     sources: Vec<SourceData>,
-    villains: Vec<EnumData>,
-    team_villains: Vec<EnumData>,
+    villains: Vec<VillainData>,
+    team_villains: Vec<VillainData>,
     heroes: Vec<EnumData>,
     contenders: Vec<EnumData>,
     environments: Vec<EnumData>,
@@ -29,7 +29,16 @@ struct Data {
 struct SourceData {
     enum_name: String,
     display_name: String,
-    default: bool
+    default: bool,
+}
+
+#[derive(Debug, Clone)]
+struct VillainData {
+    enum_name: String,
+    display_name: String,
+    source: String,
+    i: usize,
+    challenge: Option<(String, Vec<String>)>,
 }
 
 #[derive(Debug, Clone)]
@@ -38,7 +47,6 @@ struct EnumData {
     display_name: String,
     source: String,
     i: usize,
-    no_challenge: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -86,13 +94,11 @@ pub fn generate_data(_stream: TokenStream) -> TokenStream {
 
     let mut str = String::new();
 
-    push_enum_defs(&mut str, "Villain", &data.villains);
-    push_enum_defs(&mut str, "TeamVillain", &data.team_villains);
+    push_villain_defs(&mut str, "Villain", &data.villains);
+    push_villain_defs(&mut str, "TeamVillain", &data.team_villains);
     push_enum_defs(&mut str, "Hero", &data.heroes);
     push_enum_defs(&mut str, "Contender", &data.contenders);
     push_enum_defs(&mut str, "Environment", &data.environments);
-    push_no_challenge_impl(&mut str, "Villain", &data.villains);
-    push_no_challenge_impl(&mut str, "TeamVillain", &data.team_villains);
     push_variant_defs(&mut str, &data.variants);
     push_filler(&mut str, &data);
 
