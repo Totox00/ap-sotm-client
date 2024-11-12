@@ -30,6 +30,7 @@ enum DataType {
     Source,
     Villain,
     TeamVillain,
+    Gladiator,
     Hero,
     Contender,
     Environment,
@@ -38,7 +39,7 @@ enum DataType {
 }
 
 macro_rules! push_current {
-    ($new_type: expr, $value: ident, $current: ident, $sources: ident, $villains: ident, $team_villains: ident, $heroes: ident, $contenders: ident, $environments: ident, $variants: ident, $filler: ident) => {{
+    ($new_type: expr, $value: ident, $current: ident, $sources: ident, $villains: ident, $team_villains: ident, $gladiators: ident, $heroes: ident, $contenders: ident, $environments: ident, $variants: ident, $filler: ident) => {{
         match $current.data_type {
             DataType::None => (),
             DataType::Source => $sources.push(SourceData {
@@ -58,6 +59,13 @@ macro_rules! push_current {
                 display_name: $current.display_name.expect("Team villains must have display_name"),
                 source: $current.source.unwrap_or(String::new()),
                 i: $team_villains.len(),
+                challenge: $current.challenge,
+            }),
+            DataType::Gladiator => $gladiators.push(VillainData {
+                enum_name: $current.enum_name.expect("gladiators must have enum_name"),
+                display_name: $current.display_name.expect("gladiators must have display_name"),
+                source: $current.source.unwrap_or(String::new()),
+                i: $gladiators.len(),
                 challenge: $current.challenge,
             }),
             DataType::Hero => $heroes.push(EnumData {
@@ -131,6 +139,7 @@ pub fn group_data() -> Data {
     let mut team_villains = vec![];
     let mut heroes = vec![];
     let mut contenders = vec![];
+    let mut gladiators = vec![];
     let mut environments = vec![];
     let mut variants = vec![];
     let mut filler = vec![];
@@ -145,8 +154,34 @@ pub fn group_data() -> Data {
     while let Some((line, i)) = lines.next() {
         if let Some((field, value)) = line.split_once(' ') {
             match field {
-                "source" => push_current!(DataType::Source, value, current, sources, villains, team_villains, heroes, contenders, environments, variants, filler),
-                "villain" => push_current!(DataType::Villain, value, current, sources, villains, team_villains, heroes, contenders, environments, variants, filler),
+                "source" => push_current!(
+                    DataType::Source,
+                    value,
+                    current,
+                    sources,
+                    villains,
+                    team_villains,
+                    gladiators,
+                    heroes,
+                    contenders,
+                    environments,
+                    variants,
+                    filler
+                ),
+                "villain" => push_current!(
+                    DataType::Villain,
+                    value,
+                    current,
+                    sources,
+                    villains,
+                    team_villains,
+                    gladiators,
+                    heroes,
+                    contenders,
+                    environments,
+                    variants,
+                    filler
+                ),
                 "teamvillain" => push_current!(
                     DataType::TeamVillain,
                     value,
@@ -154,13 +189,27 @@ pub fn group_data() -> Data {
                     sources,
                     villains,
                     team_villains,
+                    gladiators,
                     heroes,
                     contenders,
                     environments,
                     variants,
                     filler
                 ),
-                "hero" => push_current!(DataType::Hero, value, current, sources, villains, team_villains, heroes, contenders, environments, variants, filler),
+                "hero" => push_current!(
+                    DataType::Hero,
+                    value,
+                    current,
+                    sources,
+                    villains,
+                    team_villains,
+                    gladiators,
+                    heroes,
+                    contenders,
+                    environments,
+                    variants,
+                    filler
+                ),
                 "environment" => push_current!(
                     DataType::Environment,
                     value,
@@ -168,14 +217,41 @@ pub fn group_data() -> Data {
                     sources,
                     villains,
                     team_villains,
+                    gladiators,
                     heroes,
                     contenders,
                     environments,
                     variants,
                     filler
                 ),
-                "variant" => push_current!(DataType::Variant, value, current, sources, villains, team_villains, heroes, contenders, environments, variants, filler),
-                "filler" => push_current!(DataType::Filler, value, current, sources, villains, team_villains, heroes, contenders, environments, variants, filler),
+                "variant" => push_current!(
+                    DataType::Variant,
+                    value,
+                    current,
+                    sources,
+                    villains,
+                    team_villains,
+                    gladiators,
+                    heroes,
+                    contenders,
+                    environments,
+                    variants,
+                    filler
+                ),
+                "filler" => push_current!(
+                    DataType::Filler,
+                    value,
+                    current,
+                    sources,
+                    villains,
+                    team_villains,
+                    gladiators,
+                    heroes,
+                    contenders,
+                    environments,
+                    variants,
+                    filler
+                ),
                 "contender" => push_current!(
                     DataType::Contender,
                     value,
@@ -183,6 +259,21 @@ pub fn group_data() -> Data {
                     sources,
                     villains,
                     team_villains,
+                    gladiators,
+                    heroes,
+                    contenders,
+                    environments,
+                    variants,
+                    filler
+                ),
+                "gladiator" => push_current!(
+                    DataType::Gladiator,
+                    value,
+                    current,
+                    sources,
+                    villains,
+                    team_villains,
+                    gladiators,
                     heroes,
                     contenders,
                     environments,
@@ -243,6 +334,7 @@ pub fn group_data() -> Data {
         sources,
         villains,
         team_villains,
+        gladiators,
         heroes,
         contenders,
         environments,

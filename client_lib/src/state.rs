@@ -1,4 +1,4 @@
-use crate::data::{Contender, DamageType, DeconstructedFiller, Environment, Filler, FillerTarget, Hero, HeroLike, Item, Location, TeamVillain, Variant, Villain, VillainLike};
+use crate::data::{Contender, DamageType, DeconstructedFiller, Environment, Filler, FillerTarget, Gladiator, Hero, HeroLike, Item, Location, TeamVillain, Variant, Villain, VillainLike};
 use archipelago_protocol::SlotData;
 use strum::IntoEnumIterator;
 
@@ -14,6 +14,7 @@ pub struct Items {
     pub scions: u32,
     pub villains: [u8; Villain::variant_count() / 8 + 1],
     pub team_villains: [u8; TeamVillain::variant_count() / 8 + 1],
+    pub gladiators: [u8; Gladiator::variant_count() / 8 + 1],
     pub heroes: [u8; Hero::variant_count()],
     pub contenders: [u8; Contender::variant_count() / 8 + 1],
     pub environments: [u8; Environment::variant_count() / 8 + 1],
@@ -46,6 +47,7 @@ pub struct Locations {
     pub victory: bool,
     pub villains: [u8; Villain::variant_count()],
     pub team_villains: [u8; TeamVillain::variant_count()],
+    pub gladiators: [u8; Gladiator::variant_count()],
     pub variants: [u8; Variant::variant_count() / 8 + 1],
     pub environments: [u8; Environment::variant_count() / 8 + 1],
 }
@@ -55,6 +57,7 @@ pub struct AvailableLocations {
     pub victory: bool,
     pub villains: Vec<(Villain, u8)>,
     pub team_villains: Vec<(TeamVillain, u8)>,
+    pub gladiators: Vec<(Gladiator, u8)>,
     pub variants: Vec<Variant>,
     pub environments: Vec<Environment>,
 }
@@ -111,6 +114,24 @@ impl State {
                     .flat_map(|(v, b)| [0, 1, 2, 3].iter().filter(move |d| b & 1 << *d > 0).map(move |d| (v, *d)))
                     .collect()
             },
+            gladiators: if self.items.gladiators.iter().map(|b| (*b).count_ones()).sum::<u32>() < 3 {
+                vec![]
+            } else {
+                Gladiator::iter()
+                    .filter(|v| self.items.has_gladiator(*v))
+                    .map(|v| {
+                        (
+                            v,
+                            if v.no_challenge() { [0, 1].iter() } else { [0, 1, 2, 3].iter() }
+                                .filter(|d| self.checked_locations.has_unchecked_gladiator(v, **d))
+                                .map(|d| 1 << d)
+                                .fold(0, |acc, x| acc | x),
+                        )
+                    })
+                    .filter(|(_, d)| *d > 0)
+                    .flat_map(|(v, b)| [0, 1, 2, 3].iter().filter(move |d| b & 1 << *d > 0).map(move |d| (v, *d)))
+                    .collect()
+            },
             variants: Variant::iter()
                 .filter(|v| self.checked_locations.has_unchecked_variant(*v))
                 .filter(|v| v.can_unlock(&self.items))
@@ -141,6 +162,7 @@ impl Items {
             scions: 0,
             villains: [0; Villain::variant_count() / 8 + 1],
             team_villains: [0; TeamVillain::variant_count() / 8 + 1],
+            gladiators: [0; Gladiator::variant_count() / 8 + 1],
             heroes: [0; Hero::variant_count()],
             contenders: [0; Contender::variant_count() / 8 + 1],
             environments: [0; Environment::variant_count() / 8 + 1],
@@ -156,8 +178,16 @@ impl Items {
         self.team_villains[team_villain as usize >> 3] & 1 << (team_villain as u8 & 0x7) > 0
     }
 
+    pub fn has_gladiator(&self, gladiator: Gladiator) -> bool {
+        self.gladiators[gladiator as usize >> 3] & 1 << (gladiator as u8 & 0x7) > 0
+    }
+
     pub fn team_villain_count(&self) -> bool {
         self.team_villains.iter().map(|b| b.count_ones()).sum::<u32>() >= 3
+    }
+
+    pub fn gladiator_count(&self) -> bool {
+        self.gladiators.iter().map(|b| b.count_ones()).sum::<u32>() >= 3
     }
 
     pub fn has_hero(&self, hero: Hero) -> bool {
@@ -197,6 +227,10 @@ impl Items {
         self.team_villains[team_villain as usize >> 3] |= 1 << (team_villain as u8 & 0x7);
     }
 
+    pub fn set_gladiator(&mut self, gladiator: Gladiator) {
+        self.gladiators[gladiator as usize >> 3] |= 1 << (gladiator as u8 & 0x7);
+    }
+
     pub fn set_hero(&mut self, hero: Hero) {
         self.heroes[hero as usize] |= 1;
     }
@@ -222,6 +256,7 @@ impl Items {
             Item::Variant(v) => self.set_hero_variant(v),
             Item::Villain(v) => self.set_villain(v),
             Item::TeamVillain(v) => self.set_team_villain(v),
+            Item::Gladiator(v) => self.set_gladiator(v),
             Item::Environment(v) => self.set_environment(v),
             Item::Scion => self.scions += 1,
             Item::Filler((filler, count)) => {
@@ -431,6 +466,7 @@ impl Locations {
             victory: false,
             villains: [0; Villain::variant_count()],
             team_villains: [0; TeamVillain::variant_count()],
+            gladiators: [0; Gladiator::variant_count()],
             variants: [0; Variant::variant_count() / 8 + 1],
             environments: [0; Environment::variant_count() / 8 + 1],
         }
@@ -442,6 +478,10 @@ impl Locations {
 
     pub fn has_unchecked_team_villain(&self, team_villain: TeamVillain, difficulty: u8) -> bool {
         self.team_villains[team_villain as usize] & 1 << difficulty == 0
+    }
+
+    pub fn has_unchecked_gladiator(&self, gladiator: Gladiator, difficulty: u8) -> bool {
+        self.gladiators[gladiator as usize] & 1 << difficulty == 0
     }
 
     pub fn has_unchecked_variant(&self, variant: Variant) -> bool {
@@ -464,6 +504,10 @@ impl Locations {
         self.team_villains[team_villain as usize] |= 1 << difficulty;
     }
 
+    pub fn mark_gladiator(&mut self, gladiator: Gladiator, difficulty: u8) {
+        self.gladiators[gladiator as usize] |= 1 << difficulty;
+    }
+
     pub fn mark_variant(&mut self, variant: Variant) {
         if variant as usize >= Variant::BaccaratAceOfSwords as usize {
             return;
@@ -480,6 +524,7 @@ impl Locations {
             Location::Variant(v) => self.mark_variant(v),
             Location::Villain((v, d)) => self.mark_villain(v, d),
             Location::TeamVillain((v, d)) => self.mark_team_villain(v, d),
+            Location::Gladiator((v, d)) => self.mark_gladiator(v, d),
             Location::Environment(e) => self.mark_environment(e),
             Location::Victory => (),
         }

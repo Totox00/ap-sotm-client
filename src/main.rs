@@ -205,6 +205,7 @@ fn resolve_multi_send(location: Location) -> Vec<Location> {
         Location::Variant(_) => vec![location],
         Location::Villain((v, d)) => (0..=3).filter(|b| (d & *b) == *b).map(|d| Location::Villain((v, d))).collect(),
         Location::TeamVillain((v, d)) => (0..=3).filter(|b| (d & *b) == *b).map(|d| Location::TeamVillain((v, d))).collect(),
+        Location::Gladiator((v, d)) => (0..=3).filter(|b| (d & *b) == *b).map(|d| Location::Gladiator((v, d))).collect(),
         Location::Environment(_) => vec![location],
         Location::Victory => vec![Location::Victory],
     }
@@ -264,7 +265,7 @@ async fn run(session: Session<DefaultDatapackageStore, DefaultPersistentStore>, 
                         } else {
                             for n in 0..session.slot_data.locations_per[match location {
                                 Location::Variant(_) => 5,
-                                Location::Villain((_, d)) | Location::TeamVillain((_, d)) => *d as usize,
+                                Location::Villain((_, d)) | Location::TeamVillain((_, d)) | Location::Gladiator((_, d)) => *d as usize,
                                 Location::Environment(_) => 4,
                                 Location::Victory => unreachable!(),
                             }] {

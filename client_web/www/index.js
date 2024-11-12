@@ -295,6 +295,13 @@ function updateState() {
     villains.appendChild(newElem);
   }
 
+  for (const item of state.gladiators()) {
+    const newElem = document.createElement("li");
+    newElem.innerText = item.name();
+    newElem.addEventListener("mouseenter", itemTooltip(item));
+    villains.appendChild(newElem);
+  }
+
   for (const item of state.environments()) {
     const newElem = document.createElement("li");
     newElem.innerText = item.name();
@@ -326,6 +333,17 @@ function updateState() {
   }
 
   for (const location of available.team_villains()) {
+    const newElem = document.createElement("li");
+    newElem.innerHTML = location.name();
+    newElem.addEventListener("click", () => {
+      sendLocation(location);
+      newElem.remove();
+    });
+    newElem.addEventListener("mouseenter", locationTooltip(location));
+    villainLocations.appendChild(newElem);
+  }
+
+  for (const location of available.gladiators()) {
     const newElem = document.createElement("li");
     newElem.innerHTML = location.name();
     newElem.addEventListener("click", () => {

@@ -77,6 +77,16 @@ pub fn generate_data_py(data: &Data) {
             );
         }
 
+        for gladiator in &data.gladiators {
+            let _ = write!(
+                writer,
+                "SotmData(\"{}\",[{}],SotmCategory.Gladiator,{}),",
+                gladiator.display_name,
+                map_source(&gladiator.source),
+                if gladiator.challenge.is_none() { "True" } else { "False" }
+            );
+        }
+
         for hero in &data.heroes {
             let _ = write!(writer, "SotmData(\"{}\",[{}],SotmCategory.Hero,False),", hero.display_name, map_source(&hero.source));
         }

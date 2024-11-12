@@ -1,5 +1,5 @@
 use client_lib::{
-    data::{Contender, Environment, Hero, Item, Location, TeamVillain, Variant, Villain},
+    data::{Contender, Environment, Gladiator, Hero, Item, Location, TeamVillain, Variant, Villain},
     state::State,
 };
 use num::FromPrimitive;
@@ -12,6 +12,7 @@ pub struct WasmState {
     available: WasmAvailable,
     villains: Vec<WasmItem>,
     team_villains: Vec<WasmItem>,
+    gladiators: Vec<WasmItem>,
     environments: Vec<WasmItem>,
     heroes: Vec<WasmHero>,
     pub scions: i32,
@@ -23,6 +24,7 @@ pub struct WasmAvailable {
     pub victory: bool,
     villains: Vec<WasmLocation>,
     team_villains: Vec<WasmLocation>,
+    gladiators: Vec<WasmLocation>,
     environments: Vec<WasmLocation>,
     variants: Vec<WasmLocation>,
 }
@@ -131,6 +133,14 @@ pub fn wrap_state(state: &State) -> WasmState {
                     name: format!("{} - {}", v.as_str(), difficulty(&d)),
                 })
                 .collect(),
+            gladiators: available
+                .gladiators
+                .into_iter()
+                .map(|(v, d)| WasmLocation {
+                    inner: Location::Gladiator((v, d)),
+                    name: format!("{} - {}", v.as_str(), difficulty(&d)),
+                })
+                .collect(),
             environments: available
                 .environments
                 .into_iter()
@@ -159,6 +169,13 @@ pub fn wrap_state(state: &State) -> WasmState {
             .filter(|v| state.items.has_team_villain(*v))
             .map(|v| WasmItem {
                 inner: Item::TeamVillain(v),
+                name: v.as_str().to_owned(),
+            })
+            .collect(),
+        gladiators: Gladiator::iter()
+            .filter(|v| state.items.has_gladiator(*v))
+            .map(|v| WasmItem {
+                inner: Item::Gladiator(v),
                 name: v.as_str().to_owned(),
             })
             .collect(),
@@ -239,6 +256,10 @@ impl WasmState {
         self.team_villains.clone()
     }
 
+    pub fn gladiators(&self) -> Vec<WasmItem> {
+        self.gladiators.clone()
+    }
+
     pub fn environments(&self) -> Vec<WasmItem> {
         self.environments.clone()
     }
@@ -256,6 +277,10 @@ impl WasmAvailable {
 
     pub fn team_villains(&self) -> Vec<WasmLocation> {
         self.team_villains.clone()
+    }
+
+    pub fn gladiators(&self) -> Vec<WasmLocation> {
+        self.gladiators.clone()
     }
 
     pub fn environments(&self) -> Vec<WasmLocation> {

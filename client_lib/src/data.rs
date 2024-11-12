@@ -13,6 +13,7 @@ pub enum Item {
     Variant(Variant),
     Villain(Villain),
     TeamVillain(TeamVillain),
+    Gladiator(Gladiator),
     Environment(Environment),
     Scion,
     Filler((Filler, i32)),
@@ -23,6 +24,7 @@ pub enum Location {
     Variant(Variant),
     Villain((Villain, u8)),
     TeamVillain((TeamVillain, u8)),
+    Gladiator((Gladiator, u8)),
     Environment(Environment),
     Victory,
 }
@@ -128,6 +130,7 @@ impl Item {
             Item::Variant(i) => i.as_str(),
             Item::Villain(i) => i.as_str(),
             Item::TeamVillain(i) => i.as_str(),
+            Item::Gladiator(i) => i.as_str(),
             Item::Environment(i) => i.as_str(),
             Item::Scion => "Scion of Oblivaeon",
             Item::Filler(_) => "Filler",
@@ -138,6 +141,7 @@ impl Item {
         match (id & (0b1111 << 48)) >> 48 {
             0b0001 => Item::Villain(Villain::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown villain ID")),
             0b0011 => Item::TeamVillain(TeamVillain::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown team villain ID")),
+            0b0101 => Item::Gladiator(Gladiator::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown team villain ID")),
             0b0010 => {
                 let hero = Hero::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown hero ID");
                 let variant_i = ((id as u32) & (0b1111_1111 << 16)) >> 16;
@@ -168,6 +172,7 @@ impl Location {
         (match self {
             Location::Villain((v, d)) => (0b0001 << 48) | *v as i64 | ((*d as i64) << 22),
             Location::TeamVillain((v, d)) => (0b0011 << 48) | *v as i64 | ((*d as i64) << 22),
+            Location::Gladiator((v, d)) => (0b0101 << 48) | *v as i64 | ((*d as i64) << 22),
             Location::Variant(v) => {
                 (0b0010 << 48)
                     | if let Some(h) = v.as_normal() {
@@ -186,6 +191,7 @@ impl Location {
             Location::Variant(v) => Some(Item::Variant(*v)),
             Location::Villain((v, _)) => Some(Item::Villain(*v)),
             Location::TeamVillain((v, _)) => Some(Item::TeamVillain(*v)),
+            Location::Gladiator((v, _)) => Some(Item::Gladiator(*v)),
             Location::Environment(v) => Some(Item::Environment(*v)),
             Location::Victory => None,
         }

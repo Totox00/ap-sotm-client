@@ -53,7 +53,7 @@ impl WasmSession {
 
             for n in 0..self.inner.state.slot_data.locations_per[match location {
                 Location::Variant(_) => 5,
-                Location::Villain((_, d)) | Location::TeamVillain((_, d)) => d as usize,
+                Location::Villain((_, d)) | Location::TeamVillain((_, d)) | Location::Gladiator((_, d)) => d as usize,
                 Location::Environment(_) => 4,
                 Location::Victory => unreachable!(),
             }] {
@@ -181,6 +181,14 @@ impl WasmSession {
                     }
                     for (filler, count) in self.inner.state.items.get_filler_for(FillerTarget::Villain(VillainLike::TeamVillain(v))) {
                         let _ = write!(buf, "<li><span>{}</span><br /><span class=\"desc\">{}</span></li>", filler.to_string(count), filler.to_desc(count));
+                    }
+                }
+                Item::Gladiator(v) => {
+                    if let Some((name, desc)) = v.challenge_desc() {
+                        let _ = write!(buf, "<h3>Challenge - {name}</h3>");
+                        for paragraph in desc {
+                            let _ = write!(buf, "<p>{paragraph}</p>");
+                        }
                     }
                 }
                 Item::Environment(_) => {

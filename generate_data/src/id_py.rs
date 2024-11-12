@@ -3,6 +3,7 @@
 //                  scion ____0000 00000000 00000000 00000000 00000000 00000000 00000001
 //                villain ____0001 00000000 00000000 00000000 00000000 xxxxxxxx xxxxxxxx (x: villain index)
 //           team villain ____0011 00000000 00000000 00000000 00000000 xxxxxxxx xxxxxxxx (x: team villain index)
+//              gladiator ____0101 00000000 00000000 00000000 00000000 xxxxxxxx xxxxxxxx (x: gladiator index)
 //                   hero ____0010 00000000 00000000 00000000 00000000 xxxxxxxx xxxxxxxx (x: hero index)
 //                variant ____0010 00000000 00000000 00000000 yyyyyyyy xxxxxxxx xxxxxxxx (x: hero index, y: variant index)
 //              contender ____0110 00000000 00000000 00000000 00000000 xxxxxxxx xxxxxxxx (x: contender index)
@@ -26,6 +27,7 @@
 //                        ____0000 00000000 00000000 00000000 00000000 00000000 00000000
 //                villain ____0001 00000000 00000000 00000000 zzyyyyyy xxxxxxxx xxxxxxxx (x: villain index, y: check #, z: difficulty)
 //           team villain ____0011 00000000 00000000 00000000 zzyyyyyy xxxxxxxx xxxxxxxx (x: team villain index, y: check #, z: difficulty)
+//              gladiator ____0101 00000000 00000000 00000000 zzyyyyyy xxxxxxxx xxxxxxxx (x: gladiator index, y: check #, z: difficulty)
 //           hero variant ____0010 00000000 00000000 zzzzzzzz 00yyyyyy xxxxxxxx xxxxxxxx (x: hero index, y: check #, z: variant index)
 //        villain variant ____0010 00000000 00000000 00000000 01yyyyyy xxxxxxxx xxxxxxxx (x: variant index, y: check #)
 //            environment ____0100 00000000 00000000 00000000 00yyyyyy xxxxxxxx xxxxxxxx (x: environment index, y: check #)
@@ -40,6 +42,7 @@ pub fn generate_id_py(data: &Data) {
 
         villain_item_id(&mut writer, &data.villains, 0b0001);
         villain_item_id(&mut writer, &data.team_villains, 0b0011);
+        villain_item_id(&mut writer, &data.gladiators, 0b0101);
         item_id(&mut writer, &data.heroes, 0b0010);
         item_id(&mut writer, &data.contenders, 0b0110);
         for variant in data.hero_variants() {
@@ -53,6 +56,7 @@ pub fn generate_id_py(data: &Data) {
 
         villain_location_id(&mut writer, &data.villains, 0b0001);
         villain_location_id(&mut writer, &data.team_villains, 0b0011);
+        villain_location_id(&mut writer, &data.gladiators, 0b0101);
         for variant in data.variants.iter() {
             for c in 0..5 {
                 let _ = write!(
