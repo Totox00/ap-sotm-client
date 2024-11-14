@@ -205,7 +205,7 @@ function connectedConnect(connected) {
   printJson = (data) => {
     const newMsg = document.createElement("li");
     newMsg.innerHTML = session.try_format_json(JSON.stringify(data));
-    msgBuffer.appendChild(newMsg);
+    msgBuffer.prepend(newMsg);
   };
   client.send(JSON.stringify([{ cmd: "Sync" }]));
   deathlinkType = session.deathlink();
