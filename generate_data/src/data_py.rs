@@ -26,7 +26,7 @@ pub fn generate_data_py(data: &Data) {
             );
         }
 
-        let _ = write!(writer, "}}\nclass SotmData(NamedTuple):name:str;sources:list[SotmSource];category:SotmCategory;no_challenge:bool;base:Optional[str]=None;rule:Optional[Callable[[CollectionState|SotmState,int],bool]]=None;dependencies:Optional[list[str]]=None\ndata=[");
+        let _ = write!(writer, "}}\nclass SotmData(NamedTuple):name:str;sources:list[SotmSource];category:SotmCategory;challenge:bool;base:Optional[str]=None;rule:Optional[Callable[[CollectionState|SotmState,int],bool]]=None;dependencies:Optional[list[str]]=None\ndata=[");
 
         for villain in &data.villains {
             if let Some(variant) = data.villain_variants().find(|variant| villain.enum_name == variant.enum_name) {
@@ -42,7 +42,7 @@ pub fn generate_data_py(data: &Data) {
                         "SotmData(\"{}\",[{}],SotmCategory.VillainVariant,{},\"{}\",lambda state,player:{},[{}]),",
                         villain.display_name,
                         map_source(&villain.source),
-                        if villain.challenge.is_none() { "True" } else { "False" },
+                        if villain.challenge.is_some() { "True" } else { "False" },
                         base.display_name,
                         logic.as_py_expr(),
                         logic.as_dependencies(data).iter().map(|dependency| format!("\"{dependency}\"")).collect::<Vec<_>>().join(",")
@@ -53,7 +53,7 @@ pub fn generate_data_py(data: &Data) {
                         "SotmData(\"{}\",[{}],SotmCategory.Villain,{}),",
                         villain.display_name,
                         map_source(&villain.source),
-                        if villain.challenge.is_none() { "True" } else { "False" }
+                        if villain.challenge.is_some() { "True" } else { "False" }
                     );
                 }
             } else {
@@ -62,7 +62,7 @@ pub fn generate_data_py(data: &Data) {
                     "SotmData(\"{}\",[{}],SotmCategory.Villain,{}),",
                     villain.display_name,
                     map_source(&villain.source),
-                    if villain.challenge.is_none() { "True" } else { "False" }
+                    if villain.challenge.is_some() { "True" } else { "False" }
                 );
             }
         }
@@ -73,7 +73,7 @@ pub fn generate_data_py(data: &Data) {
                 "SotmData(\"{}\",[{}],SotmCategory.TeamVillain,{}),",
                 team_villain.display_name,
                 map_source(&team_villain.source),
-                if team_villain.challenge.is_none() { "True" } else { "False" }
+                if team_villain.challenge.is_some() { "True" } else { "False" }
             );
         }
 
@@ -83,7 +83,7 @@ pub fn generate_data_py(data: &Data) {
                 "SotmData(\"{}\",[{}],SotmCategory.Gladiator,{}),",
                 gladiator.display_name,
                 map_source(&gladiator.source),
-                if gladiator.challenge.is_none() { "True" } else { "False" }
+                if gladiator.challenge.is_some() { "True" } else { "False" }
             );
         }
 
