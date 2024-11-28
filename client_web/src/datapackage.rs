@@ -19,7 +19,7 @@ struct GameData {
 pub struct WebDatapackageStore {
     fs: Option<FileSystemDirectoryHandle>,
     data: HashMap<String, Arc<GameData>>,
-    missing: Vec<(String, String)>,
+    missing: HashMap<String, String>,
     player_to_game: HashMap<i32, Arc<GameData>>,
 }
 
@@ -57,8 +57,8 @@ impl WebDatapackageStore {
             }
         }
 
-        self.missing.retain(|(game, _)| !to_load.contains_key(game));
         for (game, data) in to_load {
+            self.missing.remove(&game);
             self.add_game_internal(game, data);
         }
     }
@@ -66,8 +66,8 @@ impl WebDatapackageStore {
     pub async fn add_game(&mut self, game: String, data: &str) {
         if let Ok(game_data) = from_str(data) {
             if let Some(fs) = &self.fs {
-                for (game, checksum) in &self.missing {
-                    if let Ok(game_dir) = JsFuture::from(fs.get_directory_handle_with_options(game, &create_dir())).await.map(FileSystemDirectoryHandle::from) {
+                if let Some(checksum) = self.missing.get(&game) {
+                    if let Ok(game_dir) = JsFuture::from(fs.get_directory_handle_with_options(&game, &create_dir())).await.map(FileSystemDirectoryHandle::from) {
                         if let Ok(file_handle) = JsFuture::from(game_dir.get_file_handle_with_options(checksum, &create_file())).await.map(FileSystemFileHandle::from) {
                             if let Ok(writable) = JsFuture::from(file_handle.create_writable()).await.map(FileSystemWritableFileStream::from) {
                                 if let Ok(res) = writable.write_with_str(data) {
@@ -99,22 +99,6 @@ impl WebDatapackageStore {
         self.data.insert(game, Arc::new(GameData { item_id_to_name, location_id_to_name }));
     }
 
-    pub fn item(&self, id: i64) -> String {
-        if let Some(game_data) = self.data.get("Sentinels of the Multiverse") {
-            game_data.item_id_to_name.get(&id).map(|i| i.to_owned()).unwrap_or(format!("Unknown item {id}"))
-        } else {
-            format!("Unknown item {id}")
-        }
-    }
-
-    pub fn location(&self, id: i64) -> String {
-        if let Some(game_data) = self.data.get("Sentinels of the Multiverse") {
-            game_data.location_id_to_name.get(&id).map(|i| i.to_owned()).unwrap_or(format!("Unknown location {id}"))
-        } else {
-            format!("Unknown location {id}")
-        }
-    }
-
     pub fn get_missing_games(&self) -> Vec<String> {
         self.missing_games().into()
     }
@@ -125,12 +109,12 @@ impl DatapackageStore for WebDatapackageStore {
         let mut new = Self {
             fs: None,
             data: HashMap::new(),
-            missing: vec![],
+            missing: HashMap::new(),
             player_to_game: HashMap::new(),
         };
 
         for (game, checksum) in requested {
-            new.missing.push((game, checksum));
+            new.missing.insert(game, checksum);
         }
 
         new
