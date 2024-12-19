@@ -34,7 +34,7 @@
 
 use std::{fs::OpenOptions, io::Write};
 
-use crate::{Data, EnumData, FillerData, FillerType, VillainData};
+use crate::{Data, EnumData, FillerData, FillerType, VillainData, MAX_LOCATION_DENSITY};
 
 pub fn generate_id_py(data: &Data) {
     if let Ok(mut writer) = OpenOptions::new().write(true).create(true).truncate(true).open("Id.py") {
@@ -58,7 +58,7 @@ pub fn generate_id_py(data: &Data) {
         villain_location_id(&mut writer, &data.team_villains, 0b0011);
         villain_location_id(&mut writer, &data.gladiators, 0b0101);
         for variant in data.variants.iter() {
-            for c in 0..5 {
+            for c in 0..MAX_LOCATION_DENSITY {
                 let _ = write!(
                     writer,
                     "\"{} - Unlock #{}\":{},",
@@ -105,7 +105,7 @@ where
     T: Write,
 {
     for data in data {
-        for c in 0..5 {
+        for c in 0..MAX_LOCATION_DENSITY {
             let _ = write!(writer, "\"{} - Any Difficulty #{}\":{},", data.display_name, c + 1, (prefix << 48) | data.i as i64 | c << 16);
         }
     }
@@ -116,17 +116,20 @@ where
     T: Write,
 {
     for data in data {
-        for c in 0..5 {
-            for d in 0..if data.challenge.is_none() { 2 } else { 4 } {
-                if d >= 2 && data.enum_name == "SpiteAgentOfGloom" {
-                    let _ = write!(
-                        writer,
-                        "\"Spite: Agent of Gloom and Skinwalker Gloomweaver - {} #{}\":{},",
-                        DIFFICULTIES[d as usize],
-                        c + 1,
-                        (prefix << 48) | data.i as i64 | c << 16 | d << 22
-                    );
-                } else if d < 2 || data.enum_name != "SkinwalkerGloomweaver" {
+        for c in 0..MAX_LOCATION_DENSITY {
+            for d in 0..2 {
+                let _ = write!(
+                    writer,
+                    "\"{} - {} #{}\":{},",
+                    data.display_name,
+                    DIFFICULTIES[d as usize],
+                    c + 1,
+                    (prefix << 48) | data.i as i64 | c << 16 | d << 22
+                );
+            }
+
+            if data.challenge.is_some() {
+                for d in 2..4 {
                     let _ = write!(
                         writer,
                         "\"{} - {} #{}\":{},",

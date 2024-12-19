@@ -90,7 +90,7 @@ impl LogicTerm {
     pub fn as_py_expr(&self) -> String {
         match self {
             LogicTerm::AnyHero(enum_data) => format!("state.has(\"Any {}\",player)", enum_data.display_name),
-            LogicTerm::TeamVillain(enum_data) => format!("state.has(\"{}\",player) and team_villain_count(state,player)", enum_data.display_name),
+            LogicTerm::TeamVillain(enum_data) => format!("state.has(\"{}\",player) and state.has(\"Team Villains\",player,3)", enum_data.display_name),
             LogicTerm::Villain(enum_data) => format!("state.has(\"{}\",player)", enum_data.display_name),
             LogicTerm::Hero(enum_data) | LogicTerm::Environment(enum_data) => format!("state.has(\"{}\",player)", enum_data.display_name),
             LogicTerm::Variant(variant_data) => format!("state.has(\"{}\",player)", variant_data.display_name),

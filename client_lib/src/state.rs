@@ -85,15 +85,8 @@ impl State {
                             .fold(0, |acc, x| acc | x),
                     )
                 })
-                .map(|(v, d)| if v == Villain::SkinwalkerGloomweaver { (v, d & 0b11) } else { (v, d) })
                 .filter(|(_, d)| *d > 0)
-                .map(|(v, d)| {
-                    if v != Villain::SpiteAgentOfGloom || self.items.has_villain(Villain::SkinwalkerGloomweaver) {
-                        (v, d)
-                    } else {
-                        (v, d & 0b11)
-                    }
-                })
+                .map(|(v, d)| if v.can_do_challenge(&self.items) { (v, d) } else { (v, d & 0b11) })
                 .flat_map(|(v, b)| [0, 1, 2, 3].iter().filter(move |d| b & 1 << *d > 0).map(move |d| (v, *d)))
                 .collect(),
             team_villains: if self.items.team_villains.iter().map(|b| (*b).count_ones()).sum::<u32>() < 3 {

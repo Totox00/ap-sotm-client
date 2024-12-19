@@ -14,6 +14,7 @@ struct Fields {
     source: Option<String>,
     default: Option<bool>,
     challenge: Option<(String, Vec<String>)>,
+    challenge_req: Option<String>,
     base: Option<String>,
     unlock_desc: Option<String>,
     unlock_logic: Option<String>,
@@ -53,6 +54,8 @@ macro_rules! push_current {
                 source: $current.source.unwrap_or(String::new()),
                 i: $villains.len(),
                 challenge: $current.challenge,
+                unparsed_challenge_req: $current.challenge_req,
+                challenge_req: None,
             }),
             DataType::TeamVillain => $team_villains.push(VillainData {
                 enum_name: $current.enum_name.expect("Team villains must have enum_name"),
@@ -60,6 +63,8 @@ macro_rules! push_current {
                 source: $current.source.unwrap_or(String::new()),
                 i: $team_villains.len(),
                 challenge: $current.challenge,
+                unparsed_challenge_req: $current.challenge_req,
+                challenge_req: None,
             }),
             DataType::Gladiator => $gladiators.push(VillainData {
                 enum_name: $current.enum_name.expect("gladiators must have enum_name"),
@@ -67,6 +72,8 @@ macro_rules! push_current {
                 source: $current.source.unwrap_or(String::new()),
                 i: $gladiators.len(),
                 challenge: $current.challenge,
+                unparsed_challenge_req: $current.challenge_req,
+                challenge_req: None,
             }),
             DataType::Hero => $heroes.push(EnumData {
                 enum_name: $current.enum_name.expect("Heroes must have enum_name"),
@@ -100,6 +107,8 @@ macro_rules! push_current {
                         source: source.clone(),
                         i: $villains.len(),
                         challenge: $current.challenge,
+                        unparsed_challenge_req: $current.challenge_req,
+                        challenge_req: None,
                     })
                 }
 
@@ -295,6 +304,7 @@ pub fn group_data() -> Data {
                 }
                 "unlock" => current.unlock_desc = Some(value.escape_debug().to_string()),
                 "requires" => current.unlock_logic = Some(value.to_owned()),
+                "challengereq" => current.challenge_req = Some(value.to_owned()),
                 "type" => {
                     current.r#type = Some(match value {
                         "Hero" => FillerType::Hero,
@@ -345,6 +355,12 @@ pub fn group_data() -> Data {
     for i in 0..data.variants.len() {
         if let Some(unparsed_logic) = &data.variants[i].unparsed_logic {
             data.variants[i].logic = Some(Box::new(data.parse_logic(unparsed_logic)));
+        }
+    }
+
+    for i in 0..data.villains.len() {
+        if let Some(unparsed_challenge_req) = &data.villains[i].unparsed_challenge_req {
+            data.villains[i].challenge_req = Some(Box::new(data.parse_logic(unparsed_challenge_req)));
         }
     }
 

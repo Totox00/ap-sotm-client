@@ -13,6 +13,8 @@ use id_py::generate_id_py;
 use logic::LogicTerm;
 use proc_macro::TokenStream;
 
+const MAX_LOCATION_DENSITY: i64 = 5;
+
 #[derive(Debug)]
 struct Data {
     sources: Vec<SourceData>,
@@ -40,6 +42,8 @@ struct VillainData {
     source: String,
     i: usize,
     challenge: Option<(String, Vec<String>)>,
+    unparsed_challenge_req: Option<String>,
+    challenge_req: Option<Box<LogicTerm>>,
 }
 
 #[derive(Debug, Clone)]
@@ -115,4 +119,9 @@ impl Data {
     pub fn villain_variants(&self) -> impl Iterator<Item = &VariantData> {
         self.variants.iter().filter(|variant| variant.is_villain)
     }
+}
+
+#[proc_macro]
+pub fn max_location_density(_stream: TokenStream) -> TokenStream {
+    MAX_LOCATION_DENSITY.to_string().parse().unwrap()
 }

@@ -65,7 +65,17 @@ where
         }
     }
 
-    let _ = write!(str, "_=>None}}}}}}");
+    let _ = write!(str, "_=>None}}}}pub fn can_do_challenge(&self, items: &Items) -> bool {{match self {{");
+
+    for data in enum_data {
+        let enum_name = &data.enum_name;
+
+        if let Some(logic) = &data.challenge_req {
+            let _ = write!(str, "{ident}::{enum_name} => {},", logic.as_rust_expr());
+        }
+    }
+
+    let _ = write!(str, "_=>true}}}}}}");
 }
 
 pub fn push_variant_defs<T>(str: &mut T, variant_data: &[VariantData])

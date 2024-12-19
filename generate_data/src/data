@@ -146,7 +146,7 @@ variant MadBomberBaronBlade
 name Mad Bomber Baron Blade
 base BaronBlade
 unlock Defeat standard Baron Blade. Then, while fighting Citizen Dawn, destroy Citizens Blood, Sweat, and Tears in the same round.
-requires BaronBlade CitizenDawn
+requires BaronBlade CitizenDawn?
 challenge Nanobot Power Armor
 Reduce damage dealt to Baron Blade by 2.
 
@@ -169,7 +169,7 @@ variant OmnitronII
 name Omnitron II
 base Omnitron
 unlock Defeat standard Omnitron. Then, while fighting Grand Warlord Voss, destroy two spaceships in the same round.
-requires Omnitron GrandWarlordVoss
+requires Omnitron GrandWarlordVoss?
 challenge Cosmic Overdrive
 The value of (H) is doubled in this game.
 
@@ -212,6 +212,7 @@ from RookCity
 base Spite
 unlock Defeat standard Spite. Then, defeat GloomWeaver by having 3_villain relics in the villain trash. At least two of the following must be in play: Cursed Acolyte, Profane Zealot, Chosen Disciple, or Ophidia the Deceiver. No Voodoo Pin may be in play.
 requires Spite Gloomweaver
+challengereq SpiteAgentOfGloom SkinwalkerGloomweaver
 challenge Summoner and Overlord
 After Spite is defeated, he is immediately replaced by Skinwalker Gloomweaver without altering the environment or any of the heroes or hero cards. Heroes do not regain HP or draw cards. The game resumes at the start of Gloomweaver's turn.
 
@@ -245,6 +246,7 @@ from InfernalRelics
 base Gloomweaver
 unlock Defeat standard Spite and GloomWeaver. Then, do one of the following:\1)_Defeat Spite: Agent of Gloom in Rook City on his "Broken Vessel" side with zero cards under the Safe House and at least five Victims in play. OR\2)_Be defeated by Spite: Agent of Gloom in Rook City on his "Agent_of_Gloom" side with no more than two Drug cardsface up. Spite must have destroyed at least five Victims.
 requires Spite Gloomweaver SpiteAgentOfGloom
+challengereq SpiteAgentOfGloom SkinwalkerGloomweaver
 challenge Summoner and Overlord
 The game begins against Spite: Agent of Gloom. After Spite is defeated, he is immediately replaced by Skinwalker Gloomweaver without altering the environment or any of the heroes or hero cards. Heroes do not regain HP or draw cards. The game resumes at the start of Gloomweaver's turn.
 
@@ -1006,19 +1008,19 @@ variant RaHorusOfTwoHorizons
 name Ra: Horus of Two Horizons
 base Ra
 unlock A member of The Ennead deals damage that incapacitates Ra. The Staff of Ra, Flame Barrier, Flesh of the Sun God, Living Conflagration, Solar Flare, and Wrathful Gaze must be in play.
-requires TheEnnead Ra?
+requires TheEnnead? Ra?
 
 variant RaSettingSun
 name Ra: Setting Sun
 base Ra
 unlock Defeat the Ennead in the Tomb of Anubis with Ra: Horus of Two Horizons as the first hero. Fanatic may not be on the team. During the game, Ra must be reduced to 1_HP, then restored to maximum HP. Ra must deal the final blow to at least 3_members of the Ennead.
-requires TheEnnead RaHorusOfTwoHorizons TombOfAnubis
+requires TheEnnead? RaHorusOfTwoHorizons TombOfAnubis
 
 variant RedeemerFanatic
 name Redeemer Fanatic
 base Fanatic
 unlock Defeat Apostate with damage dealt by Fanatic using the power on "Absolution." Undaunted must be in play. Prayer of Desperation must have been played at some time after Fanatic was restored by Aegis of Resurrection.
-requires Apostate Fanatic?
+requires Apostate? Fanatic?
 
 variant RookCityWraith
 name Rook City Wraith
@@ -1085,14 +1087,14 @@ name The Scholar of the Infinite
 from TheScholar
 base TheScholar
 unlock Defeat either GloomWeaver or Apostate with The Scholar incapacitated. The Scholar must have healed hero targets for at least 20_HP in total.
-requires Gloomweaver?|Apostate TheScholar?
+requires Gloomweaver?|Apostate? TheScholar?
 
 variant ActionHeroStuntman
 name Action Hero Stuntman
 from Stuntman
 base Stuntman
 unlock First, defeat Ambuscade_(classic_mode) without any heroes getting incapacitated. Then, defeat Ambuscade_(team_mode) without any heroes getting incapacitated. Then, defeat The Chairman in Pike Industrial Complex with The Sentinels on the team. At the end of that game, all heroes except Mainstay must be incapacitated.
-requires Ambuscade TheChairman TeamAmbuscade PikeIndustrialComplex TheSentinels?
+requires Ambuscade TheChairman? TeamAmbuscade PikeIndustrialComplex TheSentinels?
 
 variant AkashThriyaSpiritOfTheVoid
 name Akash'Thriya: Spirit of the Void
@@ -1141,7 +1143,7 @@ name Parse: Fugue State
 from Vengeance
 base Parse
 unlock Defeat Progeny with regular Parse on the team. At the end of the game, Parse must have at least 10 ongoing cards in play, and must be at exactly 1_HP.
-requires Parse Progeny
+requires Parse Progeny?
 
 variant TheAdamantSentinels
 name The Adamant Sentinels
@@ -1180,38 +1182,38 @@ variant FreedomSixAbsoluteZero
 name Freedom Six Absolute Zero
 base AbsoluteZero
 unlock Lose a game to Iron Legacy with regular Absolute Zero on the team. Then, defeat any villain with regular Absolute Zero and without a Legacy on the team. Each of Absolute Zero's equipment cards must be destroyed at least once, and he may not be incapacitated.
-requires IronLegacy AbsoluteZero
+requires IronLegacy? AbsoluteZero
 
 variant FreedomSixBunker
 name Freedom Six Bunker
 base Bunker
 unlock Lose a game to Iron Legacy with regular Bunker on the team. Then, defeat any villain with regular Bunker and without a Legacy on the team. Bunker must draw at least 12_cards, and he must be the only incapacitated hero.
-requires IronLegacy Bunker
+requires IronLegacy? Bunker
 
 variant FreedomSixTachyon
 name Freedom Six Tachyon
 base Tachyon
 unlock Lose a game to Iron Legacy with regular Tachyon on the team. Then, defeat any villain with regular Tachyon and without a Legacy on the team. Fleet of Foot must be played at least 5_times.
-requires IronLegacy Tachyon
+requires IronLegacy? Tachyon
 
 variant FreedomSixTempest
 name Freedom Six Tempest
 base Tempest
 unlock Lose a game to Iron Legacy with regular Tempest on the team. Then, defeat any villain with regular Tempest and without a Legacy on the team. Aquatic Correspondence, Localized Hurricane, and Reclaim from the Deep must be played at least once each. Tempest must be the only incapacitated hero.
-requires IronLegacy Tempest
+requires IronLegacy? Tempest
 
 variant FreedomSixWraith
 name Freedom Six Wraith
 base Wraith
 unlock Lose a game to Iron Legacy with regular The Wraith on the team. Then, defeat The Chairman with The Wraith as the first hero and without a Legacy on the team. The Wraith must deal the final blows to The Chairman and The Operative.
-requires IronLegacy Wraith TheChairman
+requires IronLegacy? Wraith TheChairman
 
 variant FreedomSixUnity
 name Freedom Six Unity
 from Unity
 base Unity
 unlock Lose a game to Iron Legacy with regular Unity on the team. Then, defeat any villain with regular Unity and without a Legacy on the team. Unity must end the game with more mechanical golems in play than her HP.
-requires IronLegacy Unity
+requires IronLegacy? Unity
 
 variant DarkWatchExpatriette
 name Dark Watch Expatriette
@@ -1225,7 +1227,7 @@ name Dark Watch Mister Fixer
 from RookCity
 base MisterFixer
 unlock The Operative herself deals damage that incapacitates Mr. Fixer in Rook City. Bloody Knuckles, any one Style, and no Tool must be in play.
-requires TheChairman MisterFixer?
+requires TheChairman? MisterFixer?
 
 variant DarkWatchNightmist
 name Dark Watch Nightmist
@@ -1239,7 +1241,7 @@ name Dark Watch Setback
 from Vengeance
 base Setback
 unlock Defeat The Chairman in Rook City with the 4_hero team: Setback, Dark Watch Expatriette, Dark Watch Mr. Fixer, and Dark Watch NightMist (in any order).
-requires TheChairman RookCity DarkWatchExpatriette DarkWatchMisterFixer DarkWatchNightmist Setback
+requires TheChairman? RookCity DarkWatchExpatriette DarkWatchMisterFixer DarkWatchNightmist Setback
 
 variant DarkWatchHarpy
 name Dark Watch Harpy
@@ -1253,7 +1255,7 @@ name Prime Wardens Argent Adept
 from InfernalRelics
 base ArgentAdept
 unlock Lose a game to Akash'bhuta with the regular Argent Adept on the team. Then, defeat Akash'bhuta with the regular Argent Adept as the first hero; the rest of the team must be regular Haka, regular Captain Cosmic, regular Tempest, and Redeemer Fanatic (in_any_order). Each of the Argent Adept's instruments must enter play during the game.
-requires AkashBhuta ArgentAdept CaptainCosmic Haka Tempest RedeemerFanatic
+requires AkashBhuta? ArgentAdept CaptainCosmic Haka Tempest RedeemerFanatic
 
 variant PrimeWardensCaptainCosmic
 name Prime Wardens Captain Cosmic
@@ -1266,7 +1268,7 @@ variant PrimeWardensFanatic
 name Prime Wardens Fanatic
 base Fanatic
 unlock Prime Wardens Argent Adept must be unlocked. Then, in a game against Apostate, regular or Redeemer Fanatic must destroy 2_Imp Pilferers, 2_Fiendish Pugilists, and 2_Relic Spirits.
-requires PrimeWardensArgentAdept Fanatic|RedeemerFanatic Apostate
+requires PrimeWardensArgentAdept Fanatic|RedeemerFanatic Apostate?
 
 variant PrimeWardensHaka
 name Prime Wardens Haka
@@ -1316,31 +1318,31 @@ variant FreedomFiveAbsoluteZero
 name Freedom Five Absolute Zero
 base AbsoluteZero
 unlock First, the Prime Wardens (all variant members) must be defeated by Progeny anywhere other than Rook City or Megalopolis. Then, Dark Watch (all variant members) must by defeated by Progeny in Rook City. Then, the Freedom Five (non-variant members) must be defeated by Progeny in Rook City. Then, the Freedom Five (non-variant team members) must defeat Progeny in Megalopolis. During that game, Absolute Zero must be dealt over 29_fire damage and must deal over 29_cold damage. Absolute Zero must have at least 6_Ongoing cards in play at one time.
-requires Progeny RookCity Megalopolis PrimeWardensArgentAdept PrimeWardensCaptainCosmic PrimeWardensFanatic PrimeWardensHaka PrimeWardensTempest DarkWatchExpatriette DarkWatchHarpy DarkWatchMisterFixer DarkWatchNightmist DarkWatchSetback Legacy Bunker AbsoluteZero Tachyon Wraith
+requires Progeny? RookCity Megalopolis PrimeWardensArgentAdept PrimeWardensCaptainCosmic PrimeWardensFanatic PrimeWardensHaka PrimeWardensTempest DarkWatchExpatriette DarkWatchHarpy DarkWatchMisterFixer DarkWatchNightmist DarkWatchSetback Legacy Bunker AbsoluteZero Tachyon Wraith
 
 variant FreedomFiveBunker
 name Freedom Five Bunker
 base Bunker
 unlock First, the Prime Wardens (all variant members) must be defeated by Progeny anywhere other than Rook City or Megalopolis. Then, Dark Watch (all variant members) must by defeated by Progeny in Rook City. Then, the Freedom Five (non-variant members) must be defeated by Progeny in Rook City. Then, the Freedom Five (non-variant team members) must defeat Progeny in Megalopolis. During that game, Bunker must discard each unique Mode card at least twice. Bunker must deal at least 4_different types of damage to Progeny.
-requires Progeny RookCity Megalopolis PrimeWardensArgentAdept PrimeWardensCaptainCosmic PrimeWardensFanatic PrimeWardensHaka PrimeWardensTempest DarkWatchExpatriette DarkWatchHarpy DarkWatchMisterFixer DarkWatchNightmist DarkWatchSetback Legacy Bunker AbsoluteZero Tachyon Wraith
+requires Progeny? RookCity Megalopolis PrimeWardensArgentAdept PrimeWardensCaptainCosmic PrimeWardensFanatic PrimeWardensHaka PrimeWardensTempest DarkWatchExpatriette DarkWatchHarpy DarkWatchMisterFixer DarkWatchNightmist DarkWatchSetback Legacy Bunker AbsoluteZero Tachyon Wraith
 
 variant FreedomFiveWraith
 name Freedom Five Wraith
 base Wraith
 unlock First, the Prime Wardens (all variant members) must be defeated by Progeny anywhere other than Rook City or Megalopolis. Then, Dark Watch (all variant members) must by defeated by Progeny in Rook City. Then, the Freedom Five (non-variant members) must be defeated by Progeny in Rook City. Then, the Freedom Five (non-variant team members) must defeat Progeny in Megalopolis. During that game, Trust Fund must be played at least 3_times. The Wraith must draw at least 20_cards and play Smoke Bombs at least once.
-requires Progeny RookCity Megalopolis PrimeWardensArgentAdept PrimeWardensCaptainCosmic PrimeWardensFanatic PrimeWardensHaka PrimeWardensTempest DarkWatchExpatriette DarkWatchHarpy DarkWatchMisterFixer DarkWatchNightmist DarkWatchSetback Legacy Bunker AbsoluteZero Tachyon Wraith
+requires Progeny? RookCity Megalopolis PrimeWardensArgentAdept PrimeWardensCaptainCosmic PrimeWardensFanatic PrimeWardensHaka PrimeWardensTempest DarkWatchExpatriette DarkWatchHarpy DarkWatchMisterFixer DarkWatchNightmist DarkWatchSetback Legacy Bunker AbsoluteZero Tachyon Wraith
 
 variant FreedomFiveTachyon
 name Freedom Five Tachyon
 base Tachyon
 unlock First, the Prime Wardens (all variant members) must be defeated by Progeny anywhere other than Rook City or Megalopolis. Then, Dark Watch (all variant members) must by defeated by Progeny in Rook City. Then, the Freedom Five (non-variant members) must be defeated by Progeny in Rook City. Then, the Freedom Five (non-variant team members) must defeat Progeny in Megalopolis. During that game, Tachyon must play at least 10_cards in one turn. Tachyon must run out of cards in her deck and thus shuffle her trash into her deck at least once. Tachyon must be incapacitated.
-requires Progeny RookCity Megalopolis PrimeWardensArgentAdept PrimeWardensCaptainCosmic PrimeWardensFanatic PrimeWardensHaka PrimeWardensTempest DarkWatchExpatriette DarkWatchHarpy DarkWatchMisterFixer DarkWatchNightmist DarkWatchSetback Legacy Bunker AbsoluteZero Tachyon Wraith
+requires Progeny? RookCity Megalopolis PrimeWardensArgentAdept PrimeWardensCaptainCosmic PrimeWardensFanatic PrimeWardensHaka PrimeWardensTempest DarkWatchExpatriette DarkWatchHarpy DarkWatchMisterFixer DarkWatchNightmist DarkWatchSetback Legacy Bunker AbsoluteZero Tachyon Wraith
 
 variant FreedomFiveLegacy
 name Freedom Five Legacy
 base Legacy
 unlock First, the Prime Wardens (all variant members) must be defeated by Progeny anywhere other than Rook City or Megalopolis. Then, Dark Watch (all variant members) must by defeated by Progeny in Rook City. Then, the Freedom Five (non-variant members) must be defeated by Progeny in Rook City. Then, the Freedom Five (non-variant team members) must defeat Progeny in Megalopolis. During that game, Legacy must prevent at least 20_points of damage and must prevent more damage than he increases. Danger Sense must be played during the game.
-requires Progeny RookCity Megalopolis PrimeWardensArgentAdept PrimeWardensCaptainCosmic PrimeWardensFanatic PrimeWardensHaka PrimeWardensTempest DarkWatchExpatriette DarkWatchHarpy DarkWatchMisterFixer DarkWatchNightmist DarkWatchSetback Legacy Bunker AbsoluteZero Tachyon Wraith
+requires Progeny? RookCity Megalopolis PrimeWardensArgentAdept PrimeWardensCaptainCosmic PrimeWardensFanatic PrimeWardensHaka PrimeWardensTempest DarkWatchExpatriette DarkWatchHarpy DarkWatchMisterFixer DarkWatchNightmist DarkWatchSetback Legacy Bunker AbsoluteZero Tachyon Wraith
 
 variant SuperSentaiIdealist
 name Super Sentai Idealist
@@ -1737,7 +1739,7 @@ type Hero
 posname Hero Toughness [COUNT]
 negname Hero Fragility [COUNT]
 posdesc Increase the starting and maximum HP of hero targets by [COUNT]
-negdesc Reduce the starting and maximum HP of hero targets by [COUNT]
+negdesc Reduce the starting and maximum HP of hero targets by [COUNT] to a minimum of 1
 
 filler Mulligan
 type Hero
@@ -1785,7 +1787,7 @@ filler VillainHp
 type Villain
 posname Villain Fragility [COUNT]
 negname Villain Toughness [COUNT]
-posdesc Reduce the starting and maximum HP of villain targets by [COUNT]
+posdesc Reduce the starting and maximum HP of villain targets by [COUNT] to a minimum of 1
 negdesc Increase the starting and maximum HP of villain targets by [COUNT]
 
 filler VillainDamageDealt
@@ -2154,8 +2156,8 @@ villain Ulamog
 name Ulamog
 from MagicTheGathering
 
-variant UlamogUlaFalseGod
-name Ulamog: Ula, False God
+variant UlaFalseGod
+name Ula, False God
 from MagicTheGathering
 base Ulamog
 
@@ -2321,6 +2323,8 @@ base Gordito
 villain FranzRayner
 name Franz Rayner
 from DrMcNinja
+challenge Evasive Maneuvers
+Whenever Franz Rayner is dealt damage, he becomes immune to damage for the rest of the current turn. 
 
 villain KingRadical
 name King Radical
@@ -2793,6 +2797,8 @@ from SentinelsOfTheBuffyverse
 villain DarkWillow
 name Dark Willow
 from SentinelsOfTheBuffyverse
+challenge Final Suffering
+The hero character with the lowest HP cannot regain HP.
 
 hero Buffy
 name Buffy

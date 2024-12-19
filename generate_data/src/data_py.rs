@@ -26,9 +26,15 @@ pub fn generate_data_py(data: &Data) {
             );
         }
 
-        let _ = write!(writer, "}}\nclass SotmData(NamedTuple):name:str;sources:list[SotmSource];category:SotmCategory;challenge:bool;base:Optional[str]=None;rule:Optional[Callable[[CollectionState|SotmState,int],bool]]=None;dependencies:Optional[list[str]]=None\ndata=[");
+        let _ = write!(writer, "}}\nclass SotmData(NamedTuple):name:str;sources:list[SotmSource];category:SotmCategory;challenge:bool;base:Optional[str]=None;rule:Optional[Callable[[CollectionState|SotmState,int],bool]]=None;dependencies:Optional[list[str]]=None;challenge_rule:Optional[Callable[[CollectionState|SotmState,int],bool]]=None\ndata=[");
 
         for villain in &data.villains {
+            let challenge_rule_str = if let Some(challenge_logic) = &villain.challenge_req {
+                format!(",challenge_rule=lambda state,player:{}", challenge_logic.as_py_expr())
+            } else {
+                String::new()
+            };
+
             if let Some(variant) = data.villain_variants().find(|variant| villain.enum_name == variant.enum_name) {
                 if let Some(logic) = &variant.logic {
                     let base = data
@@ -39,18 +45,18 @@ pub fn generate_data_py(data: &Data) {
 
                     let _ = write!(
                         writer,
-                        "SotmData(\"{}\",[{}],SotmCategory.VillainVariant,{},\"{}\",lambda state,player:{},[{}]),",
+                        "SotmData(\"{}\",[{}],SotmCategory.VillainVariant,{},\"{}\",lambda state,player:{},[{}]{challenge_rule_str}),",
                         villain.display_name,
                         map_source(&villain.source),
                         if villain.challenge.is_some() { "True" } else { "False" },
                         base.display_name,
                         logic.as_py_expr(),
-                        logic.as_dependencies(data).iter().map(|dependency| format!("\"{dependency}\"")).collect::<Vec<_>>().join(",")
+                        logic.as_dependencies(data).iter().map(|dependency| format!("\"{dependency}\"")).collect::<Vec<_>>().join(","),
                     );
                 } else {
                     let _ = write!(
                         writer,
-                        "SotmData(\"{}\",[{}],SotmCategory.Villain,{}),",
+                        "SotmData(\"{}\",[{}],SotmCategory.Villain,{}{challenge_rule_str}),",
                         villain.display_name,
                         map_source(&villain.source),
                         if villain.challenge.is_some() { "True" } else { "False" }
@@ -59,7 +65,7 @@ pub fn generate_data_py(data: &Data) {
             } else {
                 let _ = write!(
                     writer,
-                    "SotmData(\"{}\",[{}],SotmCategory.Villain,{}),",
+                    "SotmData(\"{}\",[{}],SotmCategory.Villain,{}{challenge_rule_str}),",
                     villain.display_name,
                     map_source(&villain.source),
                     if villain.challenge.is_some() { "True" } else { "False" }

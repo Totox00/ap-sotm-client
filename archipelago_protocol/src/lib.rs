@@ -90,8 +90,8 @@ pub struct NetworkSlot {
 pub fn network_version() -> NetworkVersion {
     NetworkVersion {
         major: 0,
-        minor: 4,
-        build: 7,
+        minor: 3,
+        build: 0,
         class: "Version".into(),
     }
 }
