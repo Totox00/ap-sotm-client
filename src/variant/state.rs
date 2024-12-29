@@ -112,16 +112,16 @@ impl PersistentVariantProgress {
 impl From<&[u8]> for PersistentVariantProgress {
     fn from(value: &[u8]) -> Self {
         PersistentVariantProgress {
-            eternal_haka: value[0] > 0,
-            omnitron_u: value[1],
-            action_hero_stuntman: value[2],
-            benchmark_supply_and_demand: value[3] > 0,
-            heroic_luminary: value[4],
-            hunted_naturalist: value[5],
-            termi_nation_bunker: value[6] > 0,
-            freedom_six: value[7],
-            prime_wardens_argent_adept: value[8] > 0,
-            freedom_five: value[9],
+            eternal_haka: value.get(0).copied().unwrap_or_default() > 0,
+            omnitron_u: value.get(1).copied().unwrap_or_default(),
+            action_hero_stuntman: value.get(2).copied().unwrap_or_default(),
+            benchmark_supply_and_demand: value.get(3).copied().unwrap_or_default() > 0,
+            heroic_luminary: value.get(4).copied().unwrap_or_default(),
+            hunted_naturalist: value.get(5).copied().unwrap_or_default(),
+            termi_nation_bunker: value.get(6).copied().unwrap_or_default() > 0,
+            freedom_six: value.get(7).copied().unwrap_or_default(),
+            prime_wardens_argent_adept: value.get(8).copied().unwrap_or_default() > 0,
+            freedom_five: value.get(9).copied().unwrap_or_default(),
         }
     }
 }
