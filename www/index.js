@@ -24,13 +24,20 @@ form.addEventListener("submit", (e) => {
 });
 
 function disconnect(e) {
+  if (syncHandle) clearInterval(syncHandle);
   clientElem.hidden = true;
-  closing = true;
   e.stopPropagation();
   for (const elem of clear) elem.innerText = "";
-  client.send(
-    JSON.stringify([{ cmd: "Get", keys: [`sotm-save-${slot.value}`] }])
-  );
+  syncSave(() => {
+    if (client) client.close();
+    if (session) session.exit();
+    client = null;
+    roomInfo = null;
+    datapackageStore = null;
+    session = null;
+    receivedItemIndex = 0;
+    form.hidden = false;
+  });
 }
 
 document.getElementById("disconnect").addEventListener("click", disconnect);
@@ -61,8 +68,8 @@ let client;
 let roomInfo;
 let datapackageStore;
 let session;
+let syncHandle;
 let receivedItemIndex = 0;
-let closing = false;
 
 async function run() {
   await init();
@@ -161,6 +168,7 @@ function connectedConnect(connected) {
       { cmd: "Get", keys: [`sotm-save-${slot.value}`] },
     ])
   );
+  syncHandle = setInterval(syncSave, 60000);
   const deathlinkType = session.deathlink();
   if (deathlinkType > 0) {
     client.send(
@@ -174,6 +182,32 @@ function connectedConnect(connected) {
     ][deathlinkType];
   }
   clientElem.hidden = false;
+}
+
+let onretrieved = () => {};
+let onsetreply = () => {};
+function syncSave(callback) {
+  onretrieved = () => {
+    onretrieved = () => {};
+    onsetreply = () => {
+      onsetreply = () => {};
+      if (callback) callback();
+    };
+    client.send(
+      JSON.stringify([
+        {
+          cmd: "Set",
+          key: `sotm-save-${slot.value}`,
+          default: "",
+          want_reply: true,
+          operations: [{ operation: "replace", value: session.save_string() }],
+        },
+      ])
+    );
+  };
+  client.send(
+    JSON.stringify([{ cmd: "Get", keys: [`sotm-save-${slot.value}`] }])
+  );
 }
 
 function handleEvent(event) {
@@ -211,34 +245,11 @@ function handleEvent(event) {
       case "Retrieved":
         const save_str = msg.keys[`sotm-save-${slot.value}`];
         if (save_str) session.update_save(save_str);
-        if (closing) {
-          client.send(
-            JSON.stringify([
-              {
-                cmd: "Set",
-                key: `sotm-save-${slot.value}`,
-                default: "",
-                want_reply: true,
-                operations: [
-                  { operation: "replace", value: session.save_string() },
-                ],
-              },
-            ])
-          );
-        }
+        onretrieved();
         break;
       case "SetReply":
-        if (closing) {
-          if (client) client.close();
-          if (session) session.exit();
-          client = null;
-          roomInfo = null;
-          datapackageStore = null;
-          session = null;
-          receivedItemIndex = 0;
-          closing = false;
-          form.hidden = false;
-        }
+        onsetreply();
+        break;
     }
   }
 }
