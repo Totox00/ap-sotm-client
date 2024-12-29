@@ -1,6 +1,6 @@
 use std::fmt::Write;
 
-use crate::{EnumData, VariantData, VillainData};
+use crate::{Data, EnumData, VariantData, VillainData};
 
 pub fn push_enum_defs<T>(str: &mut T, ident: &str, enum_data: &[EnumData])
 where
@@ -23,6 +23,12 @@ where
 
     for data in enum_data {
         let _ = write!(str, "{ident}::{} => \"{}\",", data.enum_name, data.display_name);
+    }
+
+    let _ = write!(str, "}}}}pub fn as_ident(&self) -> &str {{match self {{",);
+
+    for data in enum_data {
+        let _ = write!(str, "{ident}::{} => \"{}\",", data.enum_name, data.enum_name);
     }
 
     let _ = write!(str, "}}}}}}");
@@ -49,6 +55,12 @@ where
 
     for data in enum_data {
         let _ = write!(str, "{ident}::{} => \"{}\",", data.enum_name, data.display_name);
+    }
+
+    let _ = write!(str, "}}}}pub fn as_ident(&self) -> &str {{match self {{",);
+
+    for data in enum_data {
+        let _ = write!(str, "{ident}::{} => \"{}\",", data.enum_name, data.enum_name);
     }
 
     let _ = write!(str, "}}}}pub fn no_challenge(&self) -> bool {{match self {{");
@@ -127,13 +139,19 @@ where
         }
     }
 
-    let _ = write!(str, "_ => None}}}}pub fn as_str(&self) -> &str {{match self {{Variant::Base => \"Base\",");
+    let _ = write!(str, "_ => None}}}}pub fn as_str(&self) -> &str {{match self {{");
 
     for variant in variant_data {
         let _ = write!(str, "Variant::{} => \"{}\",", variant.enum_name, variant.display_name);
     }
 
-    let _ = write!(str, "}}}}pub fn as_desc(&self) -> &str {{match self {{");
+    let _ = write!(str, "Variant::Base => \"Base\"}}}}pub fn as_ident(&self) -> &str {{match self {{",);
+
+    for data in variant_data {
+        let _ = write!(str, "Variant::{} => \"{}\",", data.enum_name, data.enum_name);
+    }
+
+    let _ = write!(str, "Variant::Base => \"Base\"}}}}pub fn as_desc(&self) -> &str {{match self {{");
 
     for variant in variant_data {
         let enum_name = &variant.enum_name;
@@ -155,4 +173,62 @@ where
     }
 
     let _ = write!(str, "_ => false,}}}}}}");
+}
+
+macro_rules! write_data {
+    ($str:ident, $data:expr, $ident:expr) => {
+        for item in $data {
+            let _ = write!($str, "\"{}\" => Some(Item::{}({}::{})),", item.enum_name, $ident, $ident, item.enum_name);
+        }
+    };
+}
+
+pub fn push_from_ident<T>(str: &mut T, data: &Data)
+where
+    T: Write,
+{
+    let _ = write!(str, "impl Item {{pub fn from_ident(ident: &str) -> Option<Item> {{match ident {{");
+
+    write_data!(str, &data.heroes, "Hero");
+    write_data!(str, &data.contenders, "Contender");
+    write_data!(str, data.hero_variants(), "Variant");
+    write_data!(str, data.villain_variants(), "Villain");
+    write_data!(str, &data.villains, "Villain");
+    write_data!(str, &data.team_villains, "TeamVillain");
+    write_data!(str, &data.gladiators, "Gladiator");
+    write_data!(str, &data.environments, "Environment");
+
+    let _ = write!(str, "_ => None}}}}}}");
+}
+
+pub fn push_hero_variants<T>(str: &mut T, data: &Data)
+where
+    T: Write,
+{
+    let _ = write!(str, "impl Hero {{pub fn variants(&self) -> Box<dyn Iterator<Item = Variant>> {{match self {{");
+
+    for hero in &data.heroes {
+        let _ = write!(str, "Hero::{} => Box::new([", hero.enum_name);
+
+        for variant in &data.variants {
+            if !variant.is_villain && variant.base_i == hero.i {
+                let _ = write!(str, "Variant::{},", variant.enum_name);
+            }
+        }
+
+        let _ = write!(str, "].into_iter()),");
+    }
+
+    let _ = write!(str, "}}}}}}");
+}
+
+pub fn push_villain_variants<T>(str: &mut T, data: &Data) where T: Write {
+    let _ = write!(str, "impl Villain {{pub fn variant(&self) -> Option<Variant> {{match self {{");
+
+    for variant in data.villain_variants() {
+        let _ = write!(str, "Villain::{} => Some(Variant::{}),", variant.enum_name, variant.enum_name);
+    }
+
+    let _ = write!(str, "_ => None}}}}}}");
+
 }

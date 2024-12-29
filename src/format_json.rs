@@ -1,12 +1,8 @@
-use archipelago_protocol::PrintJSON;
-use client_lib::datapackage::DatapackageStore;
-use console::{style, StyledObject};
+use crate::datapackage::DatapackageStore;
+use crate::protocol::PrintJSON;
 use std::collections::HashMap;
 
-pub fn format<D>(datapackage_store: &D, msg: PrintJSON, players: &HashMap<i32, String>, slot: &str) -> String
-where
-    D: DatapackageStore,
-{
+pub fn format(datapackage_store: &DatapackageStore, msg: PrintJSON, players: &HashMap<i32, String>, slot: &str) -> String {
     msg.data
         .iter()
         .map(|part| {
@@ -19,72 +15,51 @@ where
                 "player_id" => {
                     if let Some(player) = players.get(&text.parse::<i32>().unwrap_or(0)) {
                         if slot == *player {
-                            style(player.to_string()).magenta()
+                            style(player, "self")
                         } else {
-                            style(player.to_string()).yellow()
+                            style(player, "player")
                         }
                     } else {
-                        style(format!("Unknown player {text}")).yellow()
+                        style(&format!("Unknown player {text}"), "player")
                     }
                 }
                 "player_name" => {
                     if slot == text {
-                        style(text.to_string()).magenta()
+                        style(&text, "self")
                     } else {
-                        style(text.to_string()).yellow()
+                        style(&text, "player")
                     }
                 }
-                "item_id" => style_item(datapackage_store.get_item(part.player.unwrap_or(0), text.parse().unwrap_or(0)).to_string(), part.flags.unwrap_or(0)),
-                "item_name" => style(text.to_string()).cyan(),
-                "location_id" => style(datapackage_store.get_location(part.player.unwrap_or(0), text.parse().unwrap_or(0)).to_string()).green(),
-                "location_name" => style(text.to_string()).green(),
-                "entrance_name" => style(text.to_string()).italic(),
+                "item_id" => style_item(datapackage_store.get_item(part.player.unwrap_or(0), text.parse().unwrap_or(0)), part.flags.unwrap_or(0)),
+                "item_name" => style(&text, "filler"),
+                "location_id" => style(datapackage_store.get_location(part.player.unwrap_or(0), text.parse().unwrap_or(0)), "location"),
+                "location_name" => style(&text, "location"),
+                "entrance_name" => style(&text, "entrance"),
                 "color" => {
                     if let Some(color) = &part.color {
-                        style_color(text.to_string(), color)
+                        format!("<span style=\"color:{color}\">{text}</span>")
                     } else {
-                        style_color(text.to_string(), "bold")
+                        text
                     }
                 }
-                _ => style(text.to_string()),
+                _ => text,
             }
         })
-        .map(|style| style.to_string())
         .collect()
 }
 
-fn style_item(str: String, flags: i32) -> StyledObject<String> {
+fn style_item(str: &str, flags: i32) -> String {
     match flags {
-        0b001 | 0b111 => style(str).magenta(),
-        0b010 => style(str).blue(),
-        0b011 => style(str).magenta().on_blue(),
-        0b100 => style(str).red(),
-        0b101 => style(str).magenta().on_red(),
-        0b110 => style(str).blue().on_red(),
-        _ => style(str).cyan(),
+        0b001 | 0b111 => style(str, "progression"),
+        0b010 => style(str, "useful"),
+        0b011 => style(str, "progression-useful"),
+        0b100 => style(str, "trap"),
+        0b101 => style(str, "progression-trap"),
+        0b110 => style(str, "useful-trap"),
+        _ => style(str, "filler"),
     }
 }
 
-fn style_color(str: String, color: &str) -> StyledObject<String> {
-    match color {
-        "bold" => style(str).bold(),
-        "underline" => style(str).underlined(),
-        "black" => style(str).black(),
-        "red" => style(str).red(),
-        "green" => style(str).green(),
-        "yellow" => style(str).yellow(),
-        "blue" => style(str).blue(),
-        "magenta" => style(str).magenta(),
-        "cyan" => style(str).cyan(),
-        "white" => style(str).white(),
-        "black_bg" => style(str).on_black(),
-        "red_bg" => style(str).on_red(),
-        "green_bg" => style(str).on_green(),
-        "yellow_bg" => style(str).on_yellow(),
-        "blue_bg" => style(str).on_blue(),
-        "magenta_bg" => style(str).on_magenta(),
-        "cyan_bg" => style(str).on_cyan(),
-        "white_bg" => style(str).on_white(),
-        _ => style(str),
-    }
+fn style(str: &str, class: &str) -> String {
+    format!("<span class=\"{class}\">{str}</span>")
 }

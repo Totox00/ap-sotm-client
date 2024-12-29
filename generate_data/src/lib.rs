@@ -6,7 +6,7 @@ mod id_py;
 mod logic;
 
 use data_py::generate_data_py;
-use enums::{push_enum_defs, push_variant_defs, push_villain_defs};
+use enums::{push_enum_defs, push_from_ident, push_hero_variants, push_variant_defs, push_villain_defs, push_villain_variants};
 use filler::push_filler;
 use group_data::group_data;
 use id_py::generate_id_py;
@@ -106,6 +106,9 @@ pub fn generate_data(_stream: TokenStream) -> TokenStream {
     push_enum_defs(&mut str, "Contender", &data.contenders);
     push_enum_defs(&mut str, "Environment", &data.environments);
     push_variant_defs(&mut str, &data.variants);
+    push_from_ident(&mut str, &data);
+    push_hero_variants(&mut str, &data);
+    push_villain_variants(&mut str, &data);
     push_filler(&mut str, &data);
 
     str.parse().unwrap()

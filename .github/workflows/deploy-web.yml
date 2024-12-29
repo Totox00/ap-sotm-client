@@ -32,18 +32,12 @@ jobs:
         run: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh"
       - name: Build
         run: ./build.sh
-        working-directory: client_web
-      - name: Build-legacy
-        run: ./build-legacy.sh
-        working-directory: client_web
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Sanity check
-        run: ls -R ./client_web/www
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: client_web/www
+          path: www
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="./common.css" rel="stylesheet" />
+    <script type="module" src="index.js" defer></script>
+    <title>Sentinels of the Multiverse</title>
+  </head>
+  <body>
+    <noscript
+      >This page contains webassembly and javascript content, please enable
+      javascript in your browser.</noscript
+    >
+    <form id="conn-info">
+      <label for="server">Server:</label>
+      <input id="server" name="server" type="text" value="archipelago.gg" />
+      <label for="port">Port:</label>
+      <input
+        id="port"
+        name="port"
+        type="number"
+        value="38281"
+        min="1"
+        max="65535"
+      />
+      <label for="slot">Slot:</label>
+      <input id="slot" name="slot" type="text" value="Player" />
+      <label for="password">Password:</label>
+      <input id="password" name="password" type="text" />
+      <input type="submit" value="Connect" />
+    </form>
+    <main id="client" hidden>
+      <div id="hero-col">
+        <ul id="heroes" class="clear"></ul>
+        <hr />
+        <ul id="contenders" class="clear"></ul>
+      </div>
+      <div id="villain-col">
+        <div id="villains" class="clear"></div>
+        <hr />
+        <div id="team-villains" class="clear"></div>
+        <hr />
+        <div id="gladiators" class="clear"></div>
+      </div>
+      <div id="environment-col">
+        <ul id="environments" class="clear"></ul>
+      </div>
+      <div id="active-col">
+        <div id="active-villains" class="clear"></div>
+        <hr />
+        <div id="active-heroes" class="clear"></div>
+        <hr />
+        <p id="active-environment" class="clear"></p>
+      </div>
+      <div id="active-filler" class="clear"></div>
+      <div id="active-variants" class="clear"></div>
+      <div id="buttons">
+        <button id="victory">Victory</button>
+        <button id="defeat">Defeat</button>
+        <button id="goal"></button>
+        <button id="disconnect">Disconnect</button>
+      </div>
+    </main>
+    <ul id="msg-buffer" class="clear"></ul>
+  </body>
+</html>

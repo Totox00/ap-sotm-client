@@ -235,16 +235,16 @@ challenge Eternal Spellcraft
 Every villain one-shot has all three symbols as keywords.
 
 villain Gloomweaver
-name Gloomweaver
+name GloomWeaver
 from InfernalRelics
 challenge Chaos Dimension
 Villain relics are indestructible.
 
 variant SkinwalkerGloomweaver
-name Skinwalker Gloomweaver
+name Skinwalker GloomWeaver
 from InfernalRelics
 base Gloomweaver
-unlock Defeat standard Spite and GloomWeaver. Then, do one of the following:\1)_Defeat Spite: Agent of Gloom in Rook City on his "Broken Vessel" side with zero cards under the Safe House and at least five Victims in play. OR\2)_Be defeated by Spite: Agent of Gloom in Rook City on his "Agent_of_Gloom" side with no more than two Drug cardsface up. Spite must have destroyed at least five Victims.
+unlock Defeat standard Spite and GloomWeaver. Then, do one of the following:\\1)_Defeat Spite: Agent of Gloom in Rook City on his "Broken Vessel" side with zero cards under the Safe House and at least five Victims in play. \OR\2)_Be defeated by Spite: Agent of Gloom in Rook City on his "Agent_of_Gloom" side with no more than two Drug cardsface up. Spite must have destroyed at least five Victims.
 requires Spite Gloomweaver SpiteAgentOfGloom
 challengereq SpiteAgentOfGloom SkinwalkerGloomweaver
 challenge Summoner and Overlord
@@ -1094,7 +1094,7 @@ name Action Hero Stuntman
 from Stuntman
 base Stuntman
 unlock First, defeat Ambuscade_(classic_mode) without any heroes getting incapacitated. Then, defeat Ambuscade_(team_mode) without any heroes getting incapacitated. Then, defeat The Chairman in Pike Industrial Complex with The Sentinels on the team. At the end of that game, all heroes except Mainstay must be incapacitated.
-requires Ambuscade TheChairman? TeamAmbuscade PikeIndustrialComplex TheSentinels?
+requires Ambuscade|AmbuscadeThrillOfTheHunt TheChairman? TeamAmbuscade PikeIndustrialComplex TheSentinels?
 
 variant AkashThriyaSpiritOfTheVoid
 name Akash'Thriya: Spirit of the Void
@@ -2469,7 +2469,7 @@ from AdelphophagesVillainPromos InfernalRelics
 base TheEnnead
 
 variant GloomweaverRitualOfGnophos
-name Gloomweaver: Ritual of Gnophos
+name GloomWeaver: Ritual of Gnophos
 from AdelphophagesVillainPromos InfernalRelics
 base Gloomweaver
 
