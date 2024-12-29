@@ -72,7 +72,7 @@ impl LogicTerm {
             LogicTerm::AnyHero(enum_data) => format!("items.has_hero(Hero::{})", enum_data.enum_name),
             LogicTerm::Villain(enum_data) => format!("items.has_villain(Villain::{})", enum_data.enum_name),
             LogicTerm::TeamVillain(enum_data) => format!("(items.has_team_villain(TeamVillain::{}) && items.team_villain_count())", enum_data.enum_name),
-            LogicTerm::Hero(enum_data) => format!("items.has_hero(Hero::{})", enum_data.enum_name),
+            LogicTerm::Hero(enum_data) => format!("items.has_base_hero(Hero::{})", enum_data.enum_name),
             LogicTerm::Variant(variant_data) => {
                 if variant_data.is_villain {
                     format!("items.has_villain(Villain::{})", variant_data.enum_name)
