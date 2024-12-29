@@ -67,6 +67,24 @@ macro_rules! add_elem {
         let _ = $parent.append_child(&new);
         $current.push(($new as usize, new));
     };
+    ($self:ident, $current:expr, $parent:expr, $new:ident, $completed:expr) => {
+        let new = $self.document.create_element("li").expect("Failed to create child element");
+        new.set_inner_html($new.as_str());
+        new.set_id($new.as_ident());
+        if $completed {
+            let _ = new.class_list().add_1("completed");
+        }
+        for (idx, (i, elem)) in $current.iter().enumerate() {
+            if *i > $new as usize {
+                let _ = elem.insert_adjacent_element("beforebegin", &new);
+                $current.insert(idx, ($new as usize, new));
+                return;
+            }
+        }
+
+        let _ = $parent.append_child(&new);
+        $current.push(($new as usize, new));
+    };
 }
 
 macro_rules! add_villain {
@@ -152,7 +170,7 @@ impl Interface {
             Item::Villain(villain) => self.add_villain(state, villain),
             Item::TeamVillain(team_villain) => self.add_team_villain(state, team_villain),
             Item::Gladiator(gladiator) => self.add_gladiator(state, gladiator),
-            Item::Environment(environment) => self.add_environment(environment),
+            Item::Environment(environment) => self.add_environment(state, environment),
             _ => (),
         }
     }
@@ -219,8 +237,14 @@ impl Interface {
         add_villain!(self, self.current_gladiators, self.gladiators, gladiator, state.checked_locations.gladiators[gladiator as usize]);
     }
 
-    pub fn add_environment(&mut self, environment: Environment) {
-        add_elem!(self, self.current_environments, self.environments, environment);
+    pub fn add_environment(&mut self, state: &State, environment: Environment) {
+        add_elem!(
+            self,
+            self.current_environments,
+            self.environments,
+            environment,
+            !state.checked_locations.has_unchecked_environment(environment)
+        );
     }
 
     pub fn advance_difficulty(&mut self, target: Item) {
@@ -433,7 +457,7 @@ impl Interface {
         self.active_filler.set_inner_html(&buf);
     }
 
-    pub fn update_villain_completion(&self, state: &State) {
+    pub fn update_completion(&self, state: &State) {
         match &self.current_game.villains {
             CurrentVillains::Classic((villain, _, _)) => {
                 if let Some(elem) = self.document.get_element_by_id(&format!("completion-{}", villain.as_ident())) {
@@ -443,7 +467,9 @@ impl Interface {
             CurrentVillains::Team(villains) => {
                 for (villain, _, _) in villains {
                     if let Some(elem) = self.document.get_element_by_id(&format!("completion-{}", villain.as_ident())) {
-                        elem.set_inner_html(&completion_str(state.checked_locations.team_villains[(*villain) as usize] | if villain.no_challenge() { 0xC0 } else { 0 }));
+                        elem.set_inner_html(&completion_str(
+                            state.checked_locations.team_villains[(*villain) as usize] | if villain.no_challenge() { 0xC0 } else { 0 },
+                        ));
                     }
                 }
             }
@@ -458,9 +484,14 @@ impl Interface {
             }
             CurrentVillains::None => (),
         }
+        if let Some(environment) = self.current_game.environment {
+            if let Some(elem) = self.document.get_element_by_id(environment.as_ident()) {
+                let _ = elem.class_list().add_1("completed");
+            }
+        }
     }
 
-    pub fn update_villain_completion_all(&self, state: &State) {
+    pub fn update_completion_all(&self, state: &State) {
         for villain in Villain::iter() {
             if let Some(elem) = self.document.get_element_by_id(&format!("completion-{}", villain.as_ident())) {
                 elem.set_inner_html(&completion_str(state.checked_locations.villains[villain as usize] | if villain.no_challenge() { 0xC0 } else { 0 }));
@@ -478,6 +509,13 @@ impl Interface {
                 elem.set_inner_html(&completion_str(
                     state.checked_locations.gladiators[gladiator as usize] | if gladiator.no_challenge() { 0xC0 } else { 0 },
                 ));
+            }
+        }
+        for environment in Environment::iter() {
+            if !state.checked_locations.has_unchecked_environment(environment) {
+                if let Some(elem) = self.document.get_element_by_id(environment.as_ident()) {
+                    let _ = elem.class_list().add_1("completed");
+                }
             }
         }
     }

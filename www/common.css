@@ -18,6 +18,18 @@ li {
   list-style-type: disc;
 }
 
+#environments > li {
+  list-style-type: none;
+}
+
+#environments > li.completed::before {
+  content: "\2713";
+  color: green;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
 li.variant {
   list-style-type: circle;
   text-indent: 1rem;
@@ -232,18 +244,22 @@ li.variant {
   height: 2rem;
 }
 
-.difficulty.normal, .done.normal {
+.difficulty.normal,
+.done.normal {
   background-color: lightgreen;
 }
 
-.difficulty.advanced, .done.advanced {
+.difficulty.advanced,
+.done.advanced {
   background-color: yellow;
 }
 
-.difficulty.challenge, .done.challenge {
+.difficulty.challenge,
+.done.challenge {
   background-color: red;
 }
 
-.difficulty.ultimate, .done.ultimate {
+.difficulty.ultimate,
+.done.ultimate {
   background-color: #c000c0;
 }

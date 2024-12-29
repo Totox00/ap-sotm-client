@@ -90,7 +90,7 @@ impl Session {
                 }
             }
             let (victory, locations) = self.location_ids(&locations);
-            self.interface.update_villain_completion(&self.state);
+            self.interface.update_completion(&self.state);
             self.reset();
             return Action { deathlink: false, locations, victory };
         } else if target == "defeat" {
@@ -201,7 +201,7 @@ impl Session {
         self.state.persistent_variant_progress.update(&variant_progress);
         self.interface.update_goal(&self.state);
         self.interface.update_current_variants(&self.state);
-        self.interface.update_villain_completion_all(&self.state);
+        self.interface.update_completion_all(&self.state);
     }
 
     pub fn deathlink(&self) -> u8 {
