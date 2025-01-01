@@ -39,35 +39,50 @@ pub struct Action {
 }
 
 #[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+}
+
+macro_rules! log {
+    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+}
+
+#[wasm_bindgen]
 pub fn new_session(mut datapackage_store: DatapackageStore, room_info: &str, connected: &str, slot: &str) -> Session {
-    if let (Ok(room_info), Ok(connected)) = (from_str::<RoomInfo>(room_info), from_str::<Connected>(connected)) {
-        datapackage_store.build_player_map(&connected);
+    let room_info: RoomInfo = from_str(room_info).unwrap_or_else(|err| {
+        log!("Failed to parse RoomInfo packet: {err}");
+        panic!()
+    });
+    let connected: Connected = from_str(connected).unwrap_or_else(|err| {
+        log!("Failed to parse Connected packet: {err}");
+        panic!()
+    });
 
-        let persistent_store = PersistentStore::new(&room_info.seed_name, slot);
+    datapackage_store.build_player_map(&connected);
 
-        let mut state = State::new(connected.slot_data);
+    let persistent_store = PersistentStore::new(&room_info.seed_name, slot);
 
-        (state.checked_locations, state.persistent_variant_progress) = persistent_store.load();
+    let mut state = State::new(connected.slot_data);
 
-        let mut players = HashMap::new();
-        for player in connected.players {
-            players.insert(player.slot, player.alias);
-        }
+    (state.checked_locations, state.persistent_variant_progress) = persistent_store.load();
 
-        let interface = Interface::new();
-        interface.update_goal(&state);
+    let mut players = HashMap::new();
+    for player in connected.players {
+        players.insert(player.slot, player.alias);
+    }
 
-        Session {
-            datapackage_store,
-            persistent_store,
-            players,
-            slot: slot.to_string(),
-            slot_data: state.slot_data,
-            state,
-            interface,
-        }
-    } else {
-        panic!("Failed to parse session info");
+    let interface = Interface::new();
+    interface.update_goal(&state);
+
+    Session {
+        datapackage_store,
+        persistent_store,
+        players,
+        slot: slot.to_string(),
+        slot_data: state.slot_data,
+        state,
+        interface,
     }
 }
 
