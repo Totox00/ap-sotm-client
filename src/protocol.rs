@@ -197,7 +197,6 @@ pub struct ConnectionRefused {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Connected {
-    pub team: i32,
     pub slot: i32,
     pub players: Vec<NetworkPlayer>,
     pub missing_locations: Vec<i64>,
@@ -213,12 +212,14 @@ pub struct SlotData {
     pub required_variants: u32,
     pub villain_difficulty_points: [u32; 4],
     pub locations_per: [u8; 6],
+    #[serde(default)]
     pub death_link: DeathlinkType,
 }
 
-#[derive(Debug, Clone, Copy, Deserialize_repr, Serialize_repr)]
+#[derive(Debug, Clone, Copy, Default, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum DeathlinkType {
+    #[default]
     None = 0,
     Individual = 1,
     Team = 2,
