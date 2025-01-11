@@ -23,21 +23,11 @@ form.addEventListener("submit", (e) => {
   tryConnect(e);
 });
 
-function disconnect(e) {
-  if (syncHandle) clearInterval(syncHandle);
-  clientElem.hidden = true;
+async function disconnect(e) {
   e.stopPropagation();
-  for (const elem of clear) elem.innerText = "";
-  syncSave(() => {
-    if (client) client.close();
-    if (session) session.exit();
-    client = null;
-    roomInfo = null;
-    datapackageStore = null;
-    session = null;
-    receivedItemIndex = 0;
-    form.hidden = false;
-  });
+  pushSave();
+  isClosing = true;
+  if (client) client.close();
 }
 
 document.getElementById("disconnect").addEventListener("click", disconnect);
@@ -45,19 +35,24 @@ document.getElementById("disconnect").addEventListener("click", disconnect);
 clientElem.addEventListener("click", (e) => {
   if (e.target.id) {
     const action = session.handle_click(e.target.id);
+    const locations = Array.from(action.locations()).map(Number);
 
-    client.send(
-      JSON.stringify([
-        {
-          cmd: "LocationChecks",
-          locations: Array.from(action.locations()).map(Number),
-        },
-      ])
-    );
+    if (locations.length > 0) {
+      client.send(
+        JSON.stringify([
+          {
+            cmd: "LocationChecks",
+            locations: locations,
+          },
+        ])
+      );
+    }
 
     if (action.victory) {
       client.send(JSON.stringify([{ cmd: "StatusUpdate", status: 30 }]));
     }
+
+    if (action.push || action.victory || locations.length > 0) pushSave();
   }
 });
 
@@ -68,8 +63,8 @@ let client;
 let roomInfo;
 let datapackageStore;
 let session;
-let syncHandle;
 let receivedItemIndex = 0;
+let isClosing = false;
 
 async function run() {
   await init();
@@ -87,6 +82,7 @@ async function run() {
     }
 
     client.onmessage = handleEvent;
+    client.onclose = handleClose;
   };
 }
 
@@ -165,10 +161,10 @@ function connectedConnect(connected) {
   client.send(
     JSON.stringify([
       { cmd: "Sync" },
+      { cmd: "SetNotify", keys: [`sotm-save-${slot.value}`] },
       { cmd: "Get", keys: [`sotm-save-${slot.value}`] },
     ])
   );
-  syncHandle = setInterval(syncSave, 60000);
   const deathlinkType = session.deathlink();
   if (deathlinkType > 0) {
     client.send(
@@ -184,29 +180,17 @@ function connectedConnect(connected) {
   clientElem.hidden = false;
 }
 
-let onretrieved = () => {};
-let onsetreply = () => {};
-function syncSave(callback) {
-  onretrieved = () => {
-    onretrieved = () => {};
-    onsetreply = () => {
-      onsetreply = () => {};
-      if (callback) callback();
-    };
-    client.send(
-      JSON.stringify([
-        {
-          cmd: "Set",
-          key: `sotm-save-${slot.value}`,
-          default: "",
-          want_reply: true,
-          operations: [{ operation: "replace", value: session.save_string() }],
-        },
-      ])
-    );
-  };
+function pushSave() {
   client.send(
-    JSON.stringify([{ cmd: "Get", keys: [`sotm-save-${slot.value}`] }])
+    JSON.stringify([
+      {
+        cmd: "Set",
+        key: `sotm-save-${slot.value}`,
+        default: "",
+        want_reply: false,
+        operations: [{ operation: "replace", value: session.save_string() }],
+      },
+    ])
   );
 }
 
@@ -245,11 +229,25 @@ function handleEvent(event) {
       case "Retrieved":
         const save_str = msg.keys[`sotm-save-${slot.value}`];
         if (save_str) session.update_save(save_str);
-        onretrieved();
         break;
       case "SetReply":
-        onsetreply();
+        session.update_save(msg.value);
         break;
     }
   }
+}
+
+function handleClose() {
+  if (!isClosing) {
+    window.alert("Connection to the multiserver was lost unexpectedly");
+  }
+  isClosing = false;
+  clientElem.hidden = true;
+  for (const elem of clear) elem.innerText = "";
+  client = null;
+  roomInfo = null;
+  datapackageStore = null;
+  session = null;
+  receivedItemIndex = 0;
+  form.hidden = false;
 }

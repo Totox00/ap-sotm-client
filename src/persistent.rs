@@ -61,22 +61,6 @@ impl PersistentStore {
         (Locations::new(), PersistentVariantProgress::default(), None)
     }
 
-    pub fn load(&self) -> (Locations, PersistentVariantProgress) {
-        if let Some(window) = window() {
-            if let Ok(Some(local_storage)) = window.local_storage() {
-                if let Ok(Some(base64)) = local_storage.get_item(&self.key) {
-                    let (locations, variant_progress, alert) = Self::load_string(&base64);
-                    if let Some(alert) = alert {
-                        let _ = window.alert_with_message(alert);
-                    }
-                    return (locations, variant_progress);
-                }
-            }
-        }
-
-        (Locations::new(), PersistentVariantProgress::default())
-    }
-
     pub fn save_string(&self, locations: &Locations, variant_progress: &PersistentVariantProgress) -> String {
         let mut buf = vec![];
         buf.push(if locations.victory { 0b11 } else { 0b10 });
@@ -93,13 +77,5 @@ impl PersistentStore {
         buf.extend(variant_progress.as_bytes());
 
         BASE64_STANDARD.encode(&buf)
-    }
-
-    pub fn save(&self, locations: &Locations, variant_progress: &PersistentVariantProgress) {
-        if let Some(window) = window() {
-            if let Ok(Some(local_storage)) = window.local_storage() {
-                let _ = local_storage.set_item(&self.key, &self.save_string(locations, variant_progress));
-            }
-        }
     }
 }

@@ -34,6 +34,7 @@ pub struct Session {
 #[wasm_bindgen]
 pub struct Action {
     locations: Vec<i64>,
+    pub push: bool,
     pub deathlink: bool,
     pub victory: bool,
 }
@@ -64,8 +65,6 @@ pub fn new_session(mut datapackage_store: DatapackageStore, room_info: &str, con
     let persistent_store = PersistentStore::new(&room_info.seed_name, slot);
 
     let mut state = State::new(connected.slot_data);
-
-    (state.checked_locations, state.persistent_variant_progress) = persistent_store.load();
 
     let mut players = HashMap::new();
     for player in connected.players {
@@ -99,29 +98,42 @@ impl Session {
     pub fn handle_click(&mut self, target: &str) -> Action {
         if target == "victory" {
             let mut locations = self.interface.get_locations();
+            let mut push = false;
             for variant in self.state.available_variants().collect::<Vec<_>>() {
-                if variant.is_available(&self.state, &self.interface.current_game) && variant.game_end(&mut self.state, &self.interface.current_game, true) {
+                if variant.is_available(&self.state, &self.interface.current_game) && variant.game_end(&mut self.state, &self.interface.current_game, true, &mut push) {
                     locations.push(Location::Variant(variant));
                 }
             }
             let (victory, locations) = self.location_ids(&locations);
             self.interface.update_completion(&self.state);
             self.reset();
-            return Action { deathlink: false, locations, victory };
+            return Action {
+                deathlink: false,
+                push,
+                locations,
+                victory,
+            };
         } else if target == "defeat" {
             let mut locations = vec![];
+            let mut push = false;
             for variant in self.state.available_variants().collect::<Vec<_>>() {
-                if variant.is_available(&self.state, &self.interface.current_game) && variant.game_end(&mut self.state, &self.interface.current_game, false) {
+                if variant.is_available(&self.state, &self.interface.current_game) && variant.game_end(&mut self.state, &self.interface.current_game, false, &mut push) {
                     locations.push(Location::Variant(variant));
                 }
             }
             let (victory, locations) = self.location_ids(&locations);
             self.reset();
-            return Action { deathlink: false, locations, victory };
+            return Action {
+                deathlink: false,
+                push,
+                locations,
+                victory,
+            };
         } else if target == "goal" {
             if self.state.goal_progress().available() {
                 return Action {
                     deathlink: false,
+                    push: false,
                     locations: vec![],
                     victory: true,
                 };
@@ -142,13 +154,23 @@ impl Session {
                 let (victory, locations) = self.location_ids(&[Location::Variant(variant)]);
                 self.interface.update_current_variants(&self.state);
                 self.interface.update_goal(&self.state);
-                return Action { deathlink: false, locations, victory };
+                return Action {
+                    deathlink: false,
+                    push: false,
+                    locations,
+                    victory,
+                };
             } else if let Some(Item::Villain(villain)) = item {
                 if let Some(variant) = villain.variant() {
                     let (victory, locations) = self.location_ids(&[Location::Variant(variant)]);
                     self.interface.update_current_variants(&self.state);
                     self.interface.update_goal(&self.state);
-                    return Action { deathlink: false, locations, victory };
+                    return Action {
+                        deathlink: false,
+                        push: false,
+                        locations,
+                        victory,
+                    };
                 }
             }
         } else {
@@ -159,7 +181,12 @@ impl Session {
             };
             self.interface.update_current_variants(&self.state);
             self.interface.update_goal(&self.state);
-            return Action { deathlink: false, locations, victory };
+            return Action {
+                deathlink: false,
+                push: false,
+                locations,
+                victory,
+            };
         }
         Action::none()
     }
@@ -193,17 +220,14 @@ impl Session {
 
     pub fn recieved_items(&mut self, items: Vec<i64>) {
         for item_id in items {
-            let item = Item::from_id(item_id);
-            self.interface.add_item(&self.state, item);
-            self.state.items.set_item(item);
+            if let Some(item) = Item::from_id(item_id) {
+                self.interface.add_item(&self.state, item);
+                self.state.items.set_item(item);
+            }
         }
         self.interface.update_current_filler(&self.state.items);
         self.interface.update_current_variants(&self.state);
         self.interface.update_goal(&self.state);
-    }
-
-    pub fn exit(&mut self) {
-        self.persistent_store.save(&self.state.checked_locations, &self.state.persistent_variant_progress);
     }
 
     pub fn save_string(&self) -> String {
@@ -232,6 +256,7 @@ impl Action {
     fn none() -> Action {
         Action {
             locations: vec![],
+            push: false,
             deathlink: false,
             victory: false,
         }

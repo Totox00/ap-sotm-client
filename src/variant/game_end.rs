@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl Variant {
-    pub fn game_end(&self, state: &mut State, game: &CurrentGame, victory: bool) -> bool {
+    pub fn game_end(&self, state: &mut State, game: &CurrentGame, victory: bool, push: &mut bool) -> bool {
         match self {
             Variant::SpiteAgentOfGloom => victory && state.temporary_variant_progress.spite_agent_of_gloom,
             Variant::SkinwalkerGloomweaver => {
@@ -19,8 +19,11 @@ impl Variant {
             Variant::TheEternalHaka => {
                 if state.persistent_variant_progress.eternal_haka {
                     victory && state.temporary_variant_progress.eternal_haka == 0xF
+                } else if victory && state.temporary_variant_progress.eternal_haka & 0x8 > 0 {
+                    *push = true;
+                    state.persistent_variant_progress.eternal_haka = true;
+                    false
                 } else {
-                    state.persistent_variant_progress.eternal_haka = victory && state.temporary_variant_progress.eternal_haka & 0x8 > 0;
                     false
                 }
             }
@@ -34,12 +37,14 @@ impl Variant {
             Variant::OmnitronU => match state.persistent_variant_progress.omnitron_u {
                 0 => {
                     if victory && state.temporary_variant_progress.omnitron_u & 0x3 == 0x0 {
+                        *push = true;
                         state.persistent_variant_progress.omnitron_u = 1;
                     }
                     false
                 }
                 1 => {
                     if victory && state.temporary_variant_progress.omnitron_u & 0x3 == 0x1 {
+                        *push = true;
                         state.persistent_variant_progress.omnitron_u = 2;
                     }
                     false
@@ -51,6 +56,7 @@ impl Variant {
             Variant::ActionHeroStuntman => {
                 if state.persistent_variant_progress.action_hero_stuntman < 2 {
                     if victory && state.temporary_variant_progress.action_hero_stuntman {
+                        *push = true;
                         state.persistent_variant_progress.action_hero_stuntman += 1;
                     }
                     false
@@ -84,6 +90,7 @@ impl Variant {
                                 .count()) as u8;
 
                         if victory && state.temporary_variant_progress.benchmark_supply_and_demand.0 >= needed * 10 && state.temporary_variant_progress.benchmark_supply_and_demand.1 >= needed * 5 {
+                            *push = true;
                             state.persistent_variant_progress.benchmark_supply_and_demand = true;
                         }
                     }
@@ -92,6 +99,7 @@ impl Variant {
             }
             Variant::HeroicLuminary => {
                 if victory && state.persistent_variant_progress.heroic_luminary < 2 {
+                    *push = true;
                     state.persistent_variant_progress.heroic_luminary += 1;
                 }
                 false
@@ -102,7 +110,10 @@ impl Variant {
             Variant::TheAdamantSentinels => !victory && state.temporary_variant_progress.adamant_sentinels == 0x3,
             Variant::TheHuntedNaturalist => {
                 if victory {
-                    if state.temporary_variant_progress.hunted_naturalist & 0x1 > 0 {
+                    if state.temporary_variant_progress.hunted_naturalist & 0x1 > 0
+                        && state.persistent_variant_progress.hunted_naturalist >> (state.temporary_variant_progress.hunted_naturalist >> 1) & 0x1 == 0
+                    {
+                        *push = true;
                         state.persistent_variant_progress.hunted_naturalist |= 1 << (state.temporary_variant_progress.hunted_naturalist >> 1);
                     }
                     state.persistent_variant_progress.hunted_naturalist == 0x7
@@ -115,6 +126,7 @@ impl Variant {
                     if state.persistent_variant_progress.termi_nation_bunker {
                         return true;
                     } else {
+                        *push = true;
                         state.persistent_variant_progress.termi_nation_bunker = true;
                     }
                 }
@@ -124,7 +136,8 @@ impl Variant {
                 if state.persistent_variant_progress.freedom_six & 0x1 > 0 {
                     victory && state.temporary_variant_progress.freedom_six_absolute_zero == 0xF
                 } else {
-                    if !victory {
+                    if !victory && state.persistent_variant_progress.freedom_six & 0x1 == 0 {
+                        *push = true;
                         state.persistent_variant_progress.freedom_six |= 0x1;
                     }
                     false
@@ -134,7 +147,8 @@ impl Variant {
                 if state.persistent_variant_progress.freedom_six & 0x2 > 0 {
                     victory && state.temporary_variant_progress.freedom_six_bunker == 0x19
                 } else {
-                    if !victory {
+                    if !victory && state.persistent_variant_progress.freedom_six & 0x2 == 0 {
+                        *push = true;
                         state.persistent_variant_progress.freedom_six |= 0x2;
                     }
                     false
@@ -144,7 +158,8 @@ impl Variant {
                 if state.persistent_variant_progress.freedom_six & 0x4 > 0 {
                     victory && state.temporary_variant_progress.freedom_six_tachyon == 0x5
                 } else {
-                    if !victory {
+                    if !victory && state.persistent_variant_progress.freedom_six & 0x4 == 0 {
+                        *push = true;
                         state.persistent_variant_progress.freedom_six |= 0x4;
                     }
                     false
@@ -154,7 +169,8 @@ impl Variant {
                 if state.persistent_variant_progress.freedom_six & 0x8 > 0 {
                     victory && state.temporary_variant_progress.freedom_six_tempest == 0xF
                 } else {
-                    if !victory {
+                    if !victory && state.persistent_variant_progress.freedom_six & 0x8 == 0 {
+                        *push = true;
                         state.persistent_variant_progress.freedom_six |= 0x8;
                     }
                     false
@@ -164,7 +180,8 @@ impl Variant {
                 if state.persistent_variant_progress.freedom_six & 0x10 > 0 {
                     victory && state.temporary_variant_progress.freedom_six_wraith == 0x3
                 } else {
-                    if !victory {
+                    if !victory && state.persistent_variant_progress.freedom_six & 0x10 == 0 {
+                        *push = true;
                         state.persistent_variant_progress.freedom_six |= 0x10;
                     }
                     false
@@ -174,7 +191,8 @@ impl Variant {
                 if state.persistent_variant_progress.freedom_six & 0x20 > 0 {
                     victory && state.temporary_variant_progress.freedom_six_unity
                 } else {
-                    if !victory {
+                    if !victory && state.persistent_variant_progress.freedom_six & 0x20 == 0 {
+                        *push = true;
                         state.persistent_variant_progress.freedom_six |= 0x20;
                     }
                     false
@@ -186,8 +204,11 @@ impl Variant {
             Variant::PrimeWardensArgentAdept => {
                 if state.persistent_variant_progress.prime_wardens_argent_adept {
                     victory && state.temporary_variant_progress.prime_wardens_argent_adept == 0x3F
-                } else {
+                } else if !victory {
+                    *push = true;
                     state.persistent_variant_progress.prime_wardens_argent_adept = !victory;
+                    false
+                } else {
                     false
                 }
             }
@@ -197,20 +218,22 @@ impl Variant {
             Variant::XtremePrimeWardensCaptainCosmic => victory && state.temporary_variant_progress.xtreme_prime_wardens_captain_cosmic == 0xAA,
             Variant::XtremePrimeWardensFanatic => victory && state.temporary_variant_progress.xtreme_prime_wardens_fanatic == 0x3F,
             Variant::XtremePrimeWardensHaka => victory && state.temporary_variant_progress.xtreme_prime_wardens_haka == 0x2D,
-            Variant::FreedomFiveAbsoluteZero => freedom_five(victory, state, state.temporary_variant_progress.freedom_five_absolute_zero == (29, 29, true)),
+            Variant::FreedomFiveAbsoluteZero => freedom_five(victory, state, state.temporary_variant_progress.freedom_five_absolute_zero == (29, 29, true), push),
             Variant::FreedomFiveBunker => freedom_five(
                 victory,
                 state,
                 state.temporary_variant_progress.freedom_five_bunker.0 == 0x2A && state.temporary_variant_progress.freedom_five_bunker.1.count_ones() >= 4,
+                push,
             ),
-            Variant::FreedomFiveWraith => freedom_five(victory, state, state.temporary_variant_progress.freedom_five_wraith == 0xD3),
-            Variant::FreedomFiveTachyon => freedom_five(victory, state, state.temporary_variant_progress.freedom_five_tachyon == 0x7),
+            Variant::FreedomFiveWraith => freedom_five(victory, state, state.temporary_variant_progress.freedom_five_wraith == 0xD3, push),
+            Variant::FreedomFiveTachyon => freedom_five(victory, state, state.temporary_variant_progress.freedom_five_tachyon == 0x7, push),
             Variant::FreedomFiveLegacy => freedom_five(
                 victory,
                 state,
                 state.temporary_variant_progress.freedom_five_legacy.0 > state.temporary_variant_progress.freedom_five_legacy.1
                     && state.temporary_variant_progress.freedom_five_legacy.0 >= 20
                     && state.temporary_variant_progress.freedom_five_legacy.2,
+                push,
             ),
             Variant::CosmicInventorWrithe => state.temporary_variant_progress.cosmic_inventor_writhe == 0x3,
             _ => false,
@@ -218,13 +241,14 @@ impl Variant {
     }
 }
 
-fn freedom_five(victory: bool, state: &mut State, unlock: bool) -> bool {
+fn freedom_five(victory: bool, state: &mut State, unlock: bool, push: &mut bool) -> bool {
     if state.temporary_variant_progress.freedom_five_prereq_advanced {
         false
     } else {
         if state.persistent_variant_progress.freedom_five < 3 {
             state.temporary_variant_progress.freedom_five_prereq_advanced = true;
             if !victory {
+                *push = true;
                 state.persistent_variant_progress.freedom_five += 1;
             }
             false
