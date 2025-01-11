@@ -150,32 +150,35 @@ impl Item {
         }
     }
 
-    pub fn from_id(id: i64) -> Item {
+    pub fn from_id(id: i64) -> Option<Item> {
         match (id & (0b1111 << 48)) >> 48 {
-            0b0001 => Item::Villain(Villain::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown villain ID")),
-            0b0011 => Item::TeamVillain(TeamVillain::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown team villain ID")),
-            0b0101 => Item::Gladiator(Gladiator::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown team villain ID")),
+            0b0001 => Villain::from_i64(id & 0b1111_1111_1111_1111).map(Item::Villain),
+            0b0011 => TeamVillain::from_i64(id & 0b1111_1111_1111_1111).map(Item::TeamVillain),
+            0b0101 => Gladiator::from_i64(id & 0b1111_1111_1111_1111).map(Item::Gladiator),
             0b0010 => {
-                let hero = Hero::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown hero ID");
-                let variant_i = ((id as u32) & (0b1111_1111 << 16)) >> 16;
+                if let Some(hero) = Hero::from_i64(id & 0b1111_1111_1111_1111) {
+                    let variant_i = ((id as u32) & (0b1111_1111 << 16)) >> 16;
 
-                if variant_i == 0 {
-                    Item::Hero(hero)
+                    if variant_i == 0 {
+                        Some(Item::Hero(hero))
+                    } else {
+                        Variant::from_hero(hero, variant_i).map(Item::Variant)
+                    }
                 } else {
-                    Item::Variant(Variant::from_hero(hero, variant_i).expect("Unknown variant ID"))
+                    None
                 }
             }
-            0b0110 => Item::Contender(Contender::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown contender ID")),
-            0b0100 => Item::Environment(Environment::from_i64(id & 0b1111_1111_1111_1111).expect("Unknown environment ID")),
-            0b1000 | 0b1001 => Item::Filler(Filler::from_id(id)),
+            0b0110 => Contender::from_i64(id & 0b1111_1111_1111_1111).map(Item::Contender),
+            0b0100 => Environment::from_i64(id & 0b1111_1111_1111_1111).map(Item::Environment),
+            0b1000 | 0b1001 => Some(Item::Filler(Filler::from_id(id))),
             0b0000 => {
                 if id == 1 {
-                    Item::Scion
+                    Some(Item::Scion)
                 } else {
-                    panic!("Unknown item ID")
+                    None
                 }
             }
-            _ => panic!("Unknown item ID"),
+            _ => None,
         }
     }
 }
