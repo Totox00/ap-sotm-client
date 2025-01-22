@@ -211,8 +211,6 @@ impl Session {
 
     pub fn recieved_items(&mut self, items: Vec<i64>) {
         for item_id in items {
-            log!("{}", self.datapackage_store.get_item(1, item_id));
-
             if let Some(item) = Item::from_id(item_id) {
                 self.interface.add_item(&self.state, item);
                 self.state.items.set_item(item);
