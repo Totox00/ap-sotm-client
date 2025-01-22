@@ -1,0 +1,132 @@
+source ExtraVillainVariants
+name Extra Villain Variants
+
+variant StandUserVector
+name Stand User Vector
+from CauldronExperimental ExtraVillainVariants
+base Vector
+
+variant DapperVector
+name Dapper Vector
+from CauldronExperimental ExtraVillainVariants
+base Vector
+
+variant TheMatriarchPanickedEmployee
+name The Matriarch: Panicked Employee
+from RookCity ExtraVillainVariants
+base TheMatriarch
+
+variant MoonflowCitizenDawn
+name Moonflow Citizen Dawn
+from ExtraVillainVariants
+base CitizenDawn
+
+variant MoonflowTheDreamer
+name Moonflow The Dreamer
+from ShatteredTimelines ExtraVillainVariants
+base TheDreamer
+
+variant AdkAnathema
+name Adk Anathema
+from CauldronBase ExtraVillainVariants
+base Anathema
+
+variant AdirondackGloomweaver
+name Adirondack Gloomweaver
+from InfernalRelics ExtraVillainVariants
+base Gloomweaver
+
+variant ChokepointInspiredDesign
+name Chokepoint: Inspired Design
+from Chokepoint ExtraVillainVariants
+base Chokepoint
+
+variant MissInformationDejaVu
+name Miss Information: Deja Vu
+from MissInformation ExtraVillainVariants
+base MissInformation
+
+variant InfinitorInheritedInsanity
+name Infinitor: Inherited Insanity
+from WrathOfTheCosmos ExtraVillainVariants
+base Infinitor
+
+variant SpiteDrugRunner
+name Spite: Drug Runner
+from RookCity ExtraVillainVariants
+base Spite
+
+variant KaargraWarfangChampionOfOblivAeon
+name Kaargra Warfang: Champion of OblivAeon
+from WrathOfTheCosmos ExtraVillainVariants
+base KaargraWarfang
+
+variant ProgenyLeftBehind
+name Progeny: Left Behind
+from WrathOfTheCosmos ExtraVillainVariants
+base Progeny
+
+variant LaCapitanRaidingParty
+name La Capitan: Raiding Party
+from ShatteredTimelines ExtraVillainVariants
+base LaCapitan
+
+variant IronLegacyHistoryRewritten
+name Iron Legacy: History Rewritten
+from ShatteredTimelines ExtraVillainVariants
+base IronLegacy
+
+variant DynamoRoguesGallery
+name Dynamo: Rogue's Gallery
+from CauldronAdrift ExtraVillainVariants
+base Dynamo
+
+variant TheInfernalChoirPossessedOpera
+name The Infernal Choir: Possessed Opera
+from CauldronAdrift ExtraVillainVariants
+base TheInfernalChoir
+
+variant OutlanderFragmentedTimeline
+name Outlander: Fragmented Timeline
+from CauldronAdrift ExtraVillainVariants
+base Outlander
+
+variant ScreaMachineEncore
+name ScreaMachine: Encore
+from CauldronAdrift ExtraVillainVariants
+base ScreaMachine
+
+variant MythosTheInescapableTruth
+name Mythos: The Inescapable Truth
+from CauldronAdrift ExtraVillainVariants
+base Mythos
+
+variant GrayRadioactiveDecay
+name Gray: Radioactive Decay
+from CauldronBase ExtraVillainVariants
+base Gray
+
+variant PhaseOnTheRun
+name Phase: On the Run
+from CauldronStormfall ExtraVillainVariants
+base Phase
+
+variant TheMistressOfFateTimesEnd
+name The Mistress of Fate: Time's End
+from CauldronAdrift ExtraVillainVariants
+base TheMistressOfFate
+
+variant MoonflowDendron
+name Moonflow Dendron
+from CauldronBase ExtraVillainVariants
+base Dendron
+
+variant OutlanderFinalDays
+name Outlander: Final Days
+from CauldronAdrift ExtraVillainVariants
+base Outlander
+
+variant BewitchedSpite
+name Bewitched Spite
+from RookCity ExtraVillainVariants
+base Spite

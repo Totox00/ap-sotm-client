@@ -1,0 +1,152 @@
+source WonderousTales
+name Wonderous Tales
+
+villain Kagmorath
+name Kagmorath
+from WonderousTales
+
+variant KagmorathTheHoarder
+name Kagmorath the Hoarder
+from WonderousTales
+base Kagmorath
+
+villain Chronomancer
+name Chronomancer
+from WonderousTales
+
+villain DarkGelatina
+name Dark Gelatina
+from WonderousTales
+
+hero Eldritch
+name Eldritch
+from WonderousTales
+
+variant EldritchInContempt
+name Eldritch In Contempt
+from WonderousTales
+base Eldritch
+
+hero Mech
+name Mech
+from WonderousTales
+
+variant ArmamentMech
+name Armament Mech
+from WonderousTales
+base Mech
+
+hero Archmage
+name Archmage
+from WonderousTales
+
+variant StudentArchmage
+name Student Archmage
+from WonderousTales
+base Archmage
+
+hero Maiden
+name Maiden
+from WonderousTales
+
+variant MaidenAtArms
+name Maiden At Arms
+from WonderousTales
+base Maiden
+
+hero Reaper
+name Reaper
+from WonderousTales
+
+variant DeathmarkedReaper
+name Deathmarked Reaper
+from WonderousTales
+base Reaper
+
+hero Gelatina
+name Gelatina
+from WonderousTales
+
+variant GelatinaSolitarySlime
+name Gelatina: Solitary Slime
+from WonderousTales
+base Gelatina
+
+variant GelatinaBiohazard
+name Gelatina: Biohazard
+from WonderousTales
+base Gelatina
+
+hero GhastLord
+name Ghast Lord
+from WonderousTales
+
+variant GhastAmalgamator
+name Ghast Amalgamator
+from WonderousTales
+base GhastLord
+
+hero Lifeform
+name Lifeform
+from WonderousTales
+
+variant UnstableLifeform
+name Unstable Lifeform
+from WonderousTales
+base Lifeform
+
+hero Explorer
+name Explorer
+from WonderousTales
+
+variant ElderExplorer
+name Elder Explorer
+from WonderousTales
+base Explorer
+
+hero WardenwoodTwins
+name Wardenwood Twins
+from WonderousTales
+
+variant KayaMergedWardens
+name Kaya: Merged Wardens
+from WonderousTales
+base WardenwoodTwins
+
+hero PlagueProctor
+name Plague Proctor
+from WonderousTales
+
+variant ProactivePlagueProctor
+name Proactive Plague Proctor
+from WonderousTales
+base PlagueProctor
+
+hero Neuronet
+name Neuronet
+from WonderousTales
+
+variant CorruptedNeuronet
+name Corrupted Neuronet
+from WonderousTales
+base Neuronet
+
+environment Wardenwood
+name Wardenwood
+from WonderousTales
+
+environment DerelictStation
+name Derelict Station
+from WonderousTales
+
+environment ChronoRift
+name Chrono-Rift
+from WonderousTales
+
+environment FatesEnd
+name Fate's End
+from WonderousTales
+
+environment TheJunkyard
+name The Junkyard
+from WonderousTales

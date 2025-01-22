@@ -35,23 +35,23 @@ name Artifact Comics: Realms Uncharted
 
 villain Anomalos
 name Anomalos
-from ArtifactComics
+from ArtifactComicsVillains
 
 villain Blockbuster
 name Blockbuster
-from ArtifactComics
+from ArtifactComicsVillains
 
 villain Hexterminator
 name Hexterminator
-from ArtifactComics
+from ArtifactComicsVillains
 
 villain LouGarou
 name Lou Garou
-from ArtifactComics
+from ArtifactComicsVillains
 
 villain Tombstone
 name Tombstone
-from ArtifactComics
+from ArtifactComicsVillains
 
 hero Antiquarian
 name Antiquarian

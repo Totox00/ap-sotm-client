@@ -1,0 +1,15 @@
+source HollowKnight
+name Hollow Knight
+
+hero TheVessel
+name The Vessel
+from HollowKnight
+
+variant TheHollowKnight
+name The Hollow Knight
+from HollowKnight
+base TheVessel
+
+hero ZoteTheMighty
+name Zote The Mighty
+from HollowKnight

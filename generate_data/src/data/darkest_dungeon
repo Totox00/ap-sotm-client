@@ -1,0 +1,98 @@
+source DarkestDungeon
+name Darkest Dungeon
+
+villain Pounder
+name Pounder
+from DarkestDungeon
+
+villain Collector
+name Collector
+from DarkestDungeon
+
+villain Crocodilian
+name Crocodilian
+from DarkestDungeon
+
+villain Hag
+name Hag
+from DarkestDungeon
+
+villain Prophet
+name Prophet
+from DarkestDungeon
+
+villain SwinePrince
+name Swine Prince
+from DarkestDungeon
+
+hero Arbalest
+name Arbalest
+from DarkestDungeon
+
+hero CrystallineHerald
+name Crystalline Herald
+from DarkestDungeon
+
+hero Fawn
+name Fawn
+from DarkestDungeon
+
+hero Flagellant
+name Flagellant
+from DarkestDungeon
+
+hero Hood
+name Hood
+from DarkestDungeon
+
+hero Illuminator
+name Illuminator
+from DarkestDungeon
+
+hero Jester
+name Jester
+from DarkestDungeon
+
+hero Musketeer
+name Musketeer
+from DarkestDungeon
+
+hero Philomath
+name Philomath
+from DarkestDungeon
+
+hero PlagueDoctor
+name Plague Doctor
+from DarkestDungeon
+
+hero Tusk
+name Tusk
+from DarkestDungeon
+
+hero Vestal
+name Vestal
+from DarkestDungeon
+
+environment FarmsteadMiasma
+name Farmstead Miasma
+from DarkestDungeon
+
+environment ColorOfMadness
+name Color of Madness
+from DarkestDungeon
+
+environment WealdMonsters
+name Weald Monsters
+from DarkestDungeon
+
+environment WealdCurios
+name Weald Curios
+from DarkestDungeon
+
+environment Hamlet
+name Hamlet
+from DarkestDungeon
+
+environment Cove
+name Cove
+from DarkestDungeon

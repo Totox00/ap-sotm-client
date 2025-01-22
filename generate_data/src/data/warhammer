@@ -1,0 +1,63 @@
+source Warhammer
+name Warhammer 40K
+
+villain ChaosLord
+name Chaos Lord
+from Warhammer
+
+villain GorgutzEadUnter
+name Gorgutz 'Ead 'Unter
+from Warhammer
+
+villain Inquisitor
+name Inquisitor
+from Warhammer
+
+villain NecronTomb
+name Necron Tomb
+from Warhammer
+
+hero UrsakarECreed
+name Ursakar E. Creed
+from Warhammer
+
+hero TauCommander
+name T'au Commander: The Killing Blow
+from Warhammer
+
+variant TauCommanderThePatientHunter
+name T'au Commander: The Patient Hunter
+from Warhammer
+base TauCommander
+
+variant TauCommanderFarsight
+name T'au Commander: Farsight
+from Warhammer
+base TauCommander
+
+hero SpaceMarine
+name Space Marine
+from Warhammer
+
+variant SpaceMarineIncarcerated
+name Space Marine: Incarcerated
+from Warhammer
+base SpaceMarine
+
+hero Magos
+name Magos
+from Warhammer
+
+variant MagosBiologis
+name Magos Biologis
+base Magos
+from Warhammer
+
+hero Farseer
+name Farseer
+from Warhammer
+
+variant FarseerMacha
+name Farseer Macha
+base Farseer
+from Warhammer

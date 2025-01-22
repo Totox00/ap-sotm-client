@@ -1,0 +1,118 @@
+source CustomTeamVillains
+name Custom Team Villains
+
+teamvillain TeamBigAndWillBeBadWolf
+name Big and Will be Bad Wolf
+from CustomTeamVillains
+
+teamvillain TeamTheRoadHome
+name The Road Home
+from CustomTeamVillains
+
+teamvillain TeamHermitOfTheAzureForest
+name Hermit of the Azure Forest
+from CustomTeamVillains
+
+teamvillain TeamEverlastingParty
+name Everlasting Party
+from CustomTeamVillains
+
+teamvillain TeamDongbaek
+name Dongbaek
+from CustomTeamVillains
+
+teamvillain TeamPatricia
+name Patricia
+from CustomTeamVillains
+
+teamvillain TeamInsomniac
+name Insomniac
+from CustomTeamVillains
+
+teamvillain TeamNeonGreen
+name Neon Green
+from CustomTeamVillains
+
+teamvillain TeamJudith
+name Judith
+from CustomTeamVillains
+
+teamvillain TeamSisterEunYoung
+name Sister Eun-Young
+from CustomTeamVillains
+
+teamvillain TeamHatsuneMiku
+name Hatsune Miku
+from CustomTeamVillains
+
+teamvillain TeamMedusaGorgon
+name Medusa Gorgon
+from CustomTeamVillains
+
+teamvillain TeamArachneGorgon
+name Arachne Gorgon
+from CustomTeamVillains
+
+teamvillain TeamHorten
+name Horten
+from CustomTeamVillains
+
+teamvillain TeamFeng
+name Feng
+from CustomTeamVillains
+
+teamvillain TeamBlackBlood
+name Black Blood
+from CustomTeamVillains
+
+teamvillain TeamGalacticCommander
+name Galactic Commander
+from CustomTeamVillains
+
+teamvillain TeamFolie
+name Folie
+from CustomTeamVillains
+
+teamvillain TeamRin
+name Rin
+from CustomTeamVillains
+
+teamvillain TeamHelioAndGladys
+name Helio and Gladys
+from CustomTeamVillains
+
+teamvillain TeamString
+name String
+from CustomTeamVillains
+
+teamvillain TeamElderPuppet
+name Elder Puppet
+from CustomTeamVillains
+
+teamvillain TeamBallOPain
+name Ball O' Pain
+from CustomTeamVillains
+
+teamvillain TeamWarmonger
+name Warmonger
+from CustomTeamVillains
+
+teamvillain TeamHoarfrost
+name Hoarfrost
+from CustomTeamVillains
+
+teamvillain TeamLongshot
+name Longshot
+from CustomTeamVillains
+
+teamvillain TeamSoultaker
+name Soultaker
+from CustomTeamVillains
+
+teamvillain TeamResurgere
+name Resurgere
+from CustomTeamVillains
+
+teamvillain TeamEtemon
+name Etemon
+from CustomTeamVillains
