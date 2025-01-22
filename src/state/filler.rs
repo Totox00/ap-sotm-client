@@ -58,6 +58,7 @@ impl FillerItems {
                         f[idx] += count;
                     }
                 }
+                FillerTarget::Hero(HeroLike::Base(hero)) => self.variant_filler[hero as usize][0][idx] += count,
                 FillerTarget::Hero(HeroLike::Variant(variant)) => {
                     self.variant_filler[variant.as_normal().expect("Variant for filler target must be a hero variant") as usize][variant.as_i() as usize][idx] += count
                 }
@@ -125,6 +126,7 @@ impl FillerItemsType {
                     f[idx] += count;
                 }
             }
+            FillerTarget::Hero(HeroLike::Base(hero)) => self.variant_filler[hero as usize][0][idx] += count,
             FillerTarget::Hero(HeroLike::Variant(variant)) => {
                 self.variant_filler[variant.as_normal().expect("Variant for filler target must be a hero variant") as usize][variant.as_i() as usize][idx] += count
             }

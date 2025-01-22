@@ -12,8 +12,7 @@ use data::{Item, Location};
 use datapackage::DatapackageStore;
 use format_json::format;
 use interface::Interface;
-use persistent::PersistentStore;
-use protocol::{Connected, DeathlinkType, RoomInfo, SlotData};
+use protocol::{Connected, DeathlinkType, SlotData};
 use serde_json::from_str;
 use state::State;
 use std::collections::HashMap;
@@ -23,7 +22,6 @@ use wasm_bindgen::prelude::wasm_bindgen;
 #[wasm_bindgen]
 pub struct Session {
     datapackage_store: DatapackageStore,
-    persistent_store: PersistentStore,
     players: HashMap<i32, String>,
     slot: String,
     slot_data: SlotData,
@@ -50,19 +48,13 @@ macro_rules! log {
 }
 
 #[wasm_bindgen]
-pub fn new_session(mut datapackage_store: DatapackageStore, room_info: &str, connected: &str, slot: &str) -> Session {
-    let room_info: RoomInfo = from_str(room_info).unwrap_or_else(|err| {
-        log!("Failed to parse RoomInfo packet: {err}");
-        panic!()
-    });
+pub fn new_session(mut datapackage_store: DatapackageStore, connected: &str, slot: &str) -> Session {
     let connected: Connected = from_str(connected).unwrap_or_else(|err| {
         log!("Failed to parse Connected packet: {err}");
         panic!()
     });
 
     datapackage_store.build_player_map(&connected);
-
-    let persistent_store = PersistentStore::new(&room_info.seed_name, slot);
 
     let state = State::new(connected.slot_data);
 
@@ -76,7 +68,6 @@ pub fn new_session(mut datapackage_store: DatapackageStore, room_info: &str, con
 
     Session {
         datapackage_store,
-        persistent_store,
         players,
         slot: slot.to_string(),
         slot_data: state.slot_data,
@@ -220,6 +211,8 @@ impl Session {
 
     pub fn recieved_items(&mut self, items: Vec<i64>) {
         for item_id in items {
+            log!("{}", self.datapackage_store.get_item(1, item_id));
+
             if let Some(item) = Item::from_id(item_id) {
                 self.interface.add_item(&self.state, item);
                 self.state.items.set_item(item);
@@ -231,11 +224,11 @@ impl Session {
     }
 
     pub fn save_string(&self) -> String {
-        self.persistent_store.save_string(&self.state.checked_locations, &self.state.persistent_variant_progress)
+        persistent::save_string(&self.state.checked_locations, &self.state.persistent_variant_progress)
     }
 
     pub fn update_save(&mut self, save_str: &str) {
-        let (locations, variant_progress, _) = PersistentStore::load_string(save_str);
+        let (locations, variant_progress, _) = persistent::load_string(save_str);
         self.state.checked_locations.update(&locations);
         self.state.persistent_variant_progress.update(&variant_progress);
         self.interface.update_goal(&self.state);

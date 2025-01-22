@@ -92,6 +92,7 @@ impl FillerTarget {
 pub enum HeroLike {
     All,
     Hero(Hero),
+    Base(Hero),
     Variant(Variant),
 }
 
@@ -107,6 +108,7 @@ impl HeroLike {
         match self {
             HeroLike::All => String::new(),
             HeroLike::Hero(hero) => format!(": {} (All variants)", hero.as_str()),
+            HeroLike::Base(hero) => format!(": {}", hero.as_str()),
             HeroLike::Variant(variant) => format!(": {}", variant.as_str()),
         }
     }

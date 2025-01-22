@@ -149,7 +149,6 @@ async function datapackageConnect(datapackage) {
 function connectedConnect(connected) {
   session = new_session(
     datapackageStore,
-    JSON.stringify(roomInfo),
     JSON.stringify(connected),
     slot.value
   );

@@ -189,7 +189,7 @@ where
                     "(0b1000, {i}) => Filler::{enum_name}((HeroLike::All, DamageType::from_i64((id & (0b1111 << 24)) >> 24).expect(\"Unknown damage type ID\"))),",
                 );
                 let _ = write!(str, "(0b1001, {i}) => Filler::{enum_name}((HeroLike::Hero(Hero::from_i64((id & (0b1111_1111_1111_1111 << 8)) >> 8).expect(\"Unknown hero ID in filler\")), DamageType::from_i64((id & (0b1111 << 24)) >> 24).expect(\"Unknown damage type ID\"))),",);
-                let _ = write!(str, "(0b1010, {i}) => Filler::{enum_name}((HeroLike::Variant(Variant::from_hero(Hero::from_i64((id & (0b1111_1111_1111_1111 << 8)) >> 8).expect(\"Unknown hero ID in filler\"), ((id & (0b1111_1111 << 32)) >> 32) as u32).expect(\"Unknown variant ID for hero\")), DamageType::from_i64((id & (0b1111 << 24)) >> 24).expect(\"Unknown damage type ID\"))),",);
+                let _ = write!(str, "(0b1010, {i}) => Filler::{enum_name}((Variant::from_hero(Hero::from_i64((id & (0b1111_1111_1111_1111 << 8)) >> 8).expect(\"Unknown hero ID in filler\"), ((id & (0b1111_1111 << 32)) >> 32) as u32).map(HeroLike::Variant).unwrap_or(HeroLike::Base(Hero::from_i64((id & (0b1111_1111_1111_1111 << 8)) >> 8).expect(\"Unknown hero ID in filler\"))), DamageType::from_i64((id & (0b1111 << 24)) >> 24).expect(\"Unknown damage type ID\"))),",);
             }
             (FillerType::Hero, false) => {
                 let _ = write!(str, "(0b1000, {i}) => Filler::{enum_name}(HeroLike::All),",);
@@ -197,7 +197,7 @@ where
                     str,
                     "(0b1001, {i}) => Filler::{enum_name}(HeroLike::Hero(Hero::from_i64((id & (0b1111_1111_1111_1111 << 8)) >> 8).expect(\"Unknown hero ID in filler\"))),",
                 );
-                let _ = write!(str, "(0b1010, {i}) => Filler::{enum_name}(HeroLike::Variant(Variant::from_hero(Hero::from_i64((id & (0b1111_1111_1111_1111 << 8)) >> 8).expect(\"Unknown hero ID in filler\"), ((id & (0b1111_1111 << 32)) >> 32) as u32).expect(\"Unknown variant ID for hero\"))),",);
+                let _ = write!(str, "(0b1010, {i}) => Filler::{enum_name}(Variant::from_hero(Hero::from_i64((id & (0b1111_1111_1111_1111 << 8)) >> 8).expect(\"Unknown hero ID in filler\"), ((id & (0b1111_1111 << 32)) >> 32) as u32).map(HeroLike::Variant).unwrap_or(HeroLike::Base(Hero::from_i64((id & (0b1111_1111_1111_1111 << 8)) >> 8).expect(\"Unknown hero ID in filler\")))),",);
             }
             (FillerType::Villain, true) => {
                 let _ = write!(
