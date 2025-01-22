@@ -176,6 +176,13 @@ where
                             hero.display_name,
                             0b1000 << 48 | b | filler.i as i64 | t << 24 | 0b1001 << 28 | (hero.i as i64) << 8
                         );
+                        let _ = write!(
+                            writer,
+                            "\"{} ({})\":{},",
+                            normalize(name, t),
+                            hero.display_name,
+                            0b1000 << 48 | b | filler.i as i64 | t << 24 | 0b1010 << 28 | (hero.i as i64) << 8
+                        );
                     }
                     for variant in data.hero_variants() {
                         let _ = write!(
