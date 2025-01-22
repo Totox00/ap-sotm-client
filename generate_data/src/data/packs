@@ -1,0 +1,57 @@
+pack Everything
+name Everything
+contains Official Fanmade
+
+pack Official
+name Official
+contains SeasonPass1 SeasonPass2
+
+pack SeasonPass1
+name Season Pass 1
+contains RookCity InfernalRelics ShatteredTimelines WrathOfTheCosmos
+contains MiniPack1 MiniPack2 MiniPack3
+
+pack SeasonPass2
+name Season Pass 2
+contains Vengeance VillainsOfTheMultiverse Oblivaeon
+contains MiniPack4 TheVoidGuard
+
+pack MiniPack1
+name Mini Pack 1
+contains Unity Ambuscade SilverGulch1883
+
+pack MiniPack2
+name Mini Pack 2
+contains TheScholar MissInformation TheFinalWasteland
+
+pack MiniPack3
+name Mini Pack 3
+contains Guise WagerMaster OmnitronIV
+
+pack MiniPack4
+name Mini Pack 4
+contains Benchmark Stuntman Chokepoint TheCelestialTribunal
+
+pack Fanmade
+name Fanmade
+contains TheCauldron Vadskye AdelphophagesArchives TheContenders ArtifactComics
+
+pack TheCauldron
+name The Cauldron
+contains CauldronBase CauldronExperimental CauldronStormfall CauldronAdrift CauldronUnexpected CauldronPromos
+
+pack Vadskye
+name Vadskye
+contains OrderOfTheStick MagicTheGathering DarkSouls KrumitsTale DrMcNinja Fusion
+
+pack AdelphophagesArchives
+name Adelphophage's Archives
+contains AdelphophagePromos AdelphophagesCustoms TheVentureBrothers SentinelsOfTheBuffyverse UnionOfHeroes ThematicallyVariable
+
+pack AdelphophagePromos
+name Adelphophage's Promos
+contains AdelphophagesVillainPromos AdelphophagesHeroPromos
+
+pack AdelphophagesCustoms
+name Adelphophage's Customs
+contains AdelphophagesCustomVillains AdelphophagesCustomHeroes AdelphophagesCustomEnvironments

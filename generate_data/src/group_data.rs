@@ -161,12 +161,21 @@ pub fn group_data() -> Data {
 
     let mut current = Fields::default();
 
-    let mut lines = BufReader::new(File::open(Path::new(file!()).parent().unwrap().join("data")).expect("Failed to open file"))
+    let files: Vec<_> = BufReader::new(File::open(Path::new(file!()).parent().unwrap().join("data").join("loadorder")).expect("Failed to open loadorder"))
         .lines()
         .zip(1..)
-        .map(|(line, i)| (line.unwrap_or_else(|_| panic!("Failed to read line {i}")), i));
+        .map(|(line, i)| line.unwrap_or_else(|_| panic!("Failed to read line {i}")))
+        .filter(|line| !line.is_empty())
+        .collect();
 
-    while let Some((line, i)) = lines.next() {
+    let mut lines = files.iter().flat_map(|file_name| {
+        BufReader::new(File::open(Path::new(file!()).parent().unwrap().join("data").join(file_name)).expect("Failed to open file"))
+            .lines()
+            .zip(1..)
+            .map(move |(line, i)| (line.unwrap_or_else(|_| panic!("Failed to read line {i}")), i, file_name))
+    });
+
+    while let Some((line, i, file)) = lines.next() {
         if let Some((field, value)) = line.split_once(' ') {
             match field {
                 "pack" => push_current!(
@@ -325,7 +334,7 @@ pub fn group_data() -> Data {
                 "base" => current.base = Some(value.escape_debug().to_string()),
                 "challenge" => {
                     let mut desc = vec![];
-                    for (line, _) in lines.by_ref() {
+                    for (line, _, _) in lines.by_ref() {
                         if line.is_empty() {
                             break;
                         }
@@ -348,12 +357,12 @@ pub fn group_data() -> Data {
                 "negname" => current.display_name_neg = Some(value.escape_debug().to_string()),
                 "posdesc" => current.desc_pos = Some(value.escape_debug().to_string()),
                 "negdesc" => current.desc_neg = Some(value.escape_debug().to_string()),
-                _ => panic!("Unrecognised field {field} at line {i}"),
+                _ => panic!("Unrecognised field {field} at line {i} in file {file}"),
             }
         } else if !line.is_empty() {
             match line.as_str() {
                 "damagetypes" => current.damage_types = Some(true),
-                _ => panic!("Unrecognised bool field {line} at line {i}"),
+                _ => panic!("Unrecognised bool field {line} at line {i} in file {file}"),
             }
         }
     }

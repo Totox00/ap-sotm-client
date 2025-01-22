@@ -1,0 +1,250 @@
+pack ArtifactComics
+name Artifact Comics
+contains ArtifactComicsVillains ArtifactComicsEnvironments
+contains ArtifactComicsAdventures ArtifactComicsSocietyOfSorceries ArtifactComicsOtherworldlyThreatTacticalResponse ArtifactComicsTwilightVigil ArtifactComicsWardensOfThePeak ArtifactComicsAWorldBeyond ArtifactComicsFutureShock ArtifactComicsRealmsUncharted
+
+source ArtifactComicsVillains
+name Artifact Comics Villains
+
+source ArtifactComicsEnvironments
+name Artifact Comics Environments
+
+source ArtifactComicsAdventures
+name Artifact Comics: Adventures
+
+source ArtifactComicsSocietyOfSorceries
+name Artifact Comics: Society of Sorceries
+
+source ArtifactComicsOtherworldlyThreatTacticalResponse
+name Artifact Comics: Otherworldly Threat Tactical Response
+
+source ArtifactComicsTwilightVigil
+name Artifact Comics: Twilight Vigil
+
+source ArtifactComicsWardensOfThePeak
+name Artifact Comics: Wardens of the Peak
+
+source ArtifactComicsAWorldBeyond
+name Artifact Comics: A World Beyond
+
+source ArtifactComicsFutureShock
+name Artifact Comics: Future Shock
+
+source ArtifactComicsRealmsUncharted
+name Artifact Comics: Realms Uncharted
+
+villain Anomalos
+name Anomalos
+from ArtifactComics
+
+villain Blockbuster
+name Blockbuster
+from ArtifactComics
+
+villain Hexterminator
+name Hexterminator
+from ArtifactComics
+
+villain LouGarou
+name Lou Garou
+from ArtifactComics
+
+villain Tombstone
+name Tombstone
+from ArtifactComics
+
+hero Antiquarian
+name Antiquarian
+from ArtifactComicsAdventures
+
+hero Chronan
+name Chronan
+from ArtifactComicsAdventures
+
+hero Duelist
+name Duelist
+from ArtifactComicsAdventures
+
+hero Fshh
+name Fshh
+from ArtifactComicsAdventures
+
+hero Sundown
+name Sundown
+from ArtifactComicsAdventures
+
+hero Archivist
+name Archivist
+from ArtifactComicsSocietyOfSorceries
+
+hero Cantrip
+name Cantrip
+from ArtifactComicsSocietyOfSorceries
+
+hero Nemo
+name Nemo
+from ArtifactComicsSocietyOfSorceries
+
+hero Sirocco
+name Sirocco
+from ArtifactComicsSocietyOfSorceries
+
+hero Whisper
+name Whisper
+from ArtifactComicsSocietyOfSorceries
+
+hero Flashbang
+name Flashbang
+from ArtifactComicsOtherworldlyThreatTacticalResponse
+
+hero Rampart
+name Rampart
+from ArtifactComicsOtherworldlyThreatTacticalResponse
+
+hero Rook
+name Rook
+from ArtifactComicsOtherworldlyThreatTacticalResponse
+
+hero Tripwire
+name Tripwire
+from ArtifactComicsOtherworldlyThreatTacticalResponse
+
+hero Twitch
+name Twitch
+from ArtifactComicsOtherworldlyThreatTacticalResponse
+
+hero Backlash
+name Backlash
+from ArtifactComicsTwilightVigil
+
+hero Lalin
+name Lalin
+from ArtifactComicsTwilightVigil
+
+hero Omen
+name Omen
+from ArtifactComicsTwilightVigil
+
+hero Primrose
+name Primrose
+from ArtifactComicsTwilightVigil
+
+hero Remnant
+name Remnant
+from ArtifactComicsTwilightVigil
+
+hero Akanami
+name Akanami
+from ArtifactComicsWardensOfThePeak
+
+hero Inari
+name Inari
+from ArtifactComicsWardensOfThePeak
+
+hero Kain
+name Kain
+from ArtifactComicsWardensOfThePeak
+
+hero LaoFeng
+name Lao Feng
+from ArtifactComicsWardensOfThePeak
+
+hero Maki
+name Maki
+from ArtifactComicsWardensOfThePeak
+
+hero Esper
+name Esper
+from ArtifactComicsAWorldBeyond
+
+hero Fable
+name Fable
+from ArtifactComicsAWorldBeyond
+
+hero Noir
+name Noir
+from ArtifactComicsAWorldBeyond
+
+hero Serenity
+name Serenity
+from ArtifactComicsAWorldBeyond
+
+hero Stitch
+name Stitch
+from ArtifactComicsAWorldBeyond
+
+hero Bedlam
+name Bedlam
+from ArtifactComicsFutureShock
+
+hero Coyote
+name Coyote
+from ArtifactComicsFutureShock
+
+hero Punchline
+name Punchline
+from ArtifactComicsFutureShock
+
+hero Scrat
+name Scrat
+from ArtifactComicsFutureShock
+
+hero Wren
+name Wren
+from ArtifactComicsFutureShock
+
+hero ValWhalen
+name Val Whalen
+from ArtifactComicsRealmsUncharted
+
+hero TheEmpress
+name The Empress
+from ArtifactComicsRealmsUncharted
+
+hero Enigma
+name Enigma
+from ArtifactComicsRealmsUncharted
+
+hero MadamEden
+name Madam Eden
+from ArtifactComicsRealmsUncharted
+
+hero Wavelength
+name Wavelength
+from ArtifactComicsRealmsUncharted
+
+environment BadlandsBayou
+name Badlands Bayou
+from ArtifactComicsEnvironments
+
+environment ContainmentBreach
+name Containment Breach
+from ArtifactComicsEnvironments
+
+environment FathomlessDeep
+name Fathomless Deep
+from ArtifactComicsEnvironments
+
+environment FestivalOfFate
+name Festival of Fate
+from ArtifactComicsEnvironments
+
+environment GhostTown
+name Ghost Town
+from ArtifactComicsEnvironments
+
+environment Gloomshire
+name Gloomshire
+from ArtifactComicsEnvironments
+
+environment JunkyardJunction
+name Junkyard Junction
+from ArtifactComicsEnvironments
+
+environment TempleOfTrials
+name Temple of Trials
+from ArtifactComicsEnvironments
+
+environment TimelessCity
+name Timeless City
+from ArtifactComicsEnvironments
