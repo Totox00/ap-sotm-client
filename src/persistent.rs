@@ -4,7 +4,6 @@ use crate::{
     variant::state::PersistentVariantProgress,
 };
 use base64::{prelude::BASE64_STANDARD, Engine};
-use web_sys::window;
 
 pub struct PersistentStore {
     key: String,
@@ -57,7 +56,7 @@ impl PersistentStore {
                 return (locations, PersistentVariantProgress::from(&buf[start..]), None);
             }
         }
-        
+
         (Locations::new(), PersistentVariantProgress::default(), None)
     }
 

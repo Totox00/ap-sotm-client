@@ -4,7 +4,7 @@ use std::{
     path::Path,
 };
 
-use crate::{Data, EnumData, FillerData, FillerType, SourceData, VariantData, VillainData};
+use crate::{Data, EnumData, FillerData, FillerType, PackData, SourceData, VariantData, VillainData};
 
 #[derive(Default)]
 struct Fields {
@@ -12,7 +12,7 @@ struct Fields {
     enum_name: Option<String>,
     display_name: Option<String>,
     source: Option<String>,
-    default: Option<bool>,
+    contains: Vec<String>,
     challenge: Option<(String, Vec<String>)>,
     challenge_req: Option<String>,
     base: Option<String>,
@@ -28,6 +28,7 @@ struct Fields {
 
 enum DataType {
     None,
+    Pack,
     Source,
     Villain,
     TeamVillain,
@@ -40,13 +41,17 @@ enum DataType {
 }
 
 macro_rules! push_current {
-    ($new_type: expr, $value: ident, $current: ident, $sources: ident, $villains: ident, $team_villains: ident, $gladiators: ident, $heroes: ident, $contenders: ident, $environments: ident, $variants: ident, $filler: ident) => {{
+    ($new_type: expr, $value: ident, $current: ident, $packs: ident, $sources: ident, $villains: ident, $team_villains: ident, $gladiators: ident, $heroes: ident, $contenders: ident, $environments: ident, $variants: ident, $filler: ident) => {{
         match $current.data_type {
             DataType::None => (),
+            DataType::Pack => $packs.push(PackData {
+                enum_name: $current.enum_name.expect("Villains must have enum_name"),
+                display_name: $current.display_name.expect("Villains must have display_name"),
+                contains: $current.contains,
+            }),
             DataType::Source => $sources.push(SourceData {
                 enum_name: $current.enum_name.expect("Villains must have enum_name"),
                 display_name: $current.display_name.expect("Villains must have display_name"),
-                default: $current.default.unwrap_or(false),
             }),
             DataType::Villain => $villains.push(VillainData {
                 enum_name: $current.enum_name.expect("Villains must have enum_name"),
@@ -143,6 +148,7 @@ macro_rules! push_current {
 }
 
 pub fn group_data() -> Data {
+    let mut packs = vec![];
     let mut sources = vec![];
     let mut villains = vec![];
     let mut team_villains = vec![];
@@ -163,10 +169,26 @@ pub fn group_data() -> Data {
     while let Some((line, i)) = lines.next() {
         if let Some((field, value)) = line.split_once(' ') {
             match field {
+                "pack" => push_current!(
+                    DataType::Pack,
+                    value,
+                    current,
+                    packs,
+                    sources,
+                    villains,
+                    team_villains,
+                    gladiators,
+                    heroes,
+                    contenders,
+                    environments,
+                    variants,
+                    filler
+                ),
                 "source" => push_current!(
                     DataType::Source,
                     value,
                     current,
+                    packs,
                     sources,
                     villains,
                     team_villains,
@@ -181,6 +203,7 @@ pub fn group_data() -> Data {
                     DataType::Villain,
                     value,
                     current,
+                    packs,
                     sources,
                     villains,
                     team_villains,
@@ -195,6 +218,7 @@ pub fn group_data() -> Data {
                     DataType::TeamVillain,
                     value,
                     current,
+                    packs,
                     sources,
                     villains,
                     team_villains,
@@ -209,6 +233,7 @@ pub fn group_data() -> Data {
                     DataType::Hero,
                     value,
                     current,
+                    packs,
                     sources,
                     villains,
                     team_villains,
@@ -223,6 +248,7 @@ pub fn group_data() -> Data {
                     DataType::Environment,
                     value,
                     current,
+                    packs,
                     sources,
                     villains,
                     team_villains,
@@ -237,6 +263,7 @@ pub fn group_data() -> Data {
                     DataType::Variant,
                     value,
                     current,
+                    packs,
                     sources,
                     villains,
                     team_villains,
@@ -251,6 +278,7 @@ pub fn group_data() -> Data {
                     DataType::Filler,
                     value,
                     current,
+                    packs,
                     sources,
                     villains,
                     team_villains,
@@ -265,6 +293,7 @@ pub fn group_data() -> Data {
                     DataType::Contender,
                     value,
                     current,
+                    packs,
                     sources,
                     villains,
                     team_villains,
@@ -279,6 +308,7 @@ pub fn group_data() -> Data {
                     DataType::Gladiator,
                     value,
                     current,
+                    packs,
                     sources,
                     villains,
                     team_villains,
@@ -290,6 +320,7 @@ pub fn group_data() -> Data {
                     filler
                 ),
                 "name" => current.display_name = Some(value.escape_debug().to_string()),
+                "contains" => current.contains.extend(value.split(' ').map(String::from)),
                 "from" => current.source = Some(value.to_owned()),
                 "base" => current.base = Some(value.escape_debug().to_string()),
                 "challenge" => {
@@ -322,7 +353,6 @@ pub fn group_data() -> Data {
         } else if !line.is_empty() {
             match line.as_str() {
                 "damagetypes" => current.damage_types = Some(true),
-                "default" => current.default = Some(true),
                 _ => panic!("Unrecognised bool field {line} at line {i}"),
             }
         }
@@ -341,6 +371,7 @@ pub fn group_data() -> Data {
     }
 
     let mut data = Data {
+        packs,
         sources,
         villains,
         team_villains,

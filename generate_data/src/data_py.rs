@@ -1,4 +1,4 @@
-use crate::Data;
+use crate::{Data, PackData};
 use std::{fs::OpenOptions, io::Write};
 
 const PREFIX: &str = include_str!("prefix.py");
@@ -17,16 +17,42 @@ pub fn generate_data_py(data: &Data) {
         let _ = write!(writer, "\nsources={{");
 
         for source in &data.sources {
-            let _ = write!(
-                writer,
-                "SotmSource.{}:{{\"name\":\"{}\",\"default\":{}}},",
-                source.enum_name,
-                source.display_name,
-                if source.default { "True" } else { "False" }
-            );
+            let _ = write!(writer, "SotmSource.{}:{{\"name\":\"{}\"}},", source.enum_name, source.display_name);
         }
 
-        let _ = write!(writer, "}}\nclass SotmData(NamedTuple):name:str;sources:list[SotmSource];category:SotmCategory;challenge:bool;base:Optional[str]=None;rule:Optional[Callable[[CollectionState|SotmState,int],bool]]=None;dependencies:Optional[list[str]]=None;challenge_rule:Optional[Callable[[CollectionState|SotmState,int],bool]]=None\ndata=[");
+        let _ = write!(writer, "}}\npacks={{");
+
+        for pack in &data.packs {
+            let _ = write!(writer, "\"{}\":{{\"name\":\"{}\",\"contains\":[", pack.enum_name, pack.display_name);
+            push_pack_contents(&mut writer, pack, data);
+            let _ = write!(writer, "]}},");
+        }
+
+        let _ = write!(
+            writer,
+            "}}\nenabled_sets_doc=\"\"\"Specify all sets that content can be used from. Content from the base game is always included.\n# The Following sources are supported:\n"
+        );
+
+        for source in &data.sources {
+            let _ = writeln!(writer, "#  - {}", source.display_name);
+        }
+
+        let _ = write!(writer, "\n# Additionally, these packs can be used to include all content from multiple sources:\n");
+
+        for pack in &data.packs {
+            let _ = writeln!(writer, "#  - {}:", pack.display_name);
+            for contained_source in &pack.contains {
+                if let Some(source_data) = data.sources.iter().find(|source| source.enum_name == *contained_source) {
+                    let _ = writeln!(writer, "#    - {}", source_data.display_name);
+                } else if let Some(source_data) = data.packs.iter().find(|pack| pack.enum_name == *contained_source) {
+                    let _ = writeln!(writer, "#    - {}", source_data.display_name);
+                } else {
+                    panic!("Pack {} includes non-existent source {contained_source}", pack.enum_name);
+                }
+            }
+        }
+
+        let _ = write!(writer, "\"\"\"\nclass SotmData(NamedTuple):name:str;sources:list[SotmSource];category:SotmCategory;challenge:bool;base:Optional[str]=None;rule:Optional[Callable[[CollectionState|SotmState,int],bool]]=None;dependencies:Optional[list[str]]=None;challenge_rule:Optional[Callable[[CollectionState|SotmState,int],bool]]=None\ndata=[");
 
         for villain in &data.villains {
             let challenge_rule_str = if let Some(challenge_logic) = &villain.challenge_req {
@@ -171,5 +197,18 @@ fn map_source(source: &str) -> String {
         String::new()
     } else {
         source.split(' ').map(|source| format!("SotmSource.{source}")).collect::<Vec<_>>().join(",")
+    }
+}
+
+fn push_pack_contents<T>(writer: &mut T, pack: &PackData, data: &Data)
+where
+    T: Write,
+{
+    for source in &pack.contains {
+        if let Some(pack_data) = data.packs.iter().find(|pack_data| pack_data.enum_name == *source) {
+            push_pack_contents(writer, pack_data, data);
+        } else {
+            let _ = write!(writer, "SotmSource.{source},");
+        }
     }
 }

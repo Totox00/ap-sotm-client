@@ -17,6 +17,7 @@ const MAX_LOCATION_DENSITY: i64 = 5;
 
 #[derive(Debug)]
 struct Data {
+    packs: Vec<PackData>,
     sources: Vec<SourceData>,
     villains: Vec<VillainData>,
     team_villains: Vec<VillainData>,
@@ -29,10 +30,16 @@ struct Data {
 }
 
 #[derive(Debug)]
+struct PackData {
+    enum_name: String,
+    display_name: String,
+    contains: Vec<String>,
+}
+
+#[derive(Debug)]
 struct SourceData {
     enum_name: String,
     display_name: String,
-    default: bool,
 }
 
 #[derive(Debug, Clone)]

@@ -64,7 +64,7 @@ pub fn new_session(mut datapackage_store: DatapackageStore, room_info: &str, con
 
     let persistent_store = PersistentStore::new(&room_info.seed_name, slot);
 
-    let mut state = State::new(connected.slot_data);
+    let state = State::new(connected.slot_data);
 
     let mut players = HashMap::new();
     for player in connected.players {

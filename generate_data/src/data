@@ -1,89 +1,138 @@
+pack Everything
+name Everything
+contains Official Fanmade
+
+pack Official
+name Official
+contains SeasonPass1 SeasonPass2
+
+pack SeasonPass1
+name Season Pass 1
+contains RookCity InfernalRelics ShatteredTimelines WrathOfTheCosmos
+contains MiniPack1 MiniPack2 MiniPack3
+
+pack SeasonPass2
+name Season Pass 2
+contains Vengeance VillainsOfTheMultiverse Oblivaeon
+contains MiniPack4 TheVoidGuard
+
+pack MiniPack1
+name Mini Pack 1
+contains Unity Ambuscade SilverGulch1883
+
+pack MiniPack2
+name Mini Pack 2
+contains TheScholar MissInformation TheFinalWasteland
+
+pack MiniPack3
+name Mini Pack 3
+contains Guise WagerMaster OmnitronIV
+
+pack MiniPack4
+name Mini Pack 4
+contains Benchmark Stuntman Chokepoint TheCelestialTribunal
+
+pack Fanmade
+name Fanmade
+contains TheCauldron Vadskye AdelphophagesArchives TheContenders
+
+pack TheCauldron
+name The Cauldron
+contains CauldronBase CauldronExperimental CauldronStormfall CauldronAdrift CauldronUnexpected CauldronPromos
+
+pack Vadskye
+name Vadskye
+contains OrderOfTheStick MagicTheGathering DarkSouls KrumitsTale DrMcNinja Fusion
+
+pack AdelphophagesArchives
+name Adelphophage's Archives
+contains AdelphophagePromos AdelphophagesCustoms TheVentureBrothers SentinelsOfTheBuffyverse UnionOfHeroes ThematicallyVariable
+
+pack AdelphophagePromos
+name Adelphophage's Promos
+contains AdelphophagesVillainPromos AdelphophagesHeroPromos
+
+pack AdelphophagesCustoms
+name Adelphophage's Customs
+contains AdelphophagesCustomVillains AdelphophagesCustomHeroes AdelphophagesCustomEnvironments
+
 source RookCity
 name Rook City
-default
 
 source InfernalRelics
 name Infernal Relics
-default
 
 source ShatteredTimelines
 name Shattered Timelines
-default
 
 source WrathOfTheCosmos
 name Wrath of the Cosmos
-default
 
 source Vengeance
 name Vengeance
-default
 
 source VillainsOfTheMultiverse
 name Villains of the Multiverse
-default
 
 source Oblivaeon
 name Oblivaeon
-default
 
 source Unity
 name Unity
-default
 
 source TheScholar
 name The Scholar
-default
 
 source Guise
 name Guise
-default
 
 source Stuntman
 name Stuntman
-default
 
 source Benchmark
 name Benchmark
-default
 
 source TheVoidGuard
 name The Void Guard
-default
 
 source Ambuscade
 name Ambuscade
-default
 
 source MissInformation
 name Miss Information
-default
 
 source WagerMaster
 name Wager Master
-default
 
 source Chokepoint
 name Chokepoint
-default
 
 source SilverGulch1883
 name Silver Gulch 1883
-default
 
 source TheFinalWasteland
 name The Final Wasteland
-default
 
 source OmnitronIV
 name Omnitron IV
-default
 
 source TheCelestialTribunal
 name The Celestial Tribunal
-default
 
-source TheCauldron
-name The Cauldron
+source CauldronBase
+name The Cauldron Base Set
+
+source CauldronExperimental
+name The Cauldron: Experimental
+
+source CauldronStormfall
+name The Cauldron: Stormfall
+
+source CauldronAdrift
+name The Cauldron: Adrift
+
+source CauldronUnexpected
+name The Cauldron: Unexpected
 
 source CauldronPromos
 name Cauldron Promos
@@ -339,7 +388,7 @@ Whenever a card is put face-down in the villain play area, Chokepoint regains 2 
 
 villain Anathema
 name Anathema
-from TheCauldron
+from CauldronBase
 challenge Regenerative Biology
 At the start of the game, put Biofeedback into play.
 Biofeedback is indestructible.
@@ -347,140 +396,140 @@ Anathema is immune to villain damage.
 
 variant EvolvedAnathema
 name Evolved Anathema
-from TheCauldron
+from CauldronBase CauldronPromos
 base Anathema
 challenge True Evolution
 Replace both instances of arm or head card on this card with villain target.
 
 villain Celadroch
 name Celadroch
-from TheCauldron
+from CauldronStormfall
 challenge Shallow Slumber
 At the start of the game, put a token in the storm pool.
 
 villain Dendron
 name Dendron
-from TheCauldron
+from CauldronBase
 challenge Infernal Ink
 Whenever a tattoo enters play, it deals the hero target with the highest HP (H) minus 2 infernal damage.
 
 variant WindcolorDendron
 name Windcolor Dendron
-from TheCauldron
+from CauldronBase CauldronPromos
 base Dendron
 challenge Chaotic Colors
 At the start of the game, put 6 random tattoos under Dendron instead. Dendron is immune to villain damage.
 
 villain Dynamo
 name Dynamo
-from TheCauldron
+from CauldronAdrift
 challenge Camaraderie
 At the start of the game, put Python and Copperhead into play. Dynamo is indestructible as long as there is another villain target in play.
 
 villain Gray
 name Gray
-from TheCauldron
+from CauldronBase
 challenge Decaying World
 At the start of the villain turn, Gray deals each target 1 irreducable energy damage.
 
 villain TheInfernalChoir
 name The Infernal Choir
-from TheCauldron
+from CauldronAdrift
 challenge Concealed Soul
 When The Infernal Choir flips, reduce damage dealt to The Infernal Choir by 2 until the start of the villain turn.
 
 villain Menagerie
 name Menagerie
-from TheCauldron
+from CauldronStormfall
 challenge Stressful Containment
 At the end of the villain turn, the captured hero and each hero next to an enclosure deals themself X irreducable psychic damage, where X is the number of enclosures in play.
 
 villain TheMistressOfFate
 name The Mistress of Fate
-from TheCauldron
+from CauldronAdrift
 challenge Imperfect Loop
 When The Mistress of Fate flips to her "Back to the beginning side", immediately discard the top card of the villain deck for each face-down day card.
 
 villain Mythos
 name Mythos
-from TheCauldron
+from CauldronAdrift
 challenge Concealed Plots
 You are only allowed to check the symbol on the top card of the villain deck.
 
 villain Oriphel
 name Oriphel
-from TheCauldron
+from CauldronExperimental
 challenge Rigid Rituals
 Reduce damage dealt to villain relics by 2.
 Oriphel does not flip back to Jade until there are 3 villain relics in the villain trash.
 
 villain Outlander
 name Outlander
-from TheCauldron
+from CauldronAdrift
 challenge Lingering Influence
 Whenever a villain ongoing is destroyed, other villain ongoings are indestructible until the end of the villain turn.
 
 villain Phase
 name Phase
-from TheCauldron
+from CauldronStormfall
 challenge Winding Escape Route
 Whenever an obstacle is destroyed, obstacles become immune to damage until the end of the turn.
 
 villain TheRam
 name The Ram
-from TheCauldron
+from CauldronBase
 challenge Tactical Retreat
 The first time in the game that The Ram is reduced to 40 or fewer HP, search the villain deck and trash for a copy of Fall Back and put it into play, then shuffle all cards other than Up Close and Grappling Claw from the villain trash into the villain deck.
 
 variant Ram1929
 name 1929 Ram
-from TheCauldron
+from CauldronBase CauldronPromos
 base TheRam
 challenge Reverse Engineering
 At the end of the villain turn, if this card is in play, destroy an equipment card, then put the top card of the villain deck under The Ram.
 
 villain ScreaMachine
 name ScreaMachine
-from TheCauldron
+from CauldronAdrift
 challenge Star Power
 Band members flip when 2 cards of their corresponding keyword are in play rather than 3.
 
 villain SwarmEater
 name Swarm Eater
-from TheCauldron
+from CauldronExperimental
 challenge Inescapable Hunter
 Whenever Swarm Eater reduces a target to 2 or fewer HP, Swarm Eater destroys that target.
 
 variant HivemindSwarmEater
 name Hivemind Swarm Eater
-from TheCauldron
+from CauldronExperimental CauldronPromos
 base SwarmEater
 challenge Shared Code
 Activated absorb texts also apply to Swarm Eater.
 
 villain Tiamat
 name Tiamat
-from TheCauldron
+from CauldronBase
 challenge Undying Rage
 Whenever a villain spell card enters play, if the head it names is decapitated, that head flips and is restroted to (H) times 3 HP.
 
 variant HydraTiamat
 name Hydra Tiamat
-from TheCauldron
+from CauldronBase CauldronPromos
 base Tiamat
 challenge Resiliance
 villain ongoings are indestructible as long as 2 or more heads are not decapitated.
 
 variant Tiamat2199
 name Tiamat 2199
-from TheCauldron
+from CauldronBase CauldronPromos
 base Tiamat
 challenge Reactive Armor
 Whenever a non-villain target deals damage to a dragonscale, Tiamat deals that target (H) minus 1 projectile damage.
 
 villain Vector
 name Vector
-from TheCauldron
+from CauldronExperimental
 challenge Silent Plague
 At the start of the game, put Supervirus under Vector. It does not count as being in play.
 The first time Vector would be destroyed each game, instead set him to 10 HP and put Supervirus from under him into play.
@@ -724,91 +773,91 @@ from Oblivaeon
 
 hero Baccarat
 name Baccarat
-from TheCauldron
+from CauldronBase
 
 hero TheCricket
 name The Cricket
-from TheCauldron
+from CauldronExperimental
 
 hero Cypher
 name Cypher
-from TheCauldron
+from CauldronExperimental
 
 hero DocHavoc
 name Doc Havoc
-from TheCauldron
+from CauldronBase
 
 hero Drift
 name Drift
-from TheCauldron
+from CauldronAdrift
 
 hero Echelon
 name Echelon
-from TheCauldron
+from CauldronStormfall
 
 hero Gargoyle
 name Gargoyle
-from TheCauldron
+from CauldronAdrift
 
 hero Gyrosaur
 name Gyrosaur
-from TheCauldron
+from CauldronAdrift
 
 hero Impact
 name Impact
-from TheCauldron
+from CauldronStormfall
 
 hero TheKnight
 name The Knight
-from TheCauldron
+from CauldronBase
 
 hero LadyOfTheWood
 name Lady of the Wood
-from TheCauldron
+from CauldronBase
 
 hero MagnificentMara
 name Magnificent Mara
-from TheCauldron
+from CauldronStormfall
 
 hero Malichae
 name Malichae
-from TheCauldron
+from CauldronBase
 
 hero Necro
 name Necro
-from TheCauldron
+from CauldronBase
 
 hero Pyre
 name Pyre
-from TheCauldron
+from CauldronAdrift
 
 hero Quicksilver
 name Quicksilver
-from TheCauldron
+from CauldronBase
 
 hero Starlight
 name Starlight
-from TheCauldron
+from CauldronBase
 
 hero TheStranger
 name The Stranger
-from TheCauldron
+from CauldronBase
 
 hero TangoOne
 name Tango One
-from TheCauldron
+from CauldronBase
 
 hero Terminus
 name Terminus
-from TheCauldron
+from CauldronAdrift
 
 hero Titan
 name Titan
-from TheCauldron
+from CauldronExperimental
 
 hero Vanish
 name Vanish
-from TheCauldron
+from CauldronBase
 
 environment InsulaPrimalis
 name Insula Primalis
@@ -916,63 +965,63 @@ from Oblivaeon
 
 environment BlackwoodForest
 name Blackwood Forest
-from TheCauldron
+from CauldronBase
 
 environment CatchwaterHarbor1929
 name Catchwater Harbor 1929
-from TheCauldron
+from CauldronAdrift
 
 environment TheChasmOfAThousandNights
 name The Chasm of a Thousand Nights
-from TheCauldron
+from CauldronAdrift
 
 environment TheCybersphere
 name The Cybersphere
-from TheCauldron
+from CauldronExperimental
 
 environment DungeonsOfTerror
 name Dungeons of Terror
-from TheCauldron
+from CauldronUnexpected
 
 environment FSCContinuanceWanderer
 name F.S.C. Continuance Wanderer
-from TheCauldron
+from CauldronBase
 
 environment HalberdERC
 name Halberd E.R.C.
-from TheCauldron
+from CauldronBase
 
 environment NightloreCitadel
 name Nightlore Citadel
-from TheCauldron
+from CauldronAdrift
 
 environment Northspar
 name Northspar
-from TheCauldron
+from CauldronBase
 
 environment OblaskCrater
 name Oblask Crater
-from TheCauldron
+from CauldronUnexpected
 
 environment StSimeonsCatacombs
 name St. Simeon's Catacombs
-from TheCauldron
+from CauldronBase
 
 environment SuperstormAkela
 name Superstorm Akela
-from TheCauldron
+from CauldronStormfall
 
 environment Vault5
 name Vault 5
-from TheCauldron
+from CauldronAdrift
 
 environment TheWanderingIsle
 name The Wandering Isle
-from TheCauldron
+from CauldronBase
 
 environment WindmillCity
 name Windmill City
-from TheCauldron
+from CauldronAdrift
 
 variant AmericasGreatestLegacy
 name America's Greatest Legacy
@@ -1379,327 +1428,327 @@ base Guise
 
 variant BaccaratAceOfSwords
 name Baccarat Ace of Swords
-from TheCauldron
+from CauldronBase CauldronPromos
 base Baccarat
 
 variant BaccaratAceOfSorrows
 name Baccarat Ace of Sorrows
-from TheCauldron
+from CauldronBase CauldronPromos
 base Baccarat
 
 variant Baccarat1929
 name Baccarat 1929
-from TheCauldron
+from CauldronBase CauldronPromos
 base Baccarat
 
 variant FirstResponseCricket
 name First Response Cricket
-from TheCauldron
+from CauldronExperimental CauldronPromos
 base TheCricket
 
 variant TheCricketRenegade
 name The Cricket Renegade
-from TheCauldron
+from CauldronExperimental CauldronPromos
 base TheCricket
 
 variant TheCricketWastelandRonin
 name The Cricket Wasteland Ronin
-from TheCauldron
+from CauldronExperimental CauldronPromos
 base TheCricket
 
 variant FirstResponseCypher
 name First Response Cypher
-from TheCauldron
+from CauldronExperimental CauldronPromos
 base Cypher
 
 variant CypherSwarmingProtocol
 name Cypher Swarming Protocol
-from TheCauldron
+from CauldronExperimental CauldronPromos
 base Cypher
 
 variant FirstResponseDocHavoc
 name First Response Doc Havoc
-from TheCauldron
+from CauldronBase CauldronPromos
 base DocHavoc
 
 variant DocHavoc2199
 name Doc Havoc 2199
-from TheCauldron
+from CauldronBase CauldronPromos
 base DocHavoc
 
 variant DriftThroughTheBreach
 name Drift Through the Breach
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Drift
 
 variant Drift1929And2199
 name Drift 1929 & 2199
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Drift
 
 variant Drift1609
 name Drift 1609
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Drift
 
 variant Drift1789
 name Drift 1789
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Drift
 
 variant TestSubjectDrift
 name Test Subject Drift
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Drift
 
 variant FirstResponseEchelon
 name First Response Echelon
-from TheCauldron
+from CauldronStormfall CauldronPromos
 base Echelon
 
 variant Echelon2199
 name Echelon 2199
-from TheCauldron
+from CauldronStormfall CauldronPromos
 base Echelon
 
 variant GargoyleWastelandRonin
 name Gargoyle Wasteland Ronin
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Gargoyle
 
 variant Gargoyle2199
 name Gargoyle 2199
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Gargoyle
 
 variant GargoyleDragonRanger
 name Gargoyle Dragon Ranger
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Gargoyle
 
 variant GargoyleInfiltrator
 name Gargoyle Infiltrator
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Gargoyle
 
 variant GyrosaurSpeedDemon
 name Gyrosaur Speed Demon
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Gyrosaur
 
 variant GyrosaurRenegade
 name Gyrosaur Renegade
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Gyrosaur
 
 variant CaptainGyrosaur
 name Captain Gyrosaur
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Gyrosaur
 
 variant ImpactRenegade
 name Impact Renegade
-from TheCauldron
+from CauldronStormfall CauldronPromos
 base Impact
 
 variant ImpactWastelandRonin
 name Impact Wasteland Ronin
-from TheCauldron
+from CauldronStormfall CauldronPromos
 base Impact
 
 variant TheFairKnight
 name The Fair Knight
-from TheCauldron
+from CauldronBase CauldronPromos
 base TheKnight
 
 variant TheBerserkerKnight
 name The Berserker Knight
-from TheCauldron
+from CauldronBase CauldronPromos
 base TheKnight
 
 variant TheKnight1929
 name The Knight 1929
-from TheCauldron
+from CauldronBase CauldronPromos
 base TheKnight
 
 variant TheKnightsWastelandRonin
 name The Knights Wasteland Ronin
-from TheCauldron
+from CauldronBase CauldronPromos
 base TheKnight
 
 variant LadyOfTheWoodSeasonOfChange
 name Lady of the Wood Season of Change
-from TheCauldron
+from CauldronBase CauldronPromos
 base LadyOfTheWood
 
 variant MinistryOfStrategicScienceLadyOfTheWood
 name Ministry of Strategic Science Lady of the Wood
-from TheCauldron
+from CauldronBase CauldronPromos
 base LadyOfTheWood
 
 variant LadyOfTheWood2199
 name Lady of the Wood 2199
-from TheCauldron
+from CauldronBase CauldronPromos
 base LadyOfTheWood
 
 variant MinistryOfStrategicScienceMagnificentMara
 name Ministry of Strategic Science Magnificent Mara
-from TheCauldron
+from CauldronStormfall CauldronPromos
 base MagnificentMara
 
 variant MagnificentMara1929
 name Magnificent Mara 1929
-from TheCauldron
+from CauldronStormfall CauldronPromos
 base MagnificentMara
 
 variant ShardmasterMalichae
 name Shardmaster Malichae
-from TheCauldron
+from CauldronBase CauldronPromos
 base Malichae
 
 variant MinistryOfStrategicScienceMalichae
 name Ministry of Strategic Science Malichae
-from TheCauldron
+from CauldronBase CauldronPromos
 base Malichae
 
 variant NecroWardenOfChaos
 name Necro Warden of Chaos
-from TheCauldron
+from CauldronBase CauldronPromos
 base Necro
 
 variant Necro1929
 name Necro 1929
-from TheCauldron
+from CauldronBase CauldronPromos
 base Necro
 
 variant NecroLastOfTheForgottenOrder
 name Necro Last of the Forgotten Order
-from TheCauldron
+from CauldronBase CauldronPromos
 base Necro
 
 variant TheUnstablePyre
 name The Unstable Pyre
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Pyre
 
 variant PyreWastelandRonin
 name Pyre Wasteland Ronin
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Pyre
 
 variant PyreExpeditionOblask
 name Pyre Expedition Oblask
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Pyre
 
 variant TheUncannyQuicksilver
 name The Uncanny Quicksilver
-from TheCauldron
+from CauldronBase CauldronPromos
 base Quicksilver
 
 variant QuicksilverRenegade
 name Quicksilver Renegade
-from TheCauldron
+from CauldronBase CauldronPromos
 base Quicksilver
 
 variant HarbingerQuicksilver
 name Harbinger Quicksilver
-from TheCauldron
+from CauldronBase CauldronPromos
 base Quicksilver
 
 variant StarlightGenesis
 name Starlight Genesis
-from TheCauldron
+from CauldronBase CauldronPromos
 base Starlight
 
 variant NightloreCouncilStarlight
 name Nightlore Council Starlight
-from TheCauldron
+from CauldronBase CauldronPromos
 base Starlight
 
 variant StarlightArea51
 name Starlight Area-51
-from TheCauldron
+from CauldronBase CauldronPromos
 base Starlight
 
 variant TheRunecarvedStranger
 name The Runecarved Stranger
-from TheCauldron
+from CauldronBase CauldronPromos
 base TheStranger
 
 variant TheStranger1929
 name The Stranger 1929
-from TheCauldron
+from CauldronBase CauldronPromos
 base TheStranger
 
 variant TheStrangerWastelandRonin
 name The Stranger Wasteland Ronin
-from TheCauldron
+from CauldronBase CauldronPromos
 base TheStranger
 
 variant TheStrangerInTheCorn
 name The Stranger in the Corn
-from TheCauldron
+from CauldronBase CauldronPromos
 base TheStranger
 
 variant TangoOneGhostOps
 name Tango One Ghost Ops
-from TheCauldron
+from CauldronBase CauldronPromos
 base TangoOne
 
 variant TangoOne1929
 name Tango One 1929
-from TheCauldron
+from CauldronBase CauldronPromos
 base TangoOne
 
 variant TangoOneCreedOfTheSniper
 name Tango One Creed of the Sniper
-from TheCauldron
+from CauldronBase CauldronPromos
 base TangoOne
 
 variant MinistryOfStrategicScienceTerminus
 name Ministry of Strategic Science Terminus
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Terminus
 
 variant Terminus2199
 name Terminus 2199
-from TheCauldron
+from CauldronAdrift CauldronPromos
 base Terminus
 
 variant MinistryOfStrategicScienceTitan
 name Ministry of Strategic Science Titan
-from TheCauldron
+from CauldronExperimental CauldronPromos
 base Titan
 
 variant Titan2199
 name Titan 2199
-from TheCauldron
+from CauldronExperimental CauldronPromos
 base Titan
 
 variant TitanOni
 name Titan Oni
-from TheCauldron
+from CauldronExperimental CauldronPromos
 base Titan
 
 variant FirstResponseVanish
 name First Response Vanish
-from TheCauldron
+from CauldronBase CauldronPromos
 base Vanish
 
 variant Vanish1929
 name Vanish 1929
-from TheCauldron
+from CauldronBase CauldronPromos
 base Vanish
 
 variant VanishTombOfThieves
 name Vanish Tomb of Thieves
-from TheCauldron
+from CauldronBase CauldronPromos
 base Vanish
 
 variant UrbanWarfareExpatriette
 name Urban Warfare Expatriette
-from CauldronPromos RookCity
+from RookCity CauldronPromos
 base Expatriette
 
 variant SiegeBreakerBunker
@@ -1714,17 +1763,17 @@ base AbsoluteZero
 
 variant EnlightenedMisterFixer
 name Enlightened Mister Fixer
-from CauldronPromos RookCity
+from RookCity CauldronPromos
 base MisterFixer
 
 variant NorthernWindMisterFixer
 name Northern Wind Mister Fixer
-from CauldronPromos RookCity
+from RookCity CauldronPromos
 base MisterFixer
 
 variant OmnitronXI
 name Omnitron-XI
-from CauldronPromos ShatteredTimelines
+from ShatteredTimelines CauldronPromos
 base OmnitronX
 
 filler StartHandsize
