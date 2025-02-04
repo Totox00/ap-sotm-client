@@ -216,7 +216,7 @@ pub struct SlotData {
     pub death_link: DeathlinkType,
 }
 
-#[derive(Debug, Clone, Copy, Default, Deserialize_repr, Serialize_repr)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum DeathlinkType {
     #[default]

@@ -52,6 +52,22 @@ clientElem.addEventListener("click", (e) => {
       client.send(JSON.stringify([{ cmd: "StatusUpdate", status: 30 }]));
     }
 
+    const deathlink = action.deathlink();
+    if (deathlink.length > 0) {
+      deathlinkGrace = Date.now();
+      client.send(
+        JSON.stringify([
+          {
+            cmd: "Bounce",
+            tags: ["DeathLink"],
+            time: Date.now() / 1000,
+            cause: deathlink,
+            source: slot.value,
+          },
+        ])
+      );
+    }
+
     if (action.push || action.victory || locations.length > 0) pushSave();
   }
 });
@@ -65,6 +81,8 @@ let datapackageStore;
 let session;
 let receivedItemIndex = 0;
 let isClosing = false;
+let deathlinkType = 0;
+let deathlinkGrace = Date.now();
 
 async function run() {
   await init();
@@ -164,17 +182,14 @@ function connectedConnect(connected) {
       { cmd: "Get", keys: [`sotm-save-${slot.value}`] },
     ])
   );
-  const deathlinkType = session.deathlink();
+  deathlinkType = session.deathlink_type();
   if (deathlinkType > 0) {
     client.send(
       JSON.stringify([{ cmd: "ConnectUpdate", tags: ["DeathLink"] }])
     );
-    deathlink.hidden = false;
-    deathlink.innerText = [
-      "Deathlink Inactive",
-      "Send Deathlink (Individual)",
-      "Send Deathlink (Team)",
-    ][deathlinkType];
+  }
+  if (deathlinkType == 2) {
+    document.getElementById("defeat").innerHTML = "Defeat<br />(Deathlink)";
   }
   clientElem.hidden = false;
 }
@@ -223,7 +238,26 @@ function handleEvent(event) {
         receivedItemIndex += msg.items.length - skip;
         break;
       case "Bounced":
-        // Handle deathlink
+        if (Date.now() - deathlinkGrace < 60000) {
+          deathlinkGrace = Date.now();
+          return;
+        }
+        const { time, cause, source } = msg;
+        if (
+          Date.now() / 1000 - time < 60 &&
+          Date.now() / 1000 > time &&
+          source != slot.value
+        ) {
+          deathlinkGrace = Date.now();
+          window.alert(
+            `Deathlink received: ${cause ?? `${source} died`}\n${
+              [
+                "Your hero with the lowest hp is incapacitated",
+                "Your team is defeated",
+              ][deathlinkType - 1]
+            }`
+          );
+        }
         break;
       case "Retrieved":
         const save_str = msg.keys[`sotm-save-${slot.value}`];

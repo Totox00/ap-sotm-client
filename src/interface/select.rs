@@ -1,11 +1,14 @@
 use web_sys::Document;
 
-use crate::data::{Contender, Environment, Gladiator, Hero, Item, TeamVillain, Variant, Villain};
+use crate::{
+    data::{Contender, Environment, Gladiator, Hero, Item, TeamVillain, Variant, Villain},
+    protocol::DeathlinkType,
+};
 
 use super::{CurrentVillains, Interface, SelectedHero};
 
 impl Interface {
-    pub fn toggle_selection(&mut self, selected: Item) {
+    pub fn toggle_selection(&mut self, selected: Item, deathlink: DeathlinkType) {
         match selected {
             Item::Hero(selected) => {
                 for (idx, (hero, elem)) in self.current_game.heroes.iter().enumerate() {
@@ -19,7 +22,14 @@ impl Interface {
                         _ => false,
                     } {
                         change_hero_selection(&self.document, &selected);
-                        elem.set_inner_html(selected.as_str());
+                        if let Some(child) = elem.first_element_child() {
+                            child.set_inner_html(selected.as_str());
+                        }
+                        if deathlink == DeathlinkType::Individual {
+                            if let Some(button) = elem.last_element_child() {
+                                button.set_id(&format!("deathlink-{}", selected.as_ident()));
+                            }
+                        }
                         self.current_game.heroes[idx].0 = SelectedHero::Hero(selected);
                         return;
                     }
@@ -27,8 +37,16 @@ impl Interface {
 
                 select_hero(&self.document, &selected);
                 self.prevent_hero_overflow();
-                let new = self.document.create_element("p").expect("Failed to create child element");
-                new.set_inner_html(selected.as_str());
+                let new = self.document.create_element("div").expect("Failed to create child element");
+                new.set_inner_html(&format!(
+                    "<span>{}</span>{}",
+                    selected.as_str(),
+                    if deathlink == DeathlinkType::Individual {
+                        format!("<button id=\"deathlink-{}\" class=\"deathlink\">Deathlink</button>", selected.as_ident())
+                    } else {
+                        String::new()
+                    }
+                ));
                 let _ = self.active_heroes.append_child(&new);
                 self.current_game.heroes.push((SelectedHero::Hero(selected), new));
                 return;
@@ -44,7 +62,14 @@ impl Interface {
                                 elem.remove();
                                 self.current_game.heroes.remove(idx);
                             } else {
-                                elem.set_inner_html(&selected_contender_string(contenders));
+                                if let Some(child) = elem.first_element_child() {
+                                    child.set_inner_html(&selected_contender_string(contenders));
+                                }
+                                if deathlink == DeathlinkType::Individual {
+                                    if let Some(button) = elem.last_element_child() {
+                                        button.set_id(&format!("deathlink-{}", contenders[0].as_ident()));
+                                    }
+                                }
                             }
                             return;
                         }
@@ -58,11 +83,27 @@ impl Interface {
                 select_contender(&self.document, &contender);
                 if let Some((contenders, elem)) = first_empty {
                     contenders.push(contender);
-                    elem.set_inner_html(&selected_contender_string(contenders));
+                    elem.set_inner_html(&format!(
+                        "<span>{}</span>{}",
+                        selected_contender_string(contenders),
+                        if deathlink == DeathlinkType::Individual {
+                            format!("<button id=\"deathlink-{}\" class=\"deathlink\">Deathlink</button>", contenders[0].as_ident())
+                        } else {
+                            String::new()
+                        }
+                    ));
                 } else {
                     self.prevent_hero_overflow();
-                    let new = self.document.create_element("p").expect("Failed to create child element");
-                    new.set_inner_html(contender.as_str());
+                    let new = self.document.create_element("div").expect("Failed to create child element");
+                    new.set_inner_html(&format!(
+                        "<span>{}</span>{}",
+                        contender.as_str(),
+                        if deathlink == DeathlinkType::Individual {
+                            format!("<button id=\"deathlink-{}\" class=\"deathlink\">Deathlink</button>", contender.as_ident())
+                        } else {
+                            String::new()
+                        }
+                    ));
                     let _ = self.active_heroes.append_child(&new);
                     self.current_game.heroes.push((SelectedHero::Contenders(vec![contender]), new));
                 }
@@ -80,7 +121,14 @@ impl Interface {
                         _ => false,
                     } {
                         change_variant_selection(&self.document, &variant);
-                        elem.set_inner_html(variant.as_str());
+                        if let Some(child) = elem.first_element_child() {
+                            child.set_inner_html(variant.as_str());
+                        }
+                        if deathlink == DeathlinkType::Individual {
+                            if let Some(button) = elem.last_element_child() {
+                                button.set_id(&format!("deathlink-{}", variant.as_ident()));
+                            }
+                        }
                         self.current_game.heroes[idx].0 = SelectedHero::Variant(variant);
                         return;
                     }
@@ -88,8 +136,16 @@ impl Interface {
 
                 select_variant(&self.document, &variant);
                 self.prevent_hero_overflow();
-                let new = self.document.create_element("p").expect("Failed to create child element");
-                new.set_inner_html(variant.as_str());
+                let new = self.document.create_element("div").expect("Failed to create child element");
+                new.set_inner_html(&format!(
+                    "<span>{}</span>{}",
+                    variant.as_str(),
+                    if deathlink == DeathlinkType::Individual {
+                        format!("<button id=\"deathlink-{}\" class=\"deathlink\">Deathlink</button>", variant.as_ident())
+                    } else {
+                        String::new()
+                    }
+                ));
                 let _ = self.active_heroes.append_child(&new);
                 self.current_game.heroes.push((SelectedHero::Variant(variant), new));
                 return;

@@ -604,3 +604,14 @@ impl Interface {
         }
     }
 }
+
+impl CurrentVillains {
+    pub fn deathlink_name(&self) -> &'static str {
+        match self {
+            CurrentVillains::Classic((villain, _, _)) => villain.as_str(),
+            CurrentVillains::Team(_) => "a team of villains",
+            CurrentVillains::Gladiators(_) => "the gladiators",
+            CurrentVillains::None => "a mysterious force",
+        }
+    }
+}

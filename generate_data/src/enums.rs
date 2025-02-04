@@ -17,7 +17,7 @@ where
 
     let _ = write!(
         str,
-        "}}impl {ident} {{pub const fn variant_count() -> usize {{{}}}pub fn as_str(&self) -> &str {{match self {{",
+        "}}impl {ident} {{pub const fn variant_count() -> usize {{{}}}pub fn as_str(&self) -> &'static str {{match self {{",
         enum_data.len()
     );
 
@@ -25,7 +25,7 @@ where
         let _ = write!(str, "{ident}::{} => \"{}\",", data.enum_name, data.display_name);
     }
 
-    let _ = write!(str, "}}}}pub fn as_ident(&self) -> &str {{match self {{",);
+    let _ = write!(str, "}}}}pub fn as_ident(&self) -> &'static str {{match self {{",);
 
     for data in enum_data {
         let _ = write!(str, "{ident}::{} => \"{}\",", data.enum_name, data.enum_name);
@@ -49,7 +49,7 @@ where
 
     let _ = write!(
         str,
-        "}}impl {ident} {{pub const fn variant_count() -> usize {{{}}}pub fn as_str(&self) -> &str {{match self {{",
+        "}}impl {ident} {{pub const fn variant_count() -> usize {{{}}}pub fn as_str(&self) -> &'static str {{match self {{",
         enum_data.len()
     );
 
@@ -57,7 +57,7 @@ where
         let _ = write!(str, "{ident}::{} => \"{}\",", data.enum_name, data.display_name);
     }
 
-    let _ = write!(str, "}}}}pub fn as_ident(&self) -> &str {{match self {{",);
+    let _ = write!(str, "}}}}pub fn as_ident(&self) -> &'static str {{match self {{",);
 
     for data in enum_data {
         let _ = write!(str, "{ident}::{} => \"{}\",", data.enum_name, data.enum_name);
@@ -139,13 +139,13 @@ where
         }
     }
 
-    let _ = write!(str, "_ => None}}}}pub fn as_str(&self) -> &str {{match self {{");
+    let _ = write!(str, "_ => None}}}}pub fn as_str(&self) -> &'static str {{match self {{");
 
     for variant in variant_data {
         let _ = write!(str, "Variant::{} => \"{}\",", variant.enum_name, variant.display_name);
     }
 
-    let _ = write!(str, "Variant::Base => \"Base\"}}}}pub fn as_ident(&self) -> &str {{match self {{",);
+    let _ = write!(str, "Variant::Base => \"Base\"}}}}pub fn as_ident(&self) -> &'static str {{match self {{",);
 
     for data in variant_data {
         let _ = write!(str, "Variant::{} => \"{}\",", data.enum_name, data.enum_name);

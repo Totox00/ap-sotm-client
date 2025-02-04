@@ -33,7 +33,7 @@ pub struct Session {
 pub struct Action {
     locations: Vec<i64>,
     pub push: bool,
-    pub deathlink: bool,
+    deathlink: String,
     pub victory: bool,
 }
 
@@ -99,7 +99,7 @@ impl Session {
             self.interface.update_completion(&self.state);
             self.reset();
             return Action {
-                deathlink: false,
+                deathlink: String::new(),
                 push,
                 locations,
                 victory,
@@ -115,7 +115,11 @@ impl Session {
             let (victory, locations) = self.location_ids(&locations);
             self.reset();
             return Action {
-                deathlink: false,
+                deathlink: if self.slot_data.death_link == DeathlinkType::Team {
+                    format!("{} was defeated by {}", self.slot, self.interface.current_game.villains.deathlink_name())
+                } else {
+                    String::new()
+                },
                 push,
                 locations,
                 victory,
@@ -123,16 +127,25 @@ impl Session {
         } else if target == "goal" {
             if self.state.goal_progress().available() {
                 return Action {
-                    deathlink: false,
+                    deathlink: String::new(),
                     push: false,
                     locations: vec![],
                     victory: true,
                 };
             }
         } else if let Some(item) = Item::from_ident(target) {
-            self.interface.toggle_selection(item);
+            self.interface.toggle_selection(item, self.slot_data.death_link);
             self.interface.update_current_filler(&self.state.items);
             self.interface.update_current_variants(&self.state);
+        } else if target.starts_with("deathlink-") {
+            if let Some(item) = Item::from_ident(target.split_at(10).1) {
+                return Action {
+                    locations: vec![],
+                    push: false,
+                    deathlink: format!("{} was incapacitated by {}", item.as_str(), self.interface.current_game.villains.deathlink_name()),
+                    victory: false,
+                };
+            }
         } else if target.starts_with("diff-") {
             if let Some(item) = Item::from_ident(target.split_at(5).1) {
                 self.interface.advance_difficulty(item);
@@ -146,7 +159,7 @@ impl Session {
                 self.interface.update_current_variants(&self.state);
                 self.interface.update_goal(&self.state);
                 return Action {
-                    deathlink: false,
+                    deathlink: String::new(),
                     push: false,
                     locations,
                     victory,
@@ -157,7 +170,7 @@ impl Session {
                     self.interface.update_current_variants(&self.state);
                     self.interface.update_goal(&self.state);
                     return Action {
-                        deathlink: false,
+                        deathlink: String::new(),
                         push: false,
                         locations,
                         victory,
@@ -173,7 +186,7 @@ impl Session {
             self.interface.update_current_variants(&self.state);
             self.interface.update_goal(&self.state);
             return Action {
-                deathlink: false,
+                deathlink: String::new(),
                 push: false,
                 locations,
                 victory,
@@ -234,7 +247,7 @@ impl Session {
         self.interface.update_completion_all(&self.state);
     }
 
-    pub fn deathlink(&self) -> u8 {
+    pub fn deathlink_type(&self) -> u8 {
         match self.slot_data.death_link {
             DeathlinkType::None => 0,
             DeathlinkType::Individual => 1,
@@ -248,7 +261,7 @@ impl Action {
         Action {
             locations: vec![],
             push: false,
-            deathlink: false,
+            deathlink: String::new(),
             victory: false,
         }
     }
@@ -258,5 +271,9 @@ impl Action {
 impl Action {
     pub fn locations(&self) -> Vec<i64> {
         self.locations.clone()
+    }
+
+    pub fn deathlink(&self) -> String {
+        self.deathlink.clone()
     }
 }

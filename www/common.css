@@ -40,6 +40,21 @@ li.variant {
   text-align: center;
 }
 
+#active-heroes > div {
+  padding: 2px;
+  display: flex;
+  flex-direction: row;
+}
+
+#active-heroes > div > span {
+  flex: 3;
+}
+
+.deathlink {
+  flex: 1;
+  background-color: red;
+}
+
 .contenders {
   display: flex;
   flex-direction: row;
