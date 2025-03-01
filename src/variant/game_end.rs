@@ -1,5 +1,5 @@
 use crate::{
-    data::{Hero, TeamVillain, Variant},
+    data::{Environment, Hero, TeamVillain, Variant},
     game::CurrentGame,
     interface::CurrentVillains,
     state::State,
@@ -236,6 +236,45 @@ impl Variant {
                 push,
             ),
             Variant::CosmicInventorWrithe => state.temporary_variant_progress.cosmic_inventor_writhe == 0x3,
+            Variant::HydraTiamat => state.temporary_variant_progress.hydra_tiamat == 0x7,
+            Variant::FirstResponseCricket => victory && state.temporary_variant_progress.first_response_cricket == 0x15,
+            Variant::TheCricketRenegade => !victory && state.temporary_variant_progress.the_cricket_renegade == 0x3,
+            Variant::FirstResponseCypher => victory && state.temporary_variant_progress.first_response_cypher == 0xF,
+            Variant::FirstResponseDocHavoc => victory && state.temporary_variant_progress.first_response_doc_havoc == (2, 0xAAAA),
+            Variant::FirstResponseEchelon => {
+                if victory && state.temporary_variant_progress.first_response_echelon {
+                    state.persistent_variant_progress.first_response_echelon |= match game.environment {
+                        Some(Environment::WindmillCity) => 0x1,
+                        Some(Environment::SuperstormAkela) => 0x2,
+                        Some(Environment::Megalopolis) => 0x4,
+                        Some(Environment::RookCity) => 0x8,
+                        Some(Environment::Mordengrad) => 0x10,
+                        _ => 0,
+                    };
+                }
+
+                state.persistent_variant_progress.first_response_echelon == 0x1F
+            }
+            Variant::NecroLastOfTheForgottenOrder => {
+                if state.persistent_variant_progress.necro_last_of_the_forgotten_order {
+                    victory && state.temporary_variant_progress.necro_last_of_the_forgotten_order
+                } else {
+                    if !victory && state.temporary_variant_progress.necro_last_of_the_forgotten_order {
+                        state.persistent_variant_progress.necro_last_of_the_forgotten_order = true;
+                    }
+                    false
+                }
+            }
+            Variant::FirstResponseVanish => {
+                if state.persistent_variant_progress.first_response_vanish {
+                    victory && state.temporary_variant_progress.first_response_vanish == 0xF
+                } else {
+                    if !victory && state.temporary_variant_progress.first_response_vanish > 0 {
+                        state.persistent_variant_progress.first_response_vanish = true;
+                    }
+                    false
+                }
+            }
             _ => false,
         }
     }
@@ -244,16 +283,14 @@ impl Variant {
 fn freedom_five(victory: bool, state: &mut State, unlock: bool, push: &mut bool) -> bool {
     if state.temporary_variant_progress.freedom_five_prereq_advanced {
         false
-    } else {
-        if state.persistent_variant_progress.freedom_five < 3 {
-            state.temporary_variant_progress.freedom_five_prereq_advanced = true;
-            if !victory {
-                *push = true;
-                state.persistent_variant_progress.freedom_five += 1;
-            }
-            false
-        } else {
-            victory && unlock
+    } else if state.persistent_variant_progress.freedom_five < 3 {
+        state.temporary_variant_progress.freedom_five_prereq_advanced = true;
+        if !victory {
+            *push = true;
+            state.persistent_variant_progress.freedom_five += 1;
         }
+        false
+    } else {
+        victory && unlock
     }
 }

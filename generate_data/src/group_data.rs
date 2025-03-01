@@ -20,7 +20,6 @@ struct Fields {
     unlock_logic: Option<String>,
     display_name_pos: Option<String>,
     display_name_neg: Option<String>,
-    damage_types: Option<bool>,
     r#type: Option<FillerType>,
     desc_pos: Option<String>,
     desc_neg: Option<String>,
@@ -134,7 +133,6 @@ macro_rules! push_current {
                 enum_name: $current.enum_name.expect("Filler must have enum_name"),
                 display_name_pos: $current.display_name_pos,
                 display_name_neg: $current.display_name_neg,
-                damage_types: $current.damage_types.unwrap_or(false),
                 r#type: $current.r#type.expect("Filler must have type"),
                 desc_pos: $current.desc_pos,
                 desc_neg: $current.desc_neg,
@@ -360,10 +358,7 @@ pub fn group_data() -> Data {
                 _ => panic!("Unrecognised field {field} at line {i} in file {file}"),
             }
         } else if !line.is_empty() {
-            match line.as_str() {
-                "damagetypes" => current.damage_types = Some(true),
-                _ => panic!("Unrecognised bool field {line} at line {i} in file {file}"),
-            }
+            panic!("Field {line} missing value at line {i} in file {file}")
         }
     }
 

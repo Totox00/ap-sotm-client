@@ -1,0 +1,90 @@
+source SaintBNSmisc
+name SaintBNS Misc Decks
+
+hero KiryuKazuma
+name Kiryu Kazuma
+from SaintBNSmisc
+
+hero VivienReid
+name Vivien Reid
+from SaintBNSmisc
+
+hero MissFortuneLoR
+name Miss Fortune (Legends of runeterra)
+from SaintBNSmisc
+
+hero JinxLoR
+name Jinx (legends of runeterra)
+from SaintBNSmisc
+
+hero LeshyInscriberofBeasts
+name Leshy Inscriber of Beasts
+from SaintBNSmisc
+
+hero FrictionHero
+name Friction (hero)
+from SaintBNSmisc
+
+hero SuicideSquad
+name SuicideSquad
+from SaintBNSmisc
+
+hero Tenten
+name Tenten
+from SaintBNSmisc
+
+hero DominicToretto
+name Dominic Toretto
+from SaintBNSmisc
+
+hero tracer
+name tracer
+from SaintBNSmisc
+
+hero TheMageFrost
+name The Mage Frost spec
+from SaintBNSmisc
+
+hero TheMageFire
+name The Mage Fire spec
+from SaintBNSmisc
+
+hero TheMageArcane
+name The Mage Arcane spec
+from SaintBNSmisc
+
+hero TheMageMulti
+name The Mage Multi spec
+from SaintBNSmisc
+
+hero astrologer
+name astrologer
+from SaintBNSmisc
+
+environment Limgrave
+name Limgrave
+from SaintBNSmisc
+
+villain Godrick
+name Godrick, the grafted
+from SaintBNSmisc
+
+villain Rennala
+name Rennala of the full moon
+from SaintBNSmisc
+
+hero MegamanEXE
+name Megaman.EXE
+from SaintBNSmisc
+
+hero GutsmanEXE
+name Gutsman.EXE
+from SaintBNSmisc
+
+hero RollEXE
+name Roll.EXE
+from SaintBNSmisc
+
+villain Malwaremaster
+name Malware Master
+from SaintBNSmisc

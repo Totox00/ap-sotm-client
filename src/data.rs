@@ -21,7 +21,9 @@ pub enum Item {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Location {
+    Hero(Hero),
     Variant(Variant),
+    VariantUnlock(Variant),
     Villain((Villain, u8)),
     TeamVillain((TeamVillain, u8)),
     Gladiator((Gladiator, u8)),
@@ -33,42 +35,6 @@ pub enum Location {
 pub struct DeconstructedFiller {
     pub r#type: FillerType,
     pub target: FillerTarget,
-    pub damage_type: Option<DamageType>,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, EnumIter, FromPrimitive, ToPrimitive, Hash)]
-pub enum DamageType {
-    All,
-    Cold,
-    Energy,
-    Fire,
-    Infernal,
-    Lightning,
-    Melee,
-    Projectile,
-    Psychic,
-    Radiant,
-    Sonic,
-    Toxic,
-}
-
-impl DamageType {
-    pub fn as_str(&self) -> &str {
-        match self {
-            DamageType::All => "",
-            DamageType::Cold => "Cold ",
-            DamageType::Energy => "Energy ",
-            DamageType::Fire => "Fire ",
-            DamageType::Infernal => "Infernal ",
-            DamageType::Lightning => "Lightning ",
-            DamageType::Melee => "Melee ",
-            DamageType::Projectile => "Projectile ",
-            DamageType::Psychic => "Psychic ",
-            DamageType::Radiant => "Radiant ",
-            DamageType::Sonic => "Sonic ",
-            DamageType::Toxic => "Toxic ",
-        }
-    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -76,16 +42,6 @@ pub enum FillerTarget {
     Hero(HeroLike),
     Villain(VillainLike),
     Other,
-}
-
-impl FillerTarget {
-    pub fn relevant_filler(&self) -> Vec<Filler> {
-        match self {
-            FillerTarget::Hero(hero) => Filler::hero_filler(*hero),
-            FillerTarget::Villain(villain) => Filler::villain_filler(*villain),
-            FillerTarget::Other => Filler::other_filler(),
-        }
-    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -103,27 +59,6 @@ pub enum VillainLike {
     TeamVillain(TeamVillain),
 }
 
-impl HeroLike {
-    pub fn as_str(&self) -> String {
-        match self {
-            HeroLike::All => String::new(),
-            HeroLike::Hero(hero) => format!(": {} (All variants)", hero.as_str()),
-            HeroLike::Base(hero) => format!(": {}", hero.as_str()),
-            HeroLike::Variant(variant) => format!(": {}", variant.as_str()),
-        }
-    }
-}
-
-impl VillainLike {
-    pub fn as_str(&self) -> String {
-        match self {
-            VillainLike::All => String::new(),
-            VillainLike::Villain(villain) => format!(": {}", villain.as_str()),
-            VillainLike::TeamVillain(team_villain) => format!(": {}", team_villain.as_str()),
-        }
-    }
-}
-
 impl Item {
     pub fn as_str(&self) -> &str {
         match self {
@@ -136,19 +71,6 @@ impl Item {
             Item::Environment(i) => i.as_str(),
             Item::Scion => "Scion of Oblivaeon",
             Item::Filler(_) => "Filler",
-        }
-    }
-
-    pub fn as_ident(&self) -> &str {
-        match self {
-            Item::Hero(i) => i.as_ident(),
-            Item::Contender(i) => i.as_ident(),
-            Item::Variant(i) => i.as_ident(),
-            Item::Villain(i) => i.as_ident(),
-            Item::TeamVillain(i) => i.as_ident(),
-            Item::Gladiator(i) => i.as_ident(),
-            Item::Environment(i) => i.as_ident(),
-            _ => panic!("Attempt to get ident for non-unique item"),
         }
     }
 
@@ -191,27 +113,24 @@ impl Location {
             Location::Villain((v, d)) => (0b0001 << 48) | *v as i64 | ((*d as i64) << 22),
             Location::TeamVillain((v, d)) => (0b0011 << 48) | *v as i64 | ((*d as i64) << 22),
             Location::Gladiator((v, d)) => (0b0101 << 48) | *v as i64 | ((*d as i64) << 22),
-            Location::Variant(v) => {
+            Location::VariantUnlock(v) => {
                 (0b0010 << 48)
                     | if let Some(h) = v.as_normal() {
                         h as i64 | (v.as_i() as i64) << 24
                     } else {
-                        v.as_i() as i64 | 1 << 22
+                        v.as_i() as i64 | 0b10 << 22
                     }
+            }
+            Location::Hero(v) => (0b0010 << 48) | *v as i64 | 0b10 << 22,
+            Location::Variant(v) => {
+                if let Some(h) = v.as_normal() {
+                    (0b0010 << 48) | h as i64 | (v.as_i() as i64) << 24 | 0b10 << 22
+                } else {
+                    return 0;
+                }
             }
             Location::Environment(v) => (0b0100 << 48) | *v as i64,
             Location::Victory => 0,
         }) | n << 16
-    }
-
-    pub fn as_item(&self) -> Option<Item> {
-        match self {
-            Location::Variant(v) => Some(Item::Variant(*v)),
-            Location::Villain((v, _)) => Some(Item::Villain(*v)),
-            Location::TeamVillain((v, _)) => Some(Item::TeamVillain(*v)),
-            Location::Gladiator((v, _)) => Some(Item::Gladiator(*v)),
-            Location::Environment(v) => Some(Item::Environment(*v)),
-            Location::Victory => None,
-        }
     }
 }

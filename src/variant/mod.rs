@@ -114,7 +114,7 @@ impl Variant {
             Variant::TermiNationUnity => game.has_hero(Hero::Unity),
             Variant::FreedomSixAbsoluteZero => {
                 game.has_hero(Hero::AbsoluteZero)
-                    && ((state.persistent_variant_progress.freedom_six >> 0 & 1 > 0 && !game.has_hero_all_variants(Hero::Legacy))
+                    && ((state.persistent_variant_progress.freedom_six & 1 > 0 && !game.has_hero_all_variants(Hero::Legacy))
                         || game.is_classic(Villain::IronLegacy)
                         || game.is_classic(Villain::IronLegacyJusticeForAll))
             }
@@ -174,7 +174,7 @@ impl Variant {
             }
             Variant::DarkWatchHarpy => {
                 (match &game.villains {
-                    CurrentVillains::Classic((villain, diff, _)) => diff & 1 > 0 && [Villain::Gloomweaver, Villain::GloomweaverRitualOfGnophos].contains(&villain),
+                    CurrentVillains::Classic((villain, diff, _)) => diff & 1 > 0 && [Villain::Gloomweaver, Villain::GloomweaverRitualOfGnophos].contains(villain),
                     _ => false,
                 } && game.environment(Environment::RealmOfDiscord)
                     && game.has_hero_all_variants(Hero::TheHarpy))
@@ -216,6 +216,63 @@ impl Variant {
             Variant::DrMedicoMalpractice => game.has_hero_all_variants(Hero::DoctorMedico) && game.has_team(TeamVillain::TeamAmbuscade),
             Variant::CosmicInventorWrithe => game.has_hero_all_variants(Hero::Writhe),
             Variant::RoadWarriorMainstay => game.has_hero_all_variants(Hero::Mainstay),
+            Variant::HydraTiamat => game.is_classic(Villain::Tiamat) && game.has_all_any_variants(&[Hero::TheKnight, Hero::Necro, Hero::Echelon]),
+            Variant::FirstResponseCricket => game.environment(Environment::WindmillCity) && game.has_all_any_variants(&[Hero::TheCricket, Hero::Echelon]),
+            Variant::TheCricketRenegade => {
+                game.environment(Environment::WindmillCity) && (game.is_classic(Villain::Dynamo) || game.is_classic(Villain::DynamoRoguesGallery)) && game.first_hero(Hero::TheCricket)
+            }
+            Variant::TheCricketWastelandRonin => {
+                game.environment(Environment::FSCContinuanceWanderer) && game.has_all_any_variants(&[Hero::Pyre, Hero::TheCricket, Hero::TheStranger, Hero::Impact, Hero::Gargoyle])
+            }
+            Variant::FirstResponseCypher => game.environment(Environment::WindmillCity) && game.has_all_any_variants(&[Hero::Cypher, Hero::TheCricket, Hero::Echelon, Hero::Vanish, Hero::DocHavoc]),
+            Variant::CypherSwarmingProtocol => game.has_hero_all_variants(Hero::Cypher),
+            Variant::FirstResponseDocHavoc => game.environment(Environment::WindmillCity) && game.has_all_any_variants(&[Hero::Cypher, Hero::TheCricket, Hero::Echelon, Hero::Vanish, Hero::DocHavoc]),
+            Variant::FirstResponseEchelon => {
+                game.has_all_any_variants(&[Hero::Cypher, Hero::TheCricket, Hero::Echelon, Hero::Vanish, Hero::DocHavoc])
+                    && [
+                        Environment::WindmillCity,
+                        Environment::SuperstormAkela,
+                        Environment::Megalopolis,
+                        Environment::RookCity,
+                        Environment::Mordengrad,
+                    ]
+                    .into_iter()
+                    .enumerate()
+                    .any(|(i, env)| game.environment(env) && state.persistent_variant_progress.first_response_echelon >> i & 0x1 == 0)
+            }
+            Variant::GargoyleWastelandRonin => {
+                game.environment(Environment::FSCContinuanceWanderer) && game.has_all_any_variants(&[Hero::Pyre, Hero::TheCricket, Hero::TheStranger, Hero::Impact, Hero::Gargoyle])
+            }
+            Variant::ImpactWastelandRonin => {
+                game.environment(Environment::FSCContinuanceWanderer) && game.has_all_any_variants(&[Hero::Pyre, Hero::TheCricket, Hero::TheStranger, Hero::Impact, Hero::Gargoyle])
+            }
+            Variant::NecroLastOfTheForgottenOrder => {
+                if state.persistent_variant_progress.necro_last_of_the_forgotten_order {
+                    (game.is_classic(Villain::Mythos) || game.is_classic(Villain::MythosTheInescapableTruth))
+                        && game.has_variant(Variant::Drift1789)
+                        && game.has_hero_all_variants(Hero::Terminus)
+                        && !game.has_hero_all_variants(Hero::Necro)
+                } else {
+                    game.environment(Environment::CatchwaterHarbor1929)
+                        && game.has_variants(&[Variant::Necro1929, Variant::Vanish1929, Variant::TheKnight1929, Variant::TangoOne1929])
+                        && game.has_hero_all_variants(Hero::LaComodora)
+                }
+            }
+            Variant::PyreWastelandRonin => {
+                game.environment(Environment::FSCContinuanceWanderer) && game.has_all_any_variants(&[Hero::Pyre, Hero::TheCricket, Hero::TheStranger, Hero::Impact, Hero::Gargoyle])
+            }
+            Variant::TheStrangerWastelandRonin => {
+                game.environment(Environment::FSCContinuanceWanderer) && game.has_all_any_variants(&[Hero::Pyre, Hero::TheCricket, Hero::TheStranger, Hero::Impact, Hero::Gargoyle])
+            }
+            Variant::FirstResponseVanish => {
+                if state.persistent_variant_progress.first_response_vanish {
+                    game.environment(Environment::WindmillCity)
+                        && (game.is_classic(Villain::Gray) || game.is_classic(Villain::GrayRadioactiveDecay))
+                        && game.has_all_any_variants(&[Hero::Vanish, Hero::Echelon, Hero::DocHavoc, Hero::TheCricket, Hero::Cypher])
+                } else {
+                    game.environment(Environment::WindmillCity) && (game.is_classic(Villain::Gray) || game.is_classic(Villain::GrayRadioactiveDecay)) && game.has_hero_all_variants(Hero::Vanish)
+                }
+            }
             _ => false,
         }
     }

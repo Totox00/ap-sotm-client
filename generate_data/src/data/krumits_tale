@@ -1,0 +1,31 @@
+source KrumitsTale
+name Krumit's Tale
+
+hero Bruno
+name Bruno
+from KrumitsTale
+
+hero Greybeard
+name Greybeard
+from KrumitsTale
+
+hero Mischief
+name Mischief
+from KrumitsTale
+
+hero Muldorf
+name Muldorf
+from KrumitsTale
+
+hero Rose
+name Rose
+from KrumitsTale
+
+variant RoseQueenOfShadow
+name Rose: Queen of Shadow
+from KrumitsTale
+base Rose
+
+hero VarfaAndOrhu
+name Varfa and Orhu
+from KrumitsTale

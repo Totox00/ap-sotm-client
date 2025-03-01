@@ -1,3 +1,5 @@
+#![feature(iter_next_chunk)]
+
 mod data;
 mod datapackage;
 mod format_json;
@@ -92,11 +94,12 @@ impl Session {
             let mut push = false;
             for variant in self.state.available_variants().collect::<Vec<_>>() {
                 if variant.is_available(&self.state, &self.interface.current_game) && variant.game_end(&mut self.state, &self.interface.current_game, true, &mut push) {
-                    locations.push(Location::Variant(variant));
+                    locations.push(Location::VariantUnlock(variant));
                 }
             }
             let (victory, locations) = self.location_ids(&locations);
             self.interface.update_completion(&self.state);
+            self.state.expend_filler(&self.interface.current_game);
             self.reset();
             return Action {
                 deathlink: String::new(),
@@ -109,10 +112,11 @@ impl Session {
             let mut push = false;
             for variant in self.state.available_variants().collect::<Vec<_>>() {
                 if variant.is_available(&self.state, &self.interface.current_game) && variant.game_end(&mut self.state, &self.interface.current_game, false, &mut push) {
-                    locations.push(Location::Variant(variant));
+                    locations.push(Location::VariantUnlock(variant));
                 }
             }
             let (victory, locations) = self.location_ids(&locations);
+            self.state.expend_filler(&self.interface.current_game);
             self.reset();
             return Action {
                 deathlink: if self.slot_data.death_link == DeathlinkType::Team {
@@ -135,7 +139,7 @@ impl Session {
             }
         } else if let Some(item) = Item::from_ident(target) {
             self.interface.toggle_selection(item, self.slot_data.death_link);
-            self.interface.update_current_filler(&self.state.items);
+            self.interface.update_current_filler(&self.state.items, &self.state.expended_filler);
             self.interface.update_current_variants(&self.state);
         } else if target.starts_with("deathlink-") {
             if let Some(item) = Item::from_ident(target.split_at(10).1) {
@@ -149,13 +153,13 @@ impl Session {
         } else if target.starts_with("diff-") {
             if let Some(item) = Item::from_ident(target.split_at(5).1) {
                 self.interface.advance_difficulty(item);
-                self.interface.update_current_filler(&self.state.items);
+                self.interface.update_current_filler(&self.state.items, &self.state.expended_filler);
                 self.interface.update_current_variants(&self.state);
             }
         } else if target.starts_with("unlock-") {
             let item = Item::from_ident(target.split_at(7).1);
             if let Some(Item::Variant(variant)) = item {
-                let (victory, locations) = self.location_ids(&[Location::Variant(variant)]);
+                let (victory, locations) = self.location_ids(&[Location::VariantUnlock(variant)]);
                 self.interface.update_current_variants(&self.state);
                 self.interface.update_goal(&self.state);
                 return Action {
@@ -166,7 +170,7 @@ impl Session {
                 };
             } else if let Some(Item::Villain(villain)) = item {
                 if let Some(variant) = villain.variant() {
-                    let (victory, locations) = self.location_ids(&[Location::Variant(variant)]);
+                    let (victory, locations) = self.location_ids(&[Location::VariantUnlock(variant)]);
                     self.interface.update_current_variants(&self.state);
                     self.interface.update_goal(&self.state);
                     return Action {
@@ -179,7 +183,7 @@ impl Session {
             }
         } else {
             let (victory, locations) = if let Some(variant) = on_click(target, &mut self.state, &self.interface.current_game) {
-                self.location_ids(&[Location::Variant(variant)])
+                self.location_ids(&[Location::VariantUnlock(variant)])
             } else {
                 (false, vec![])
             };
@@ -197,6 +201,7 @@ impl Session {
 
     fn reset(&mut self) {
         self.state.temporary_variant_progress = TemporaryVariantProgress::default();
+        self.interface.update_current_filler(&self.state.items, &self.state.expended_filler);
         self.interface.update_current_variants(&self.state);
         self.interface.update_goal(&self.state);
     }
@@ -210,9 +215,10 @@ impl Session {
             } else if self.state.checked_locations.has_unchecked_location(*location) {
                 self.state.checked_locations.mark_location(*location);
                 for n in 0..self.slot_data.locations_per[match location {
-                    Location::Variant(_) => 5,
                     Location::Villain((_, d)) | Location::TeamVillain((_, d)) | Location::Gladiator((_, d)) => *d as usize,
-                    Location::Environment(_) => 4,
+                    Location::Hero(_) | Location::Variant(_) => 4,
+                    Location::Environment(_) => 5,
+                    Location::VariantUnlock(_) => 6,
                     Location::Victory => unreachable!(),
                 }] {
                     location_ids.push(location.as_id(n as i64));
@@ -225,24 +231,33 @@ impl Session {
     pub fn recieved_items(&mut self, items: Vec<i64>) {
         for item_id in items {
             if let Some(item) = Item::from_id(item_id) {
-                self.interface.add_item(&self.state, item);
-                self.state.items.set_item(item);
+                if let Item::Filler((filler, duration)) = item {
+                    self.state.items.add_filler(filler, duration * self.slot_data.filler_duration);
+                } else {
+                    self.interface.add_item(&self.state, item);
+                    self.state.items.set_item(item);
+                }
             }
         }
-        self.interface.update_current_filler(&self.state.items);
+        self.interface.update_current_filler(&self.state.items, &self.state.expended_filler);
         self.interface.update_current_variants(&self.state);
         self.interface.update_goal(&self.state);
     }
 
     pub fn save_string(&self) -> String {
-        persistent::save_string(&self.state.checked_locations, &self.state.persistent_variant_progress)
+        persistent::save_string(&self.state.checked_locations, &self.state.persistent_variant_progress, &self.state.expended_filler)
     }
 
     pub fn update_save(&mut self, save_str: &str) {
-        let (locations, variant_progress, _) = persistent::load_string(save_str);
+        let (locations, variant_progress, expended_filler, err_msg) = persistent::load_string(save_str);
+        if let Some(msg) = err_msg {
+            log!("{msg}");
+        }
+        self.state.update_expended_filler(&expended_filler);
         self.state.checked_locations.update(&locations);
         self.state.persistent_variant_progress.update(&variant_progress);
         self.interface.update_goal(&self.state);
+        self.interface.update_current_filler(&self.state.items, &self.state.expended_filler);
         self.interface.update_current_variants(&self.state);
         self.interface.update_completion_all(&self.state);
     }

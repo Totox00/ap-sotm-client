@@ -1,12 +1,12 @@
 mod select;
 
 use crate::{
-    data::{Contender, Environment, FillerTarget, Gladiator, Hero, HeroLike, Item, Location, TeamVillain, Variant, Villain, VillainLike},
+    data::{Contender, Environment, Filler, FillerTarget, Gladiator, Hero, HeroLike, Item, Location, TeamVillain, Variant, Villain, VillainLike},
     game::CurrentGame,
     state::{items::Items, State},
 };
 use select::{deselect_contenders, deselect_gladiator, deselect_hero, deselect_team_villain, deselect_variant, deselect_villain};
-use std::fmt::Write;
+use std::{collections::HashMap, fmt::Write};
 use strum::IntoEnumIterator;
 use web_sys::{window, Document, Element};
 
@@ -302,7 +302,7 @@ impl Interface {
                 SelectedHero::Contenders(contenders) => deselect_contenders(&self.document, contenders),
             }
 
-            let _ = elem.remove();
+            elem.remove();
             self.current_game.heroes.remove(0);
         }
     }
@@ -310,18 +310,18 @@ impl Interface {
     fn clear_selected_villain(&mut self) {
         match &self.current_game.villains {
             CurrentVillains::Classic((villain, _, elem)) => {
-                let _ = elem.remove();
+                elem.remove();
                 deselect_villain(&self.document, villain);
             }
             CurrentVillains::Team(villains) => {
                 for (villain, _, elem) in villains {
-                    let _ = elem.remove();
+                    elem.remove();
                     deselect_team_villain(&self.document, villain);
                 }
             }
             CurrentVillains::Gladiators(gladiators) => {
                 for (gladiator, _, elem) in gladiators {
-                    let _ = elem.remove();
+                    elem.remove();
                     deselect_gladiator(&self.document, gladiator);
                 }
             }
@@ -348,10 +348,18 @@ impl Interface {
             locations.push(Location::Environment(environment));
         }
 
+        for (hero, _) in &self.current_game.heroes {
+            match hero {
+                SelectedHero::Hero(hero) => locations.push(Location::Hero(*hero)),
+                SelectedHero::Variant(variant) => locations.push(Location::Variant(*variant)),
+                SelectedHero::Contenders(_) => (),
+            }
+        }
+
         locations
     }
 
-    pub fn update_current_filler(&self, items: &Items) {
+    pub fn update_current_filler(&self, items: &Items, expended: &HashMap<Filler, i32>) {
         let mut buf = String::new();
 
         match &self.current_game.villains {
@@ -364,35 +372,16 @@ impl Interface {
                         let _ = write!(buf, "<h4>Challenge - {}</h4><p>{}</p>", name, desc.join("<br />"));
                     }
                 }
-
-                for (filler, count) in items.get_filler_for(FillerTarget::Villain(VillainLike::Villain(*villain))) {
-                    let _ = write!(buf, "<h4>{}</h4><p>{}</p>", filler.to_string(count), filler.to_desc(count));
-                }
             }
             CurrentVillains::Team(villains) => {
                 for (villain, diff, _) in villains {
-                    let mut name_written = false;
-
                     if *diff > 1 {
                         if let Some((name, desc)) = villain.challenge_desc() {
-                            name_written = true;
                             if !buf.is_empty() {
                                 let _ = write!(buf, "<hr />");
                             }
                             let _ = write!(buf, "<h3>{}</h3><h4>Challenge - {}</h4><p>{}</p>", villain.as_str(), name, desc.join("<br />"));
                         }
-                    }
-
-                    let relevant_filler = items.get_filler_for(FillerTarget::Villain(VillainLike::TeamVillain(*villain)));
-                    if !relevant_filler.is_empty() && !name_written {
-                        if !buf.is_empty() {
-                            let _ = write!(buf, "<hr />");
-                        }
-                        let _ = write!(buf, "<h3>{}</h3>", villain.as_str());
-                    }
-
-                    for (filler, count) in relevant_filler {
-                        let _ = write!(buf, "<h4>{}</h4><p>{}</p>", filler.to_string(count), filler.to_desc(count));
                     }
                 }
             }
@@ -411,47 +400,23 @@ impl Interface {
             CurrentVillains::None => (),
         }
 
-        for (hero, _) in &self.current_game.heroes {
-            match hero {
-                SelectedHero::Hero(hero) => {
-                    let relevant_filler = items.get_filler_for(FillerTarget::Hero(HeroLike::Hero(*hero)));
-                    if !relevant_filler.is_empty() {
-                        if !buf.is_empty() {
-                            let _ = write!(buf, "<hr />");
-                        }
+        for filler in &items.filler {
+            let duration = filler.duration + expended.get(&filler.filler).copied().unwrap_or(0);
 
-                        let _ = write!(buf, "<h3>{}</h3>", hero.as_str());
+            if duration != 0 && filler.is_relevant(&self.current_game) {
+                let _ = match filler.target {
+                    FillerTarget::Hero(HeroLike::All) | FillerTarget::Villain(VillainLike::All) | FillerTarget::Other => {
+                        write!(buf, "<h4>{} ({})</h4><p>{}</p>", filler.as_str(), duration.abs(), filler.as_desc())
                     }
-
-                    for (filler, count) in relevant_filler {
-                        let _ = write!(buf, "<h4>{}</h4><p>{}</p>", filler.to_string(count), filler.to_desc(count));
+                    FillerTarget::Hero(HeroLike::Hero(hero)) => write!(buf, "<h4>{} (Any {}) ({})</h4><p>{}</p>", filler.as_str(), hero.as_str(), duration.abs(), filler.as_desc()),
+                    FillerTarget::Hero(HeroLike::Base(base)) => write!(buf, "<h4>{} ({}) ({})</h4><p>{}</p>", filler.as_str(), base.as_str(), duration.abs(), filler.as_desc()),
+                    FillerTarget::Hero(HeroLike::Variant(variant)) => write!(buf, "<h4>{} ({}) ({})</h4><p>{}</p>", filler.as_str(), variant.as_str(), duration.abs(), filler.as_desc()),
+                    FillerTarget::Villain(VillainLike::Villain(villain)) => write!(buf, "<h4>{} ({}) ({})</h4><p>{}</p>", filler.as_str(), villain.as_str(), duration.abs(), filler.as_desc()),
+                    FillerTarget::Villain(VillainLike::TeamVillain(team_villain)) => {
+                        write!(buf, "<h4>{} ({}) ({})</h4><p>{}</p>", filler.as_str(), team_villain.as_str(), duration.abs(), filler.as_desc())
                     }
-                }
-                SelectedHero::Variant(variant) => {
-                    let relevant_filler = items.get_filler_for(FillerTarget::Hero(HeroLike::Variant(*variant)));
-                    if !relevant_filler.is_empty() {
-                        if !buf.is_empty() {
-                            let _ = write!(buf, "<hr />");
-                        }
-
-                        let _ = write!(buf, "<h3>{}</h3>", variant.as_str());
-                    }
-
-                    for (filler, count) in relevant_filler {
-                        let _ = write!(buf, "<h4>{}</h4><p>{}</p>", filler.to_string(count), filler.to_desc(count));
-                    }
-                }
-                SelectedHero::Contenders(_) => (),
+                };
             }
-        }
-
-        let relevant_filler = items.get_filler_for(FillerTarget::Other);
-        if !relevant_filler.is_empty() && !buf.is_empty() {
-            let _ = write!(buf, "<hr />");
-        }
-
-        for (filler, count) in relevant_filler {
-            let _ = write!(buf, "<h4>{}</h4><p>{}</p>", filler.to_string(count), filler.to_desc(count));
         }
 
         self.active_filler.set_inner_html(&buf);
@@ -509,6 +474,20 @@ impl Interface {
                 elem.set_inner_html(&completion_str(
                     state.checked_locations.gladiators[gladiator as usize] | if gladiator.no_challenge() { 0xC0 } else { 0 },
                 ));
+            }
+        }
+        for hero in Hero::iter() {
+            if !state.checked_locations.has_unchecked_hero(hero) {
+                if let Some(elem) = self.document.get_element_by_id(hero.as_ident()) {
+                    let _ = elem.class_list().add_1("completed");
+                }
+            }
+        }
+        for variant in Variant::iter() {
+            if !state.checked_locations.has_unchecked_variant(variant) {
+                if let Some(elem) = self.document.get_element_by_id(variant.as_ident()) {
+                    let _ = elem.class_list().add_1("completed");
+                }
             }
         }
         for environment in Environment::iter() {

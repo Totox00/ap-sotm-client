@@ -1,0 +1,44 @@
+source DrMcNinja
+name The Adventures of Dr. McNinja
+
+hero DrMcNinja
+name Dr. McNinja
+from DrMcNinja
+
+variant DrMcNinjaDesperatePartner
+name Dr. McNinja: Desperate Partner
+from DrMcNinja
+base DrMcNinja
+
+variant DrMcLuchador
+name Dr. McLuchador
+from DrMcNinja
+base DrMcNinja
+
+hero DarkSmokePuncher
+name Dark Smoke Puncher
+from DrMcNinja
+
+variant DarkSmokePuncherTechnomage
+name Dark Smoke Puncher: Technomage
+from DrMcNinja
+base DarkSmokePuncher
+
+hero Gordito
+name Gordito
+from DrMcNinja
+
+variant GorditoDinosaurSlayer
+name Gordito: Dinosaur Slayer
+from DrMcNinja
+base Gordito
+
+villain FranzRayner
+name Franz Rayner
+from DrMcNinja
+challenge Evasive Maneuvers
+Whenever Franz Rayner is dealt damage, he becomes immune to damage for the rest of the current turn. 
+
+villain KingRadical
+name King Radical
+from DrMcNinja

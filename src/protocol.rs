@@ -211,8 +211,8 @@ pub struct SlotData {
     pub required_villains: u32,
     pub required_variants: u32,
     pub villain_difficulty_points: [u32; 4],
-    pub locations_per: [u8; 6],
-    #[serde(default)]
+    pub locations_per: [u8; 7],
+    pub filler_duration: i32,
     pub death_link: DeathlinkType,
 }
 

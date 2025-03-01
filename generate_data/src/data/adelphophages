@@ -1,0 +1,551 @@
+source AdelphophagesVillainPromos
+name Adelphophage's Villain Promos
+
+source AdelphophagesHeroPromos
+name Adelphophage's Hero Promos
+
+source TheVentureBrothers
+name The Venture Brothers
+
+source AdelphophagesCustomVillains
+name Adelphophage's Custom Villains
+
+source AdelphophagesCustomHeroes
+name Adelphophage's Custom Heroes
+
+source AdelphophagesCustomEnvironments
+name Adelphophage's Custom Environments
+
+source SentinelsOfTheBuffyverse
+name Sentinels of the Buffyverse
+
+source UnionOfHeroes
+name Union of Heroes
+
+source ThematicallyVariable
+name Thematically Variable Stuff Whose Only True Common Element Is Really Good Design
+
+variant OmnitronTechnoTerror
+name Omnitron: Techno Terror
+from AdelphophagesVillainPromos
+base Omnitron
+
+variant GrandWarlordVossGeneBoundGeneral
+name Grand Warlord Voss: Gene-Bound General
+from AdelphophagesVillainPromos
+base GrandWarlordVoss
+
+variant BaronBladeBlackHoleGenerator
+name Baron Blade: Black Hole Generator
+from AdelphophagesVillainPromos
+base BaronBlade
+
+variant CitizenDawnSolarEmpress
+name Citizen Dawn: Solar Empress
+from AdelphophagesVillainPromos
+base CitizenDawn
+
+variant AkashBhutaPrimordialCreator
+name Akash'Bhuta: Primordial Creator
+from AdelphophagesVillainPromos InfernalRelics
+base AkashBhuta
+challenge Unstoppable Force
+The first time Akash'Bhuta deals damage each turn, that damage is irreducable and doubled.
+
+variant TheEnneadWrathOfTheGods
+name The Ennead: Wrath of the Gods
+from AdelphophagesVillainPromos InfernalRelics
+base TheEnnead
+
+variant GloomweaverRitualOfGnophos
+name GloomWeaver: Ritual of Gnophos
+from AdelphophagesVillainPromos InfernalRelics
+base Gloomweaver
+
+variant ApostateDarkAngel
+name Apostate: Dark Angel
+from AdelphophagesVillainPromos InfernalRelics
+base Apostate
+challenge Relic-Bound
+At the end of the villain turn, reveal cards from the top of the villain deck until a relic is revealed. Put it into play and shuffle the remaining cards back into the villain deck.
+Double HP regained by Apostate.
+
+variant SpiteDeathAddict
+name Spite: Death Addict
+from AdelphophagesVillainPromos RookCity
+base Spite
+
+variant PlagueRatTheNewBreed
+name Plague Rat: The New Breed
+from AdelphophagesVillainPromos RookCity
+base PlagueRat
+
+variant TheMatriarchRavenQueen
+name The Matriarch: Raven Queen
+from AdelphophagesVillainPromos RookCity
+base TheMatriarch
+challenge Endless Swarm
+Reveal 11 cards from the villain deck each turn instead of 7.
+
+variant TheChairmanKingpin
+name The Chairman: Kingpin
+from AdelphophagesVillainPromos RookCity
+base TheChairman
+
+variant IronLegacyJusticeForAll
+name Iron Legacy: Justice For All
+from AdelphophagesVillainPromos ShatteredTimelines
+base IronLegacy
+
+variant TheDreamerMindOfAChild
+name The Dreamer: Mind of a Child
+from AdelphophagesVillainPromos ShatteredTimelines
+base TheDreamer
+
+variant LaCapitanParadoxicalPirate
+name La Capitan: Paradoxical Pirate
+from AdelphophagesVillainPromos ShatteredTimelines
+base LaCapitan
+
+variant KismetTwistOfFate
+name Kismet: Twist of Fate
+from AdelphophagesVillainPromos ShatteredTimelines
+base Kismet
+
+variant DeadlineAngelOfExtinction
+name Deadline: Angel of Extinction
+from AdelphophagesVillainPromos WrathOfTheCosmos
+base Deadline
+
+variant ProgenyTheMessenger
+name Progeny: The Messenger
+from AdelphophagesVillainPromos WrathOfTheCosmos
+base Progeny
+
+variant KaargraWarfangRulerOfThePit
+name Kaargra Warfang: Ruler of the Pit
+from AdelphophagesVillainPromos WrathOfTheCosmos
+base KaargraWarfang
+
+variant ChokepointRuthlessTechnopath
+name Chokepoint: Ruthless Technopath
+from AdelphophagesVillainPromos Chokepoint
+base Chokepoint
+
+variant MissInformationSubtleSaboteur
+name Miss Information: Subtle Saboteur
+from AdelphophagesVillainPromos MissInformation
+base MissInformation
+
+variant WagerMasterOmnipotentAnnoyance
+name Wager Master: Omnipotent Annoyance
+from AdelphophagesVillainPromos WagerMaster
+base WagerMaster
+challenge Double Trouble
+Instead of removing the second copy of What do you really know? from the game, put it into play as well.
+
+variant AmbuscadeThrillOfTheHunt
+name Ambuscade: Thrill of the Hunt
+from AdelphophagesVillainPromos Ambuscade
+base Ambuscade
+
+variant AbsoluteZeroColdAsIce
+name Absolute Zero: Cold as Ice
+from AdelphophagesHeroPromos
+base AbsoluteZero
+
+variant FieldOfficerBunker
+name Field Officer Bunker
+from AdelphophagesHeroPromos
+base Bunker
+
+variant BulletstormExpatriette
+name Bulletstorm Expatriette
+from AdelphophagesHeroPromos RookCity
+base Expatriette
+
+variant CrusaderFanatic
+name Crusader Fanatic
+from AdelphophagesHeroPromos
+base Fanatic
+
+variant TachyonTheQuickestManOnEarth
+name Tachyon: The Quickest Man on Earth
+from AdelphophagesHeroPromos
+base Tachyon
+
+variant TheGamblerSetback
+name The Gambler Setback
+from AdelphophagesHeroPromos Vengeance
+base Setback
+
+variant TheScholarTheAlchemist
+name The Scholar: The Alchemist
+from AdelphophagesHeroPromos TheScholar
+base TheScholar
+
+variant DarkPactNightmist
+name Dark Pact Nightmist
+from AdelphophagesHeroPromos InfernalRelics
+base Nightmist
+
+variant OmnitronVIHunterKiller
+name Omnitron-VI: Hunter-Killer
+from AdelphophagesHeroPromos ShatteredTimelines
+base OmnitronX
+
+variant TheSentinelsAsOne
+name The Sentinels As One
+from AdelphophagesHeroPromos Vengeance
+base TheSentinels
+
+variant TheThaumaturgyScholar
+name The Thaumaturgy Scholar
+from AdelphophagesHeroPromos TheScholar
+base TheScholar
+
+variant UnityGirlsBestFriend
+name Unity: Girl's Best Friend
+from AdelphophagesHeroPromos Unity
+base Unity
+
+variant EvolvingNaturalist
+name Evolving Naturalist
+from AdelphophagesHeroPromos Vengeance
+base TheNaturalist
+
+variant ArmoredGuise
+name Armored Guise
+from AdelphophagesHeroPromos Guise
+base Guise
+
+variant BerserkHaka
+name Berserk Haka
+from AdelphophagesHeroPromos
+base Haka
+
+variant ZenMisterFixer
+name Zen Mister Fixer
+from AdelphophagesHeroPromos RookCity
+base MisterFixer
+
+hero DrVenture
+name Dr. Venture
+from TheVentureBrothers
+
+variant DrJonasVentureJr
+name Dr. Jonas: Venture Jr.
+from TheVentureBrothers
+base DrVenture
+
+hero BrockSamson
+name Brock Samson
+from TheVentureBrothers
+
+variant BrockSamsonRustysBlanket
+name Brock Samson: Rusty's Blanket
+from TheVentureBrothers
+base BrockSamson
+
+variant BrockSamsonCombatInstincts
+name Brock Samson: Combat Instincts
+from TheVentureBrothers
+base BrockSamson
+
+hero DeffersonTwilight
+name Defferson Twilight
+from TheVentureBrothers
+
+variant DeffersonTwilightTasteForBlood
+name Defferson Twilight: Taste For Blood
+from TheVentureBrothers
+base DeffersonTwilight
+
+hero HunterGathers
+name Hunter Gathers
+from TheVentureBrothers
+
+hero SergeantHatred
+name Sergeant Hatred
+from TheVentureBrothers
+
+variant SergeantHatredDrillSergeant
+name Sergeant Hatred: Drill Sergeant
+from TheVentureBrothers
+base SergeantHatred
+
+variant SergeantHatredEvenUntoDeath
+name Sergeant Hatred: Even Unto Death
+from TheVentureBrothers
+base SergeantHatred
+
+hero TheVentureTwins
+name The Venture Twins
+from TheVentureBrothers
+
+variant TheVentureTwins114
+name The Venture Twins #1-14
+from TheVentureBrothers
+base TheVentureTwins
+
+hero DrOrpheus
+name Dr Orpheus
+from TheVentureBrothers
+
+variant DrOrpheusUnstableMagic
+name Dr Orpheus: Unstable Magic
+from TheVentureBrothers
+base DrOrpheus
+
+environment CastleUnderbheit
+name Castle Underbheit
+from TheVentureBrothers
+
+environment EscapeToTheHouseOfMummies
+name Escape to the House of Mummies
+from TheVentureBrothers
+
+environment WithinTheRusty
+name Within The Rusty
+from TheVentureBrothers
+
+environment TheVentureCompound
+name The Venture Compound
+from TheVentureBrothers
+
+villain TheMonarch
+name The Monarch
+from TheVentureBrothers
+challenge No Touching
+Whenever Dr Girlfriend flips to her "Temporarily Indisposed" side, The Monarch deals each hero target (H) sonic damage and plays the top card of the villain deck.
+
+villain TheRevengeSociety
+name The Revenge Society
+from TheVentureBrothers
+
+villain Molotov
+name Molotov
+from TheVentureBrothers
+
+villain TheSovereign
+name The Sovereign
+from TheVentureBrothers
+
+villain Legion
+name Legion
+from AdelphophagesCustomVillains
+
+villain Heretic
+name Heretic
+from AdelphophagesCustomVillains
+challenge Vengeful Crusader
+Whenever Heretic is dealt damage by a hero target, increase the next damage dealt by Heretic by 1.
+
+hero TheExecutor
+name The Executor
+from AdelphophagesCustomHeroes
+
+variant TheExecutorAgentOfFate
+name The Executor: Agent of Fate
+from AdelphophagesCustomHeroes
+base TheExecutor
+
+hero Fusion
+name Fusion
+from AdelphophagesCustomHeroes
+
+hero ThePantheon
+name The Pantheon
+from AdelphophagesCustomHeroes
+
+hero Joker
+name Joker
+from AdelphophagesCustomHeroes
+
+hero ThePhantomThieves
+name The Phantom Thieves
+from AdelphophagesCustomHeroes
+
+environment MadameMittermeiersByzantineBazaarOfArcanaAndAttractions
+name Madame Mittermeier's Byzantine Bazaar of Arcana and Attactions
+from AdelphophagesCustomEnvironments
+
+environment OldTownRookCity
+name Old Town Rook City
+from AdelphophagesCustomEnvironments
+
+environment MagmariaShiftingLoyalties
+name Magmaria: Shifting Loyalties
+from AdelphophagesCustomEnvironments
+
+environment HighSecurityWing
+name High Security Wing
+from AdelphophagesCustomEnvironments
+
+environment MobileAssaultPlatform
+name Mobile Assault Platform
+from AdelphophagesCustomEnvironments
+
+villain TheGentlemen
+name The Gentlemen
+from SentinelsOfTheBuffyverse
+
+villain Angelus
+name Angelus
+from SentinelsOfTheBuffyverse
+challenge Impending Armageddon
+At the start of the game, put The Judge into play.
+The Judge is indestructible and immune to damage.
+
+villain DarkWillow
+name Dark Willow
+from SentinelsOfTheBuffyverse
+challenge Final Suffering
+The hero character with the lowest HP cannot regain HP.
+
+hero Buffy
+name Buffy
+from SentinelsOfTheBuffyverse
+
+variant BuffyNewTownNewRules
+name Buffy: New Town New Rules
+from SentinelsOfTheBuffyverse
+base Buffy
+
+hero Xander
+name Xander
+from SentinelsOfTheBuffyverse
+
+variant XanderHighSchoolSlacker
+name Xander: High School Slacker
+from SentinelsOfTheBuffyverse
+base Xander
+
+hero Willow
+name Willow
+from SentinelsOfTheBuffyverse
+
+hero WillowStarStudent
+name Willow: Star Student
+from SentinelsOfTheBuffyverse
+base Willow
+
+environment SunnydaleHighSchool
+name Sunnydale High School
+from SentinelsOfTheBuffyverse
+
+environment SunnydaleGraveyard
+name Sunnydale Graveyard
+from SentinelsOfTheBuffyverse
+
+villain ThePteranoDon
+name The Pterano-Don
+from UnionOfHeroes
+
+hero Odysseus
+name Odysseus
+from UnionOfHeroes
+
+hero TheGreenDeath
+name The Green Death
+from UnionOfHeroes
+
+variant SonOfTheGreenDeath
+name Son of The Green Death
+from UnionOfHeroes
+base TheGreenDeath
+
+variant TheXtremeGreenDeath
+name The Xtreme Green Death
+from UnionOfHeroes
+base TheGreenDeath
+
+variant TheGreenDeath2084
+name The Green Death 2084
+from UnionOfHeroes
+base TheGreenDeath
+
+hero Wrangler
+name Wrangler
+from UnionOfHeroes
+
+hero Vishnu
+name Vishnu
+from UnionOfHeroes
+
+hero LadySunbeam
+name Lady Sunbeam
+from UnionOfHeroes
+
+hero DoctorTomorrow
+name Doctor Tomorrow
+from UnionOfHeroes
+
+hero CaptainJupiter
+name Captain Jupiter
+from UnionOfHeroes
+
+environment ThePrincipalityOfVarandova
+name The Principality of Varandova
+from UnionOfHeroes
+
+villain Klarion
+name Klarion
+from ThematicallyVariable
+
+villain LeagueOfShadows
+name League of Shadows
+from ThematicallyVariable
+challenge No Holding Back
+At the start of first villain turn, put (H) cards from under League of Shadows into play and flip League of Shadows.
+Ra's Al Ghul is immune to damage if any assassin cards are in play.
+
+villain BlackBeetle
+name Black Beetle
+from ThematicallyVariable
+challenge Rapid Transformation
+Whenever a transformation card enters play, play the top card of the villain deck.
+
+hero BoosterGold
+name Booster Gold
+from ThematicallyVariable
+
+variant BoosterGoldTheGreatestHeroTheWorldHasNeverKnown
+name Booster Gold: The Greatest Hero The World Has Never Known
+from ThematicallyVariable
+base BoosterGold
+
+hero BlueBeetle
+name Blue Beetle
+from ThematicallyVariable
+
+variant BlueBeetleSilentPartner
+name Blue Beetle: Silent Partner
+from ThematicallyVariable
+base BlueBeetle
+
+variant BlueBeetleKajiDha
+name Blue Beetle: Kaji Dha
+from ThematicallyVariable
+base BlueBeetle
+
+hero Icegirl
+name Icegirl
+from ThematicallyVariable
+
+variant IcegirlWintersWrath
+name Icegirl: Winter's Wrath
+from ThematicallyVariable
+base Icegirl
+
+hero Comrade
+name Comrade
+from ThematicallyVariable
+
+hero RedArrow
+name Red Arrow
+from ThematicallyVariable
+
+hero Wolf
+name Wolf
+from ThematicallyVariable

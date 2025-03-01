@@ -12,6 +12,9 @@ pub struct PersistentVariantProgress {
     pub freedom_six: u8,
     pub prime_wardens_argent_adept: bool,
     pub freedom_five: u8,
+    pub first_response_echelon: u8,
+    pub necro_last_of_the_forgotten_order: bool,
+    pub first_response_vanish: bool,
 }
 
 #[derive(Debug, Clone, Copy, Default)]
@@ -73,14 +76,23 @@ pub struct TemporaryVariantProgress {
     pub cosmic_inventor_writhe: u8,
     pub dr_medico_malpractice: u8,
     pub road_warrior_mainstay: u8,
+    pub hydra_tiamat: u8,
+    pub first_response_cricket: u8,
+    pub the_cricket_renegade: u8,
+    pub first_response_cypher: u8,
+    pub cypher_swarming_protocol: u8,
+    pub first_response_doc_havoc: (u8, u16),
+    pub first_response_echelon: bool,
+    pub necro_last_of_the_forgotten_order: bool,
+    pub first_response_vanish: u8,
 }
 
 impl PersistentVariantProgress {
     pub const fn size() -> usize {
-        10
+        13
     }
 
-    pub fn as_bytes(&self) -> [u8; 10] {
+    pub fn as_bytes(&self) -> [u8; Self::size()] {
         [
             if self.eternal_haka { 1 } else { 0 },
             self.omnitron_u,
@@ -92,6 +104,9 @@ impl PersistentVariantProgress {
             self.freedom_six,
             if self.prime_wardens_argent_adept { 1 } else { 0 },
             self.freedom_five,
+            self.first_response_echelon,
+            if self.necro_last_of_the_forgotten_order { 1 } else { 0 },
+            if self.first_response_vanish { 1 } else { 0 },
         ]
     }
 
@@ -106,13 +121,16 @@ impl PersistentVariantProgress {
         greatest!(freedom_six);
         self.prime_wardens_argent_adept |= other.prime_wardens_argent_adept;
         greatest!(freedom_five);
+        self.first_response_echelon |= other.first_response_echelon;
+        self.necro_last_of_the_forgotten_order |= other.necro_last_of_the_forgotten_order;
+        self.first_response_vanish |= other.first_response_vanish;
     }
 }
 
 impl From<&[u8]> for PersistentVariantProgress {
     fn from(value: &[u8]) -> Self {
         PersistentVariantProgress {
-            eternal_haka: value.get(0).copied().unwrap_or_default() > 0,
+            eternal_haka: value.first().copied().unwrap_or_default() > 0,
             omnitron_u: value.get(1).copied().unwrap_or_default(),
             action_hero_stuntman: value.get(2).copied().unwrap_or_default(),
             benchmark_supply_and_demand: value.get(3).copied().unwrap_or_default() > 0,
@@ -122,6 +140,9 @@ impl From<&[u8]> for PersistentVariantProgress {
             freedom_six: value.get(7).copied().unwrap_or_default(),
             prime_wardens_argent_adept: value.get(8).copied().unwrap_or_default() > 0,
             freedom_five: value.get(9).copied().unwrap_or_default(),
+            first_response_echelon: value.get(10).copied().unwrap_or_default(),
+            necro_last_of_the_forgotten_order: value.get(11).copied().unwrap_or_default() > 0,
+            first_response_vanish: value.get(12).copied().unwrap_or_default() > 0,
         }
     }
 }

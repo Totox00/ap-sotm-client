@@ -1,0 +1,691 @@
+source CauldronBase
+name The Cauldron Base Set
+
+source CauldronExperimental
+name The Cauldron: Experimental
+
+source CauldronStormfall
+name The Cauldron: Stormfall
+
+source CauldronAdrift
+name The Cauldron: Adrift
+
+source CauldronUnexpected
+name The Cauldron: Unexpected
+
+source CauldronPromos
+name Cauldron Promos
+
+villain Anathema
+name Anathema
+from CauldronBase
+challenge Regenerative Biology
+At the start of the game, put Biofeedback into play.
+Biofeedback is indestructible.
+Anathema is immune to villain damage.
+
+variant EvolvedAnathema
+name Evolved Anathema
+from CauldronBase CauldronPromos
+base Anathema
+challenge True Evolution
+Replace both instances of arm or head card on this card with villain target.
+
+villain Celadroch
+name Celadroch
+from CauldronStormfall
+challenge Shallow Slumber
+At the start of the game, put a token in the storm pool.
+
+villain Dendron
+name Dendron
+from CauldronBase
+challenge Infernal Ink
+Whenever a tattoo enters play, it deals the hero target with the highest HP (H) minus 2 infernal damage.
+
+variant WindcolorDendron
+name Windcolor Dendron
+from CauldronBase CauldronPromos
+base Dendron
+challenge Chaotic Colors
+At the start of the game, put 6 random tattoos under Dendron instead. Dendron is immune to villain damage.
+
+villain Dynamo
+name Dynamo
+from CauldronAdrift
+challenge Camaraderie
+At the start of the game, put Python and Copperhead into play. Dynamo is indestructible as long as there is another villain target in play.
+
+villain Gray
+name Gray
+from CauldronBase
+challenge Decaying World
+At the start of the villain turn, Gray deals each target 1 irreducable energy damage.
+
+villain TheInfernalChoir
+name The Infernal Choir
+from CauldronAdrift
+challenge Concealed Soul
+When The Infernal Choir flips, reduce damage dealt to The Infernal Choir by 2 until the start of the villain turn.
+
+villain Menagerie
+name Menagerie
+from CauldronStormfall
+challenge Stressful Containment
+At the end of the villain turn, the captured hero and each hero next to an enclosure deals themself X irreducable psychic damage, where X is the number of enclosures in play.
+
+villain TheMistressOfFate
+name The Mistress of Fate
+from CauldronAdrift
+challenge Imperfect Loop
+When The Mistress of Fate flips to her "Back to the beginning side", immediately discard the top card of the villain deck for each face-down day card.
+
+villain Mythos
+name Mythos
+from CauldronAdrift
+challenge Concealed Plots
+You are only allowed to check the symbol on the top card of the villain deck.
+
+villain Oriphel
+name Oriphel
+from CauldronExperimental
+challenge Rigid Rituals
+Reduce damage dealt to villain relics by 2.
+Oriphel does not flip back to Jade until there are 3 villain relics in the villain trash.
+
+villain Outlander
+name Outlander
+from CauldronAdrift
+challenge Lingering Influence
+Whenever a villain ongoing is destroyed, other villain ongoings are indestructible until the end of the villain turn.
+
+villain Phase
+name Phase
+from CauldronStormfall
+challenge Winding Escape Route
+Whenever an obstacle is destroyed, obstacles become immune to damage until the end of the turn.
+
+villain TheRam
+name The Ram
+from CauldronBase
+challenge Tactical Retreat
+The first time in the game that The Ram is reduced to 40 or fewer HP, search the villain deck and trash for a copy of Fall Back and put it into play, then shuffle all cards other than Up Close and Grappling Claw from the villain trash into the villain deck.
+
+variant Ram1929
+name 1929 Ram
+from CauldronBase CauldronPromos
+base TheRam
+challenge Reverse Engineering
+At the end of the villain turn, if this card is in play, destroy an equipment card, then put the top card of the villain deck under The Ram.
+
+villain ScreaMachine
+name ScreaMachine
+from CauldronAdrift
+challenge Star Power
+Band members flip when 2 cards of their corresponding keyword are in play rather than 3.
+
+villain SwarmEater
+name Swarm Eater
+from CauldronExperimental
+challenge Inescapable Hunter
+Whenever Swarm Eater reduces a target to 2 or fewer HP, Swarm Eater destroys that target.
+
+variant HivemindSwarmEater
+name Hivemind Swarm Eater
+from CauldronExperimental CauldronPromos
+base SwarmEater
+challenge Shared Code
+Activated absorb texts also apply to Swarm Eater.
+
+villain Tiamat
+name Tiamat
+from CauldronBase
+challenge Undying Rage
+Whenever a villain spell card enters play, if the head it names is decapitated, that head flips and is restroted to (H) times 3 HP.
+
+variant HydraTiamat
+name Hydra Tiamat
+from CauldronBase CauldronPromos
+base Tiamat
+challenge Resiliance
+villain ongoings are indestructible as long as 2 or more heads are not decapitated.
+unlock Have The Knight, Necro, and Echelon on the team. Each of base Tiamat's heads must be defeated by its nemesis hero.
+requires Tiamat TheKnight? Necro? Echelon?
+
+variant Tiamat2199
+name Tiamat 2199
+from CauldronBase CauldronPromos
+base Tiamat
+challenge Reactive Armor
+Whenever a non-villain target deals damage to a dragonscale, Tiamat deals that target (H) minus 1 projectile damage.
+
+villain Vector
+name Vector
+from CauldronExperimental
+challenge Silent Plague
+At the start of the game, put Supervirus under Vector. It does not count as being in play.
+The first time Vector would be destroyed each game, instead set him to 10 HP and put Supervirus from under him into play.
+
+hero Baccarat
+name Baccarat
+from CauldronBase
+
+hero TheCricket
+name The Cricket
+from CauldronExperimental
+
+hero Cypher
+name Cypher
+from CauldronExperimental
+
+hero DocHavoc
+name Doc Havoc
+from CauldronBase
+
+hero Drift
+name Drift
+from CauldronAdrift
+
+hero Echelon
+name Echelon
+from CauldronStormfall
+
+hero Gargoyle
+name Gargoyle
+from CauldronAdrift
+
+hero Gyrosaur
+name Gyrosaur
+from CauldronAdrift
+
+hero Impact
+name Impact
+from CauldronStormfall
+
+hero TheKnight
+name The Knight
+from CauldronBase
+
+hero LadyOfTheWood
+name Lady of the Wood
+from CauldronBase
+
+hero MagnificentMara
+name Magnificent Mara
+from CauldronStormfall
+
+hero Malichae
+name Malichae
+from CauldronBase
+
+hero Necro
+name Necro
+from CauldronBase
+
+hero Pyre
+name Pyre
+from CauldronAdrift
+
+hero Quicksilver
+name Quicksilver
+from CauldronBase
+
+hero Starlight
+name Starlight
+from CauldronBase
+
+hero TheStranger
+name The Stranger
+from CauldronBase
+
+hero TangoOne
+name Tango One
+from CauldronBase
+
+hero Terminus
+name Terminus
+from CauldronAdrift
+
+hero Titan
+name Titan
+from CauldronExperimental
+
+hero Vanish
+name Vanish
+from CauldronBase
+
+environment BlackwoodForest
+name Blackwood Forest
+from CauldronBase
+
+environment CatchwaterHarbor1929
+name Catchwater Harbor 1929
+from CauldronAdrift
+
+environment TheChasmOfAThousandNights
+name The Chasm of a Thousand Nights
+from CauldronAdrift
+
+environment TheCybersphere
+name The Cybersphere
+from CauldronExperimental
+
+environment DungeonsOfTerror
+name Dungeons of Terror
+from CauldronUnexpected
+
+environment FSCContinuanceWanderer
+name F.S.C. Continuance Wanderer
+from CauldronBase
+
+environment HalberdERC
+name Halberd E.R.C.
+from CauldronBase
+
+environment NightloreCitadel
+name Nightlore Citadel
+from CauldronAdrift
+
+environment Northspar
+name Northspar
+from CauldronBase
+
+environment OblaskCrater
+name Oblask Crater
+from CauldronUnexpected
+
+environment StSimeonsCatacombs
+name St. Simeon's Catacombs
+from CauldronBase
+
+environment SuperstormAkela
+name Superstorm Akela
+from CauldronStormfall
+
+environment Vault5
+name Vault 5
+from CauldronAdrift
+
+environment TheWanderingIsle
+name The Wandering Isle
+from CauldronBase
+
+environment WindmillCity
+name Windmill City
+from CauldronAdrift
+
+variant BaccaratAceOfSwords
+name Baccarat Ace of Swords
+from CauldronBase CauldronPromos
+base Baccarat
+
+variant BaccaratAceOfSorrows
+name Baccarat Ace of Sorrows
+from CauldronBase CauldronPromos
+base Baccarat
+
+variant Baccarat1929
+name Baccarat 1929
+from CauldronBase CauldronPromos
+base Baccarat
+
+variant FirstResponseCricket
+name First Response Cricket
+from CauldronExperimental CauldronPromos
+base TheCricket
+unlock Win a game in Windmill City with The Cricket on the team. The Cricket must be reduced to 5 or less HP. Then, Echelon must heal The Cricket for a total of 10_HP.
+requires TheCricket? Echelon? WindmillCity
+
+variant TheCricketRenegade
+name The Cricket Renegade
+from CauldronExperimental CauldronPromos
+base TheCricket
+unlock Lose a game against Dynamo in Windmill City with The Cricket as the first hero. Python must reduce damage dealt by The Cricket at some point. The Cricket must have been defeated by damage dealt by a Responder card.
+requires Dynamo TheCricket? WindmillCity
+
+variant TheCricketWastelandRonin
+name The Cricket Wasteland Ronin
+from CauldronExperimental CauldronPromos
+base TheCricket
+unlock In a game in F.S.C. Continuance Wanderer with Pyre, The Cricket, The Stranger, Impact, and Gargoyle, play Rogue Fission Cascade while Heart of the Wanderer is in play.
+requires Pyre? TheCricket? TheStranger? Impact? Gargoyle? FSCContinuanceWanderer
+
+variant FirstResponseCypher
+name First Response Cypher
+from CauldronExperimental CauldronPromos
+base Cypher
+unlock Win a game in Windmill City with Cypher, The Cricket, Echelon, Vanish, and Doc Havoc on the team. Each hero except Cypher must have been augmented at some point.
+requires Cypher? TheCricket? Echelon? Vanish? DocHavoc? WindmillCity
+
+variant CypherSwarmingProtocol
+name Cypher Swarming Protocol
+from CauldronExperimental CauldronPromos
+base Cypher
+unlock Augment Cypher with each of Cypher's augments in the same game.
+requires Cypher?
+
+variant FirstResponseDocHavoc
+name First Response Doc Havoc
+from CauldronBase CauldronPromos
+base DocHavoc
+unlock Win a game in Windmill City with Cypher, The Cricket, Echelon, Vanish, and Doc Havoc on the team. Doc Havoc must destroy at least 2_emergencies and heal each other hero at least 10_HP.
+requires Cypher? TheCricket? Echelon? Vanish? DocHavoc? WindmillCity
+
+variant DocHavoc2199
+name Doc Havoc 2199
+from CauldronBase CauldronPromos
+base DocHavoc
+
+variant DriftThroughTheBreach
+name Drift Through the Breach
+from CauldronAdrift CauldronPromos
+base Drift
+
+variant Drift1929And2199
+name Drift 1929 & 2199
+from CauldronAdrift CauldronPromos
+base Drift
+
+variant Drift1609
+name Drift 1609
+from CauldronAdrift CauldronPromos
+base Drift
+
+variant Drift1789
+name Drift 1789
+from CauldronAdrift CauldronPromos
+base Drift
+
+variant TestSubjectDrift
+name Test Subject Drift
+from CauldronAdrift CauldronPromos
+base Drift
+
+variant FirstResponseEchelon
+name First Response Echelon
+from CauldronStormfall CauldronPromos
+base Echelon
+unlock Win a game in each of Windmill City, Superstorm Akela, Megalopolis, Rook City, and Mordengrad with Vanish, Echelon, Doc Havoc, The Cricket, and Cypher on the team. In each of these games, Echelon must play First Responder while The Kestrel Mark II is in play.
+requires Vanish? Echelon? DocHavoc? TheCricket? Cypher? WindmillCity SuperstormAkela Megalopolis RookCity Mordengrad
+
+variant Echelon2199
+name Echelon 2199
+from CauldronStormfall CauldronPromos
+base Echelon
+
+variant GargoyleWastelandRonin
+name Gargoyle Wasteland Ronin
+from CauldronAdrift CauldronPromos
+base Gargoyle
+unlock In a game in F.S.C. Continuance Wanderer with Pyre, The Cricket, The Stranger, Impact, and Gargoyle, play Rogue Fission Cascade while Heart of the Wanderer is in play.
+requires Pyre? TheCricket? TheStranger? Impact? Gargoyle? FSCContinuanceWanderer
+
+variant Gargoyle2199
+name Gargoyle 2199
+from CauldronAdrift CauldronPromos
+base Gargoyle
+
+variant GargoyleDragonRanger
+name Gargoyle Dragon Ranger
+from CauldronAdrift CauldronPromos
+base Gargoyle
+
+variant GargoyleInfiltrator
+name Gargoyle Infiltrator
+from CauldronAdrift CauldronPromos
+base Gargoyle
+
+variant GyrosaurSpeedDemon
+name Gyrosaur Speed Demon
+from CauldronAdrift CauldronPromos
+base Gyrosaur
+
+variant GyrosaurRenegade
+name Gyrosaur Renegade
+from CauldronAdrift CauldronPromos
+base Gyrosaur
+
+variant CaptainGyrosaur
+name Captain Gyrosaur
+from CauldronAdrift CauldronPromos
+base Gyrosaur
+
+variant ImpactRenegade
+name Impact Renegade
+from CauldronStormfall CauldronPromos
+base Impact
+
+variant ImpactWastelandRonin
+name Impact Wasteland Ronin
+from CauldronStormfall CauldronPromos
+base Impact
+unlock In a game in F.S.C. Continuance Wanderer with Pyre, The Cricket, The Stranger, Impact, and Gargoyle, play Rogue Fission Cascade while Heart of the Wanderer is in play.
+requires Pyre? TheCricket? TheStranger? Impact? Gargoyle? FSCContinuanceWanderer
+
+variant TheFairKnight
+name The Fair Knight
+from CauldronBase CauldronPromos
+base TheKnight
+
+variant TheBerserkerKnight
+name The Berserker Knight
+from CauldronBase CauldronPromos
+base TheKnight
+
+variant TheKnight1929
+name The Knight 1929
+from CauldronBase CauldronPromos
+base TheKnight
+
+variant TheKnightsWastelandRonin
+name The Knights Wasteland Ronin
+from CauldronBase CauldronPromos
+base TheKnight
+
+variant LadyOfTheWoodSeasonOfChange
+name Lady of the Wood Season of Change
+from CauldronBase CauldronPromos
+base LadyOfTheWood
+
+variant MinistryOfStrategicScienceLadyOfTheWood
+name Ministry of Strategic Science Lady of the Wood
+from CauldronBase CauldronPromos
+base LadyOfTheWood
+
+variant LadyOfTheWood2199
+name Lady of the Wood 2199
+from CauldronBase CauldronPromos
+base LadyOfTheWood
+
+variant MinistryOfStrategicScienceMagnificentMara
+name Ministry of Strategic Science Magnificent Mara
+from CauldronStormfall CauldronPromos
+base MagnificentMara
+
+variant MagnificentMara1929
+name Magnificent Mara 1929
+from CauldronStormfall CauldronPromos
+base MagnificentMara
+
+variant ShardmasterMalichae
+name Shardmaster Malichae
+from CauldronBase CauldronPromos
+base Malichae
+
+variant MinistryOfStrategicScienceMalichae
+name Ministry of Strategic Science Malichae
+from CauldronBase CauldronPromos
+base Malichae
+
+variant NecroWardenOfChaos
+name Necro Warden of Chaos
+from CauldronBase CauldronPromos
+base Necro
+
+variant Necro1929
+name Necro 1929
+from CauldronBase CauldronPromos
+base Necro
+
+variant NecroLastOfTheForgottenOrder
+name Necro Last of the Forgotten Order
+from CauldronBase CauldronPromos
+base Necro
+unlock First, lose a game in Catchwater Harbor 1929 with Necro 1929, Vanish 1929, The Knight 1929, Tango One 1929, and La Comodora on the team due to Necro getting Lost Behind. Then, defeat Mythos with Drift 1789 and Terminus on the team and Necro not on the team. Terminus must deal the final blow to Mythos.
+requires Mythos? Drift1789 Terminus? Necro1929 Vanish1929 TheKnight1929 TangoOne1929 LaComodora? CatchwaterHarbor1929
+
+variant TheUnstablePyre
+name The Unstable Pyre
+from CauldronAdrift CauldronPromos
+base Pyre
+
+variant PyreWastelandRonin
+name Pyre Wasteland Ronin
+from CauldronAdrift CauldronPromos
+base Pyre
+unlock In a game in F.S.C. Continuance Wanderer with Pyre, The Cricket, The Stranger, Impact, and Gargoyle, play Rogue Fission Cascade while Heart of the Wanderer is in play.
+requires Pyre? TheCricket? TheStranger? Impact? Gargoyle? FSCContinuanceWanderer
+
+variant PyreExpeditionOblask
+name Pyre Expedition Oblask
+from CauldronAdrift CauldronPromos
+base Pyre
+
+variant TheUncannyQuicksilver
+name The Uncanny Quicksilver
+from CauldronBase CauldronPromos
+base Quicksilver
+
+variant QuicksilverRenegade
+name Quicksilver Renegade
+from CauldronBase CauldronPromos
+base Quicksilver
+
+variant HarbingerQuicksilver
+name Harbinger Quicksilver
+from CauldronBase CauldronPromos
+base Quicksilver
+
+variant StarlightGenesis
+name Starlight Genesis
+from CauldronBase CauldronPromos
+base Starlight
+
+variant NightloreCouncilStarlight
+name Nightlore Council Starlight
+from CauldronBase CauldronPromos
+base Starlight
+
+variant StarlightArea51
+name Starlight Area-51
+from CauldronBase CauldronPromos
+base Starlight
+
+variant TheRunecarvedStranger
+name The Runecarved Stranger
+from CauldronBase CauldronPromos
+base TheStranger
+
+variant TheStranger1929
+name The Stranger 1929
+from CauldronBase CauldronPromos
+base TheStranger
+
+variant TheStrangerWastelandRonin
+name The Stranger Wasteland Ronin
+from CauldronBase CauldronPromos
+base TheStranger
+unlock In a game in F.S.C. Continuance Wanderer with Pyre, The Cricket, The Stranger, Impact, and Gargoyle, play Rogue Fission Cascade while Heart of the Wanderer is in play.
+requires Pyre? TheCricket? TheStranger? Impact? Gargoyle? FSCContinuanceWanderer
+
+variant TheStrangerInTheCorn
+name The Stranger in the Corn
+from CauldronBase CauldronPromos
+base TheStranger
+
+variant TangoOneGhostOps
+name Tango One Ghost Ops
+from CauldronBase CauldronPromos
+base TangoOne
+
+variant TangoOne1929
+name Tango One 1929
+from CauldronBase CauldronPromos
+base TangoOne
+
+variant TangoOneCreedOfTheSniper
+name Tango One Creed of the Sniper
+from CauldronBase CauldronPromos
+base TangoOne
+
+variant MinistryOfStrategicScienceTerminus
+name Ministry of Strategic Science Terminus
+from CauldronAdrift CauldronPromos
+base Terminus
+
+variant Terminus2199
+name Terminus 2199
+from CauldronAdrift CauldronPromos
+base Terminus
+
+variant MinistryOfStrategicScienceTitan
+name Ministry of Strategic Science Titan
+from CauldronExperimental CauldronPromos
+base Titan
+
+variant Titan2199
+name Titan 2199
+from CauldronExperimental CauldronPromos
+base Titan
+
+variant TitanOni
+name Titan Oni
+from CauldronExperimental CauldronPromos
+base Titan
+
+variant FirstResponseVanish
+name First Response Vanish
+from CauldronBase CauldronPromos
+base Vanish
+unlock First, be defeated by Gray in Windmill City with Vanish on the team in which Gray destroys Gray Pharmaceutical Building. Then, defeat Gray in Windmill City with Vanish, Echelon, Doc Havoc, The Cricket, and Cypher on the team. Vanish must cause each other hero to deal damage to Gray during this game.
+requires Gray? Vanish? Echelon? DocHavoc? TheCricket? Cypher? WindmillCity
+
+variant Vanish1929
+name Vanish 1929
+from CauldronBase CauldronPromos
+base Vanish
+
+variant VanishTombOfThieves
+name Vanish Tomb of Thieves
+from CauldronBase CauldronPromos
+base Vanish
+
+variant UrbanWarfareExpatriette
+name Urban Warfare Expatriette
+from RookCity CauldronPromos
+base Expatriette
+
+variant SiegeBreakerBunker
+name Siege Breaker Bunker
+from CauldronPromos
+base Bunker
+
+variant NitroBoostAbsoluteZero
+name Nitro Boost Absolute Zero
+from CauldronPromos
+base AbsoluteZero
+
+variant EnlightenedMisterFixer
+name Enlightened Mister Fixer
+from RookCity CauldronPromos
+base MisterFixer
+
+variant NorthernWindMisterFixer
+name Northern Wind Mister Fixer
+from RookCity CauldronPromos
+base MisterFixer
+
+variant OmnitronXI
+name Omnitron-XI
+from ShatteredTimelines CauldronPromos
+base OmnitronX

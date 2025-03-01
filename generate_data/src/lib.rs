@@ -80,7 +80,6 @@ struct FillerData {
     enum_name: String,
     display_name_pos: Option<String>,
     display_name_neg: Option<String>,
-    damage_types: bool,
     r#type: FillerType,
     desc_pos: Option<String>,
     desc_neg: Option<String>,

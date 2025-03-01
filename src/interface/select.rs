@@ -14,7 +14,7 @@ impl Interface {
                 for (idx, (hero, elem)) in self.current_game.heroes.iter().enumerate() {
                     if SelectedHero::Hero(selected) == *hero {
                         deselect_hero(&self.document, &selected);
-                        let _ = elem.remove();
+                        elem.remove();
                         self.current_game.heroes.remove(idx);
                         return;
                     } else if match hero {
@@ -49,7 +49,6 @@ impl Interface {
                 ));
                 let _ = self.active_heroes.append_child(&new);
                 self.current_game.heroes.push((SelectedHero::Hero(selected), new));
-                return;
             }
             Item::Contender(contender) => {
                 let mut first_empty = None;
@@ -112,7 +111,7 @@ impl Interface {
                 for (idx, (hero, elem)) in self.current_game.heroes.iter().enumerate() {
                     if SelectedHero::Variant(variant) == *hero {
                         deselect_variant(&self.document, &variant);
-                        let _ = elem.remove();
+                        elem.remove();
                         self.current_game.heroes.remove(idx);
                         return;
                     } else if match hero {
@@ -148,7 +147,6 @@ impl Interface {
                 ));
                 let _ = self.active_heroes.append_child(&new);
                 self.current_game.heroes.push((SelectedHero::Variant(variant), new));
-                return;
             }
             Item::Villain(villain) => {
                 let add = match &self.current_game.villains {
@@ -174,7 +172,7 @@ impl Interface {
                     CurrentVillains::Team(current) => {
                         for (idx, (villain, _, elem)) in current.iter_mut().enumerate() {
                             if *villain == team_villain {
-                                let _ = elem.remove();
+                                elem.remove();
                                 current.remove(idx);
                                 deselect_team_villain(&self.document, &team_villain);
                                 return;
@@ -183,7 +181,7 @@ impl Interface {
                         if current.len() >= 5 {
                             let (first_villain, _, elem) = current.first().unwrap();
                             deselect_team_villain(&self.document, first_villain);
-                            let _ = elem.remove();
+                            elem.remove();
                             current.remove(0);
                         }
                         select_team_villain(&self.document, &team_villain);
@@ -215,7 +213,7 @@ impl Interface {
                     CurrentVillains::Gladiators(current) => {
                         for (idx, (villain, _, elem)) in current.iter_mut().enumerate() {
                             if *villain == gladiator {
-                                let _ = elem.remove();
+                                elem.remove();
                                 current.remove(idx);
                                 deselect_gladiator(&self.document, &gladiator);
                                 return;
@@ -224,7 +222,7 @@ impl Interface {
                         if current.len() >= 5 {
                             let (first_gladiator, _, elem) = current.first().unwrap();
                             deselect_gladiator(&self.document, first_gladiator);
-                            let _ = elem.remove();
+                            elem.remove();
                             current.remove(0);
                         }
                         select_gladiator(&self.document, &gladiator);

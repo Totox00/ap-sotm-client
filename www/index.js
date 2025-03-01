@@ -195,6 +195,9 @@ function connectedConnect(connected) {
 }
 
 function pushSave() {
+  const saveString = session.save_string();
+  console.log(`Save string length: ${saveString.length}`);
+
   client.send(
     JSON.stringify([
       {
@@ -202,7 +205,7 @@ function pushSave() {
         key: `sotm-save-${slot.value}`,
         default: "",
         want_reply: false,
-        operations: [{ operation: "replace", value: session.save_string() }],
+        operations: [{ operation: "replace", value: saveString }],
       },
     ])
   );

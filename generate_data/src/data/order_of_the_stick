@@ -1,0 +1,70 @@
+source OrderOfTheStick
+name Order of the Stick
+
+hero Belkar
+name Belkar
+from OrderOfTheStick
+
+variant BelkarStealthyRanger
+name Belkar: Stealthy Ranger
+from OrderOfTheStick
+base Belkar
+
+variant BelkarGourmetChef
+name Belkar: Gourmet Chef
+from OrderOfTheStick
+base Belkar
+
+hero Durkon
+name Durkon
+from OrderOfTheStick
+
+variant DurkonHighPriestOfHel
+name Durkon: High Priest of Hel
+from OrderOfTheStick
+base Durkon
+
+hero Elan
+name Elan
+from OrderOfTheStick
+
+variant ElanPunDuelist
+name Elan: Pun Duelist
+from OrderOfTheStick
+base Elan
+
+hero Haley
+name Haley
+from OrderOfTheStick
+
+variant HaleyTheRedBlur
+name Haley: The Red Blur
+from OrderOfTheStick
+base Haley
+
+hero RoyGreenhilt
+name Roy Greenhilt
+from OrderOfTheStick
+
+variant RoyGreenhiltSwordmaster
+name Roy Greenhilt: Swordmaster
+from OrderOfTheStick
+base RoyGreenhilt
+
+variant RoyGreenhiltMba
+name Roy Greenhilt: MBA
+from OrderOfTheStick
+base RoyGreenhilt
+
+hero Vaarsuvius
+name Vaarsuvius
+from OrderOfTheStick
+
+variant VaarsuviusCultRidden
+name Vaarsuvius: Cult-Ridden
+from OrderOfTheStick
+base Vaarsuvius
+
+villain Xykon
+name Xykon
+from OrderOfTheStick

@@ -1,0 +1,78 @@
+source DigimonSaintBNS
+name Digimon SaintBNS
+
+hero TaiAgumon
+name Tai & Agumon
+from DigimonSaintBNS
+
+hero MattGabumon
+name Matt & Gabumon
+from DigimonSaintBNS
+
+hero SoraBiyomon
+name Sora & Biyomon
+from DigimonSaintBNS
+
+hero IzzyTentomon
+name Izzy and Tentomon
+from DigimonSaintBNS
+
+hero JoeGomamon
+name Joe & Gomamon
+from DigimonSaintBNS
+
+hero MimiPalmon
+name Mimi & Palmon
+from DigimonSaintBNS
+
+hero TKPatamon
+name T.K. & Patamon
+from DigimonSaintBNS
+
+hero KariSalamon
+name Kari & Salamon (Magmadramon)
+from DigimonSaintBNS
+
+hero MameoElecmonV
+name Mameo & Elecmon-V
+from DigimonSaintBNS
+
+hero HimariSalamon
+name Himari & Salamon
+from DigimonSaintBNS
+
+hero LucheNumemon
+name Luche & Numemon
+from DigimonSaintBNS
+
+hero KoutaGuilmon
+name Kouta & Guilmon
+from DigimonSaintBNS
+
+hero RikaRenamon
+name Rika & Renamon
+from DigimonSaintBNS
+
+hero TakatoGuilmon
+name Takto & Guilmon
+from DigimonSaintBNS
+
+hero HenryTerriermon
+name Henry & Terriermon
+from DigimonSaintBNS
+
+hero SadJeriLeomon
+name Sad mode Jeri & Leomon
+from DigimonSaintBNS
+
+hero JeriElecmon
+name Jeri & Elecmon
+from DigimonSaintBNS
+
+villain Devimon
+name Devimon
+from DigimonSaintBNS
+
+villain Apocalymon
+name Apocalymon
+from DigimonSaintBNS

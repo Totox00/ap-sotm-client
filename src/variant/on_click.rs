@@ -1,4 +1,4 @@
-use utils::{flip_bit, flip_bool, incr, reset};
+use utils::{flip_bit, flip_bool, incr};
 
 use crate::{
     data::{Hero, TeamVillain, Variant},
@@ -238,13 +238,40 @@ pub fn on_click(target: &str, state: &mut State, game: &CurrentGame) -> Option<V
         "counter-FreedomFiveLegacy-increased" => state.temporary_variant_progress.freedom_five_legacy.1 += 1,
         "toggle-FreedomFiveLegacy" => flip_bool!(freedom_five_legacy.2),
         "counter-SuperSentaiIdealist" => incr!(super_sentai_idealist, 0, 2, 2),
-        "reset-SuperSentaiIdealist" => reset!(super_sentai_idealist, 0, 2),
+        "reset-SuperSentaiIdealist" => state.temporary_variant_progress.super_sentai_idealist = 0,
         "counter-DrMedicoMalpractice" => incr!(dr_medico_malpractice, 0, 6, 50),
         "toggle-CosmicInventorWrithe-equipment" => flip_bit!(cosmic_inventor_writhe, 0),
         "toggle-CosmicInventorWrithe-ongoing" => flip_bit!(cosmic_inventor_writhe, 1),
         "toggle-CosmicInventorWrithe-more" => flip_bit!(cosmic_inventor_writhe, 2),
         "counter-RoadWarriorMainstay" => incr!(road_warrior_mainstay, 0, 2, 3),
-        "reset-RoadWarriorMainstay" => reset!(road_warrior_mainstay, 0, 2),
+        "reset-RoadWarriorMainstay" => state.temporary_variant_progress.road_warrior_mainstay = 0,
+        "toggle-HydraTiamat-0" => flip_bit!(hydra_tiamat, 0),
+        "toggle-HydraTiamat-1" => flip_bit!(hydra_tiamat, 1),
+        "toggle-HydraTiamat-2" => flip_bit!(hydra_tiamat, 2),
+        "toggle-FirstResponseCricket" => flip_bit!(first_response_cricket, 0),
+        "counter-FirstResponseCricket" => incr!(first_response_cricket, 0, 1, 4, 10),
+        "toggle-TheCricketRenegade-python" => flip_bit!(the_cricket_renegade, 0),
+        "toggle-TheCricketRenegade-responder" => flip_bit!(the_cricket_renegade, 1),
+        "toggle-FirstResponseCypher-0" => flip_bit!(first_response_cypher, 0),
+        "toggle-FirstResponseCypher-1" => flip_bit!(first_response_cypher, 1),
+        "toggle-FirstResponseCypher-2" => flip_bit!(first_response_cypher, 2),
+        "toggle-FirstResponseCypher-3" => flip_bit!(first_response_cypher, 3),
+        "toggle-CypherSwarmingProtocol-0" => flip_bit!(cypher_swarming_protocol, 0),
+        "toggle-CypherSwarmingProtocol-1" => flip_bit!(cypher_swarming_protocol, 1),
+        "toggle-CypherSwarmingProtocol-2" => flip_bit!(cypher_swarming_protocol, 2),
+        "toggle-CypherSwarmingProtocol-3" => flip_bit!(cypher_swarming_protocol, 3),
+        "toggle-CypherSwarmingProtocol-4" => flip_bit!(cypher_swarming_protocol, 4),
+        "counter-FirstResponseDocHavoc-emergencies" => incr!(first_response_doc_havoc.0, 0, 2, 2),
+        "counter-FirstResponseDocHavoc-0" => incr!(first_response_doc_havoc.1, 0, 4, 10),
+        "counter-FirstResponseDocHavoc-1" => incr!(first_response_doc_havoc.1, 4, 4, 10),
+        "counter-FirstResponseDocHavoc-2" => incr!(first_response_doc_havoc.1, 8, 4, 10),
+        "counter-FirstResponseDocHavoc-3" => incr!(first_response_doc_havoc.1, 12, 4, 10),
+        "toggle-FirstResponseEchelon" => flip_bool!(first_response_echelon),
+        "toggle-NecroLastOfTheForgottenOrder-leftbehind" | "toggle-NecroLastOfTheForgottenOrder-finalblow" => flip_bool!(necro_last_of_the_forgotten_order),
+        "toggle-FirstResponseVanish-pharma" | "toggle-FirstResponseVanish-0" => flip_bit!(first_response_vanish, 0),
+        "toggle-FirstResponseVanish-1" => flip_bit!(first_response_vanish, 1),
+        "toggle-FirstResponseVanish-2" => flip_bit!(first_response_vanish, 2),
+        "toggle-FirstResponseVanish-3" => flip_bit!(first_response_vanish, 3),
         _ => (),
     };
 
@@ -259,6 +286,9 @@ pub fn on_click(target: &str, state: &mut State, game: &CurrentGame) -> Option<V
         }
         "toggle-PrimeWardensTempest-0" | "toggle-PrimeWardensTempest-1" | "toggle-PrimeWardensTempest-2" => {
             multi_click_unlock(state.temporary_variant_progress.prime_wardens_tempest == 0x7, Variant::PrimeWardensTempest)
+        }
+        "toggle-CypherSwarmingProtocol-0" | "toggle-CypherSwarmingProtocol-1" | "toggle-CypherSwarmingProtocol-2" | "toggle-CypherSwarmingProtocol-3" | "toggle-CypherSwarmingProtocol-4" => {
+            multi_click_unlock(state.temporary_variant_progress.cypher_swarming_protocol == 0x1F, Variant::CypherSwarmingProtocol)
         }
         _ => None,
     }

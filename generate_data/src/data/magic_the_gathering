@@ -1,0 +1,336 @@
+source MagicTheGathering
+name Magic The Gathering
+
+hero Ajani
+name Ajani
+from MagicTheGathering
+
+variant AjaniWiseCounselor
+name Ajani: Wise Counselor
+from MagicTheGathering
+base Ajani
+
+variant AjaniMentorOfHeroes
+name Ajani: Mentor of Heroes
+from MagicTheGathering
+base Ajani
+
+variant AjaniSleeperAgent
+name Ajani: Sleeper Agent
+from MagicTheGathering
+base Ajani
+
+hero TheBrazenCoalitionBeckettBrass
+name The Brazen Coalition: Beckett Brass
+from MagicTheGathering
+
+variant TheBrazenCoalitionWallisParrish
+name The Brazen Coalition: Wallis Parrish
+from MagicTheGathering
+base TheBrazenCoalitionBeckettBrass
+
+variant TheBrazenCoalitionLanneryStorm
+name The Brazen Coalition: Lannery Storm
+from MagicTheGathering
+base TheBrazenCoalitionBeckettBrass
+
+hero Chandra
+name Chandra
+from MagicTheGathering
+
+variant ChandraHeartOfFire
+name Chandra: Heart of Fire
+from MagicTheGathering
+base Chandra
+
+variant ChandraDressedToKill
+name Chandra: Dressed to Kill
+from MagicTheGathering
+base Chandra
+
+hero Garruk
+name Garruk
+from MagicTheGathering
+
+variant GarrukApexPredator
+name Garruk: Apex Predator
+from MagicTheGathering
+base Garruk
+
+variant GarrukCursedHuntsman
+name Garruk: Cursed Huntsman
+from MagicTheGathering
+base Garruk
+
+hero Gideon
+name Gideon
+from MagicTheGathering
+
+variant GideonDeathSeeker
+name Gideon: Death Seeker
+from MagicTheGathering
+base Gideon
+
+hero Huatli
+name Huatli
+from MagicTheGathering
+
+variant HuatliTheSunsHeart
+name Huatli: The Sun's Heart
+from MagicTheGathering
+base Huatli
+
+variant HuatliWarriorPoet
+name Huatli: Warrior Poet
+from MagicTheGathering
+base Huatli
+
+variant HuatliPoetOfUnity
+name Huatli: Poet of Unity
+from MagicTheGathering
+base Huatli
+
+hero Jace
+name Jace
+from MagicTheGathering
+
+variant JaceTelepathUnbound
+name Jace: Telepath Unbound
+from MagicTheGathering
+base Jace
+
+variant JaceCunningCastaway
+name Jace: Cunning Castaway
+from MagicTheGathering
+base Jace
+
+variant JacePerfectedMind
+name Jace: Perfected Mind
+from MagicTheGathering
+base Jace
+
+hero Karn
+name Karn
+from MagicTheGathering
+
+variant KarnFatherOfMachines
+name Karn: Father of Machines
+from MagicTheGathering
+base Karn
+
+variant KarnLegacyReforged
+name Karn: Legacy Reforged
+from MagicTheGathering
+base Karn
+
+hero Liliana
+name Liliana
+from MagicTheGathering
+
+variant LilianaMasterOfDeath
+name Liliana: Master of Death
+from MagicTheGathering
+base Liliana
+
+variant LilianaDeathWielder
+name Liliana: Death Wielder
+from MagicTheGathering
+base Liliana
+
+hero Nissa
+name Nissa
+from MagicTheGathering
+
+variant NissaSageAnimist
+name Nissa: Sage Animist
+from MagicTheGathering
+base Nissa
+
+variant NissaAscendedAnimist
+name Nissa: Ascended Animist
+from MagicTheGathering
+base Nissa
+
+hero TheRiverHeraldsTishana
+name The River Heralds: Tishana
+from MagicTheGathering
+
+variant TheRiverHeraldsKopala
+name The River Heralds: Kopala
+from MagicTheGathering
+base TheRiverHeraldsTishana
+
+variant TheRiverHeraldsKumena
+name The River Heralds: Kumena
+from MagicTheGathering
+base TheRiverHeraldsTishana
+
+variant TheRiverHeraldsTuvasa
+name The River Heralds: Tuvasa
+from MagicTheGathering
+base TheRiverHeraldsTishana
+
+variant TheRiverHeraldsNicanzil
+name The River Heralds: Nicanzil
+from MagicTheGathering
+base TheRiverHeraldsTishana
+
+hero Saheeli
+name Saheeli
+from MagicTheGathering
+
+variant SaheeliSublimeArtificer
+name Saheeli: Sublime Artificer
+from MagicTheGathering
+base Saheeli
+
+variant SaheeliSunsBrilliance
+name Saheeli: Sun's Brilliance
+from MagicTheGathering
+base Saheeli
+
+hero Teferi
+name Teferi
+from MagicTheGathering
+
+variant TeferiHeroOfDominaria
+name Teferi: Hero of Dominaria
+from MagicTheGathering
+base Teferi
+
+variant TeferiTimebender
+name Teferi: Timebender
+from MagicTheGathering
+base Teferi
+
+villain EleshNorn
+name Elesh Norn
+from MagicTheGathering
+challenge New Phyrexia
+Device cards are indestructible as long as they have 5 or more HP.
+At the end of the villain turn, discard the top card of the villain deck. If it is a device, put it into play.
+
+villain Heliod
+name Heliod
+from MagicTheGathering
+
+variant HeliodRadiantDawn
+name Heliod: Radiant Dawn
+from MagicTheGathering
+base Heliod
+
+villain Nghathrod
+name N'ghathrod
+from MagicTheGathering
+
+villain NicolBolas
+name Nicol Bolas
+from MagicTheGathering
+
+variant NicolBolasRavagingTwin
+name Nicol Bolas: Ravaging Twin
+from MagicTheGathering
+base NicolBolas
+
+villain ObNixilis
+name Ob Nixilis
+from MagicTheGathering
+
+variant ObNixilisDemonicKingpin
+name Ob Nixilis: Demonic Kingpin
+from MagicTheGathering
+base ObNixilis
+challenge Streets of Victims
+At the start of the game, put Corrupted Earth into play.
+Corrupted Earth cannot be destroyed unless the environment deck is empty.
+At the end of the villain turn, play the top card of the environment deck.
+
+villain Tezzeret
+name Tezzeret
+from MagicTheGathering
+
+variant TezzeretAgentOfArtifice
+name Tezzeret: Agent of Artifice
+from MagicTheGathering
+base Tezzeret
+
+villain Ulamog
+name Ulamog
+from MagicTheGathering
+
+variant UlaFalseGod
+name Ula, False God
+from MagicTheGathering
+base Ulamog
+
+villain Vona
+name Vona
+from MagicTheGathering
+
+villain Yawgmoth
+name Yawgmoth
+from MagicTheGathering
+
+environment Ixalan
+name Ixalan
+from MagicTheGathering
+
+environment AzoriusSenate
+name Azorius Senate
+from MagicTheGathering
+
+environment BorosLegion
+name Boros Legion
+from MagicTheGathering
+
+environment CultOfRakdos
+name Cult of Rakdos
+from MagicTheGathering
+
+environment GolgariSwarm
+name Golgari Swarm
+from MagicTheGathering
+
+environment GruulClans
+name Gruul Clans
+from MagicTheGathering
+
+environment HouseDimir
+name House Dimir
+from MagicTheGathering
+
+environment IzzetLeague
+name Izzet League
+from MagicTheGathering
+
+environment OrzhovSyndicate
+name Orzhov Syndicate
+from MagicTheGathering
+
+environment SelesnyaConclave
+name Selesnya Conclave
+from MagicTheGathering
+
+environment SimicCombine
+name Simic Combine
+from MagicTheGathering
+
+environment LoreholdCollegeOfArchaeomancy
+name Lorehold: College of Archaeomancy
+from MagicTheGathering
+
+environment PrismariCollegeOfElementalArts
+name Prismari: College of Elemental Arts
+from MagicTheGathering
+
+environment QuandrixCollegeOfNumeromancy
+name Quandrix: Collage of Numeromancy
+from MagicTheGathering
+
+environment SilverquillCollegeOfEloquence
+name Silverquill: College of Eloquence
+from MagicTheGathering
+
+environment WitherbloomCollegeOfEssenceStudies
+name Witherbloom: College of Essence Studies
+from MagicTheGathering

@@ -18,10 +18,12 @@ li {
   list-style-type: disc;
 }
 
+#heroes > li,
 #environments > li {
   list-style-type: none;
 }
 
+#heroes > li.completed::before,
 #environments > li.completed::before {
   content: "\2713";
   color: green;

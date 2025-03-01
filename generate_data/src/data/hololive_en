@@ -1,0 +1,98 @@
+source HololiveEN
+name Hololive English
+
+source HololiveJoke
+name Hololive Joke decks
+
+hero GawrGura
+name Gawr Gura
+from HololiveEN
+
+hero NinomaeInaNis
+name Ninomae Ina'nis
+from HololiveEN
+
+hero MoriCalliope
+name mori calliope
+from HololiveEN
+
+hero AmeliaWatson
+name Amelia Watson
+from HololiveEN
+
+hero TakanashiKiara
+name Takanashi Kiara
+from HololiveEN
+
+hero HakosBaelz
+name Hakos Baelz
+from HoloLiveEN
+
+hero OuroKronii
+name Ouro Kronii
+from HololiveEN
+
+hero TsukumoSana
+name Tsukumo Sana
+from HololiveEN
+
+hero CeresFauna
+name Ceres Fauna
+from HololiveEN
+
+hero NanashiMumei
+name Nanashi Mumei
+from HololiveEN
+
+hero IRyS
+name IRyS
+from HololiveEN
+
+hero FuwaMoco
+name FuwaMoco
+from HololiveEN
+
+villain RedGura
+name Red Gura
+from HololiveEN
+
+villain NinomaeInanisPriestessOfTheAncientOnes
+name Ninomae Ina'nis Priestess of the Ancient Ones
+from HololiveEN
+
+villain Holojustice
+name Hololive Justice
+from HololiveEN
+
+hero Calvin
+name Calvin Morrison
+from HololiveJoke
+
+environment holonograffiti
+name Holo no graffiti
+from HololiveJoke
+
+environment KiaraFriedPhoenix
+name Kiara Fried Phoenix
+from HololiveEN
+
+environment AMEtaverse
+name Into The AMEtaverse
+from HololiveEN
+
+environment Holoween
+name Holoween
+from HololiveEN
+
+environment DeliveringHope
+name DeliveringHope
+from Hololivejoke
+
+villain OmegaAlpha
+name Omega-Alpha Manager of Reality
+from HololiveEN
+
+variant OmegaAlphaCreatorOfMyths
+name Omega-Alpha Creator of myths
+from HololiveEN
+base OmegaAlpha

@@ -1,9 +1,8 @@
-use crate::data::{Contender, DamageType, Environment, Filler, FillerTarget, Gladiator, Hero, Item, TeamVillain, Variant, Villain};
-use strum::IntoEnumIterator;
+use crate::data::{Contender, Environment, Filler, Gladiator, Hero, Item, TeamVillain, Variant, Villain};
 
-use super::filler::FillerItems;
+use super::filler::FillerItem;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct Items {
     pub scions: u32,
     pub villains: [u8; Villain::variant_count() / 8 + 1],
@@ -12,7 +11,7 @@ pub struct Items {
     pub heroes: [u8; Hero::variant_count()],
     pub contenders: [u8; Contender::variant_count() / 8 + 1],
     pub environments: [u8; Environment::variant_count() / 8 + 1],
-    pub filler: FillerItems,
+    pub filler: Vec<FillerItem>,
 }
 
 impl Items {
@@ -25,7 +24,7 @@ impl Items {
             heroes: [0; Hero::variant_count()],
             contenders: [0; Contender::variant_count() / 8 + 1],
             environments: [0; Environment::variant_count() / 8 + 1],
-            filler: FillerItems::new(),
+            filler: vec![],
         }
     }
 
@@ -118,54 +117,19 @@ impl Items {
             Item::Gladiator(v) => self.set_gladiator(v),
             Item::Environment(v) => self.set_environment(v),
             Item::Scion => self.scions += 1,
-            Item::Filler((filler, count)) => {
-                self.filler.add(filler, count);
-            }
+            Item::Filler((filler, duration)) => self.add_filler(filler, duration),
         }
     }
 
-    pub fn get_filler_for(&self, target: FillerTarget) -> Vec<(Filler, i32)> {
-        let mut out: Vec<(Filler, i32)> = vec![];
-
-        for filler in target.relevant_filler() {
-            let deconstructed = filler.deconstruct();
-            match deconstructed.damage_type {
-                Some(DamageType::All) => {
-                    let counts: Vec<_> = DamageType::iter()
-                        .skip(1)
-                        .filter_map(|damage_type| self.filler.typed_filler[damage_type as usize - 1].get_count(deconstructed).map(|count| (damage_type, count)))
-                        .collect();
-
-                    if counts.iter().skip(1).all(|(_, count)| counts[0].1 == *count) {
-                        if counts[0].1 != 0 {
-                            out.push((filler, counts[0].1));
-                        }
-                    } else {
-                        for (damage_type, count) in counts {
-                            if count != 0 {
-                                out.push((filler.with_type(damage_type), count));
-                            }
-                        }
-                    }
-                }
-                Some(damage_type) => {
-                    if let Some(count) = self.filler.typed_filler[damage_type as usize - 1].get_count(deconstructed) {
-                        if count != 0 {
-                            out.push((filler, count));
-                        }
-                    }
-                }
-                None => {
-                    if let Some(count) = self.filler.get_count(deconstructed) {
-                        if count != 0 {
-                            out.push((filler, count));
-                        }
-                    }
-                }
+    pub fn add_filler(&mut self, filler: Filler, duration: i32) {
+        for existing in self.filler.iter_mut() {
+            if existing.filler == filler {
+                existing.duration += duration;
+                return;
             }
         }
 
-        out
+        self.filler.push(FillerItem::new(filler, duration));
     }
 }
 

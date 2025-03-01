@@ -1,0 +1,106 @@
+filler StartHandsize
+type Hero
+posname Starting Handsize +1
+negname Starting Handsize -1
+posdesc Draw 1 additional card at the start of the game
+negdesc Draw 1 fewer card at the start of the game
+
+filler HeroHp
+type Hero
+posname Hero Toughness
+negname Hero Fragility
+posdesc Increase the starting and maximum HP of hero targets by 1
+negdesc Reduce the starting and maximum HP of hero targets by 1 to a minimum of 1
+
+filler Mulligan
+type Hero
+posname 1 Mulligan
+posdesc Once at the start of the game, you may discard your opening hand and draw a new one. Then, shuffle your trash into your deck
+
+filler HeroDamageDealt
+type Hero
+posname Hero Strength
+negname Hero Weakness
+posdesc Increase damage dealt by hero targets by 1
+negdesc Reduce damage dealt by hero targets by 1
+
+filler HeroDamageTaken
+type Hero
+posname Hero Fortification
+negname Hero Vulnerability
+posdesc Reduce damage taken by hero targets by 1
+negdesc Increase damage taken by hero targets by 1
+
+filler HeroCardPlay
+type Hero
+posname Haste
+negname Slowness
+posdesc You may play 1 additional card during your play phase
+negdesc You may play 1 fewer card during your play phase
+
+filler HeroPower
+type Hero
+posname Power use +1
+negname Power use -1
+posdesc You may use 1 additional power during your power phase
+negdesc You may use 1 fewer power during your power phase
+
+filler HeroCardDraw
+type Hero
+posname Ingenuity
+negname Stupidity
+posdesc You may draw 1 additional card during your draw phase
+negdesc You may draw 1 fewer card during your draw phase
+
+filler VillainHp
+type Villain
+posname Villain Fragility
+negname Villain Toughness
+posdesc Reduce the starting and maximum HP of villain targets by 1 to a minimum of 1
+negdesc Increase the starting and maximum HP of villain targets by 1
+
+filler VillainDamageDealt
+type Villain
+posname Villain Weakness
+negname Villain Strength
+posdesc Reduce damage dealt by villain targets by 1
+negdesc Increase damage dealt by villain targets by 1
+
+filler VillainDamageTaken
+type Villain
+posname Villain Vulnerability
+negname Villain Fortification
+posdesc Increase damage taken by villain targets by 1
+negdesc Reduce damage taken by villain targets by 1
+
+filler VillainCardPlays
+type Villain
+posname Horde -1
+negname Horde +1
+posdesc Play 1 fewer card from the villain deck during the villain play phase
+negdesc Play 1 additional card from the villain deck during the villain play phase
+
+filler VillainStartCardPlays
+type Villain
+negname Rapid Deployment
+negdesc At the start of the first villain turn, play the top card of the villain deck
+
+filler HeroCannotPlay
+type Other
+negname Slowing Assault
+negdesc At the start of each round, choose a hero. That hero cannot play cards until the end of the round
+
+filler HeroCannotPower
+type Other
+negname Power Assault
+negdesc At the start of each round, choose a hero. That hero cannot use powers until the end of the round
+
+filler HeroCannotDraw
+type Other
+negname Mental Assault
+negdesc At the start of each round, choose a hero. That hero cannot draw cards until the end of the round
+
+filler HeroCannotDamage
+type Other
+negname Weakening Assault
+negdesc At the start of each round, choose a hero. That hero cannot deal damage until the end of the round

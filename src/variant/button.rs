@@ -931,6 +931,135 @@ impl Variant {
                 Button::reset("reset-RoadWarriorMainstay"),
                 Button::restricted_unlock(state.temporary_variant_progress.road_warrior_mainstay >= 3, "unlock-RoadWarriorMainstay"),
             ]],
+            Variant::HydraTiamat => vec![
+                vec![Button::toggle("The Jaws of Winter", state.temporary_variant_progress.hydra_tiamat & 0x1 > 0, "toggle-HydraTiamat-0")],
+                vec![Button::toggle(
+                    "The Mouth of the Inferno",
+                    state.temporary_variant_progress.hydra_tiamat >> 1 & 0x1 > 0,
+                    "toggle-HydraTiamat-1",
+                )],
+                vec![Button::toggle(
+                    "The Eye of the Storm",
+                    state.temporary_variant_progress.hydra_tiamat >> 2 & 0x1 > 0,
+                    "toggle-HydraTiamat-2",
+                )],
+            ],
+            Variant::FirstResponseCricket => vec![vec![
+                Button::toggle("Reduced", state.temporary_variant_progress.first_response_cricket & 0x1 > 0, "toggle-FirstResponseCricket"),
+                Button::restricted_toggle(
+                    format!("Healing: {}", state.temporary_variant_progress.first_response_cricket >> 1),
+                    state.temporary_variant_progress.first_response_cricket & 0x1 > 0,
+                    state.temporary_variant_progress.first_response_cricket >> 1 >= 10,
+                    "counter-FirstResponseCricket",
+                ),
+            ]],
+            Variant::TheCricketRenegade => vec![vec![
+                Button::toggle("Python", state.temporary_variant_progress.first_response_cricket & 0x1 > 0, "toggle-TheCricketRenegade-python"),
+                Button::toggle("Responder", state.temporary_variant_progress.first_response_cricket & 0x2 > 0, "toggle-TheCricketRenegade-responder"),
+            ]],
+            Variant::TheCricketWastelandRonin => Button::unlock_single("unlock-TheCricketWastelandRonin"),
+            Variant::FirstResponseCypher => vec![
+                Button::buttons(
+                    &[("The Cricket", "toggle-FirstResponseCypher-0"), ("The Stranger", "toggle-FirstResponseCypher-1")],
+                    state.temporary_variant_progress.first_response_cricket,
+                ),
+                Button::buttons(
+                    &[("Echelon", "toggle-FirstResponseCypher-2"), ("Vanish", "toggle-FirstResponseCypher-3")],
+                    state.temporary_variant_progress.first_response_cricket >> 2,
+                ),
+            ],
+            Variant::CypherSwarmingProtocol => vec![
+                Button::buttons(
+                    &[
+                        ("Dermal Aug", "toggle-CypherSwarmingProtocol-0"),
+                        ("Fusion Aug", "toggle-CypherSwarmingProtocol-1"),
+                        ("Muscle Aug", "toggle-CypherSwarmingProtocol-2"),
+                    ],
+                    state.temporary_variant_progress.cypher_swarming_protocol,
+                ),
+                Button::buttons(
+                    &[("Retinal Aug", "toggle-CypherSwarmingProtocol-3"), ("Vascular Aug", "toggle-CypherSwarmingProtocol-4")],
+                    state.temporary_variant_progress.cypher_swarming_protocol >> 3,
+                ),
+            ],
+            Variant::FirstResponseDocHavoc => vec![
+                vec![Button::toggle(
+                    format!("Emergencies: {}", state.temporary_variant_progress.first_response_doc_havoc.0),
+                    state.temporary_variant_progress.first_response_doc_havoc.0 >= 2,
+                    "counter-FirstResponseDocHavoc-emergencies",
+                )],
+                vec![
+                    Button::toggle(
+                        format!("Cypher: {}", state.temporary_variant_progress.first_response_doc_havoc.1 & 0xF),
+                        state.temporary_variant_progress.first_response_doc_havoc.1 & 0xF >= 10,
+                        "counter-FirstResponseDocHavoc-0",
+                    ),
+                    Button::toggle(
+                        format!("The Cricket: {}", state.temporary_variant_progress.first_response_doc_havoc.1 >> 4 & 0xF),
+                        state.temporary_variant_progress.first_response_doc_havoc.1 >> 4 & 0xF >= 10,
+                        "counter-FirstResponseDocHavoc-1",
+                    ),
+                ],
+                vec![
+                    Button::toggle(
+                        format!("Echelon: {}", state.temporary_variant_progress.first_response_doc_havoc.1 >> 8 & 0xF),
+                        state.temporary_variant_progress.first_response_doc_havoc.1 >> 8 & 0xF >= 10,
+                        "counter-FirstResponseDocHavoc-2",
+                    ),
+                    Button::toggle(
+                        format!("Vanish: {}", state.temporary_variant_progress.first_response_doc_havoc.1 >> 12 & 0xF),
+                        state.temporary_variant_progress.first_response_doc_havoc.1 >> 12 & 0xF >= 10,
+                        "counter-FirstResponseDocHavoc-3",
+                    ),
+                ],
+            ],
+            Variant::FirstResponseEchelon => vec![
+                vec![Button::toggle(
+                    "First Responder",
+                    state.temporary_variant_progress.first_response_echelon,
+                    "toggle-FirstResponseEchelon",
+                )],
+                Button::buttons_auto(&["Windmill City", "Superstorm Akela"], state.persistent_variant_progress.first_response_echelon),
+                Button::buttons_auto(&["Megalopolis", "Rook City", "Mordengrad"], state.persistent_variant_progress.first_response_echelon >> 2),
+            ],
+            Variant::GargoyleWastelandRonin => Button::unlock_single("unlock-GargoyleWastelandRonin"),
+            Variant::ImpactWastelandRonin => Button::unlock_single("unlock-ImpactWastelandRonin"),
+            Variant::NecroLastOfTheForgottenOrder => vec![vec![
+                Button::toggle(
+                    "Left Behind",
+                    state.temporary_variant_progress.necro_last_of_the_forgotten_order || state.persistent_variant_progress.necro_last_of_the_forgotten_order,
+                    "toggle-NecroLastOfTheForgottenOrder-leftbehind",
+                ),
+                Button::restricted_toggle(
+                    "Final Blow",
+                    state.persistent_variant_progress.necro_last_of_the_forgotten_order,
+                    state.temporary_variant_progress.necro_last_of_the_forgotten_order,
+                    "toggle-NecroLastOfTheForgottenOrder-finalblow",
+                ),
+            ]],
+            Variant::PyreWastelandRonin => Button::unlock_single("unlock-PyreWastelandRonin"),
+            Variant::TheStrangerWastelandRonin => Button::unlock_single("unlock-TheStrangerWastelandRonin"),
+            Variant::FirstResponseVanish => vec![
+                vec![
+                    Button::auto("Defeated", state.persistent_variant_progress.first_response_vanish),
+                    Button::restricted_toggle(
+                        "Gray Pharma.",
+                        !state.persistent_variant_progress.first_response_vanish,
+                        state.temporary_variant_progress.first_response_vanish > 0,
+                        "toggle-FirstResponseVanish-pharma",
+                    ),
+                ],
+                Button::restricted_buttons(
+                    &[("Echelon", "toggle-FirstResponseVanish-0"), ("Doc Havoc", "toggle-FirstResponseVanish-1")],
+                    state.temporary_variant_progress.first_response_vanish,
+                    state.persistent_variant_progress.first_response_vanish,
+                ),
+                Button::restricted_buttons(
+                    &[("The Cricket", "toggle-FirstResponseVanish-2"), ("Cypher", "toggle-FirstResponseVanish-3")],
+                    state.temporary_variant_progress.first_response_vanish >> 2,
+                    state.persistent_variant_progress.first_response_vanish,
+                ),
+            ],
             _ => vec![],
         }
     }
@@ -1001,7 +1130,7 @@ impl Button {
         T: Copy + Into<String>,
         N: Copy + Into<u16>,
     {
-        content.iter().zip(0..).map(|((name, id), idx)| Button::toggle(*name, bitfield.into() >> idx & 1 > 0, *id)).collect()
+        content.iter().zip(0..).map(|((name, id), idx)| Button::toggle(*name, bitfield.into() >> idx & 1 > 0, id)).collect()
     }
 
     fn restricted_buttons<T, N>(content: &[(T, &'static str)], bitfield: N, available: bool) -> Vec<Button>
@@ -1012,7 +1141,7 @@ impl Button {
         content
             .iter()
             .zip(0..)
-            .map(|((name, id), idx)| Button::restricted_toggle(*name, available, bitfield.into() >> idx & 1 > 0, *id))
+            .map(|((name, id), idx)| Button::restricted_toggle(*name, available, bitfield.into() >> idx & 1 > 0, id))
             .collect()
     }
 
