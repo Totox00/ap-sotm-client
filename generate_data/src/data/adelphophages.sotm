@@ -126,6 +126,9 @@ variant KaargraWarfangRulerOfThePit
 name Kaargra Warfang: Ruler of the Pit
 from AdelphophagesVillainPromos WrathOfTheCosmos
 base KaargraWarfang
+challenge Well-Known Challengers
+Instead of destroying titles next to the Bloodsword Colosseum at the end of the villain turn, move those titles to the 2nd, 3rd, etc. highest HP gladiators.
+Increase damage dealt by gladiators by 1 for each title next to them.
 
 variant ChokepointRuthlessTechnopath
 name Chokepoint: Ruthless Technopath

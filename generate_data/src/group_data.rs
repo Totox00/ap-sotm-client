@@ -159,7 +159,7 @@ pub fn group_data() -> Data {
 
     let mut current = Fields::default();
 
-    let files: Vec<_> = BufReader::new(File::open(Path::new(file!()).parent().unwrap().join("data").join("loadorder")).expect("Failed to open loadorder"))
+    let files: Vec<_> = BufReader::new(File::open(Path::new(file!()).parent().unwrap().join("data").join("loadorder.sotm")).expect("Failed to open loadorder"))
         .lines()
         .zip(1..)
         .map(|(line, i)| line.unwrap_or_else(|_| panic!("Failed to read line {i}")))
@@ -167,7 +167,7 @@ pub fn group_data() -> Data {
         .collect();
 
     let mut lines = files.iter().flat_map(|file_name| {
-        BufReader::new(File::open(Path::new(file!()).parent().unwrap().join("data").join(file_name)).expect("Failed to open file"))
+        BufReader::new(File::open(Path::new(file!()).parent().unwrap().join("data").join(format!("{file_name}.sotm"))).expect("Failed to open file"))
             .lines()
             .zip(1..)
             .map(move |(line, i)| (line.unwrap_or_else(|_| panic!("Failed to read line {i}")), i, file_name))
