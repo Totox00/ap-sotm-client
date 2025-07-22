@@ -155,7 +155,7 @@ async function datapackageConnect(datapackage) {
         game: "Sentinels of the Multiverse",
         name: slot.value,
         uuid: localStorage.getItem("apSotmUuid"),
-        version: { major: 0, minor: 3, build: 0, class: "Version" },
+        version: { major: 0, minor: 6, build: 2, class: "Version" },
         items_handling: 7,
         tags: [],
         slot_data: true,
