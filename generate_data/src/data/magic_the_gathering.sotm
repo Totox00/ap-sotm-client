@@ -213,11 +213,15 @@ At the end of the villain turn, discard the top card of the villain deck. If it 
 villain Heliod
 name Heliod
 from MagicTheGathering
+challenge Immortal
+At the start of the game, remove Khrusor, the Shadowspear from the game.
 
 variant HeliodRadiantDawn
 name Heliod: Radiant Dawn
 from MagicTheGathering
 base Heliod
+challenge Vengeful Influence
+When a villain target is destroyed, Heliod deals each hero target 1 radiant damage.
 
 villain Nghathrod
 name N'ghathrod
@@ -226,6 +230,8 @@ from MagicTheGathering
 villain NicolBolas
 name Nicol Bolas
 from MagicTheGathering
+challenge Complete Devestation
+Hour of Devastation destroys all face up non-character non-villain cards instead of only face up environment cards.
 
 variant NicolBolasRavagingTwin
 name Nicol Bolas: Ravaging Twin
@@ -248,24 +254,34 @@ At the end of the villain turn, play the top card of the environment deck.
 villain Tezzeret
 name Tezzeret
 from MagicTheGathering
+challenge Flawless Designs
+Reduce damage dealt to devices by 2.
 
 variant TezzeretAgentOfArtifice
 name Tezzeret: Agent of Artifice
 from MagicTheGathering
 base Tezzeret
+challenge The Flesh is Weak
+Increase damage taken by hero targets by 1.
 
 villain Ulamog
 name Ulamog
 from MagicTheGathering
+challenge The Reeking Titan
+At the end of the villain turn, Ulamog deals each non-villain target 0 toxic damage.
 
 variant UlaFalseGod
 name Ula, False God
 from MagicTheGathering
 base Ulamog
+challenge Impenetrable
+Reduce damage dealt to eldrazi by 2.
 
 villain Vona
 name Vona
 from MagicTheGathering
+challenge Hungry for More
+The First time a vampire enters play each turn, play the top card of the villain deck.
 
 villain Yawgmoth
 name Yawgmoth

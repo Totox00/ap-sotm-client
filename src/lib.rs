@@ -58,7 +58,10 @@ pub fn new_session(mut datapackage_store: DatapackageStore, connected: &str, slo
 
     datapackage_store.build_player_map(&connected);
 
-    let state = State::new(connected.slot_data);
+    let state = State::new(connected.slot_data.try_into().unwrap_or_else(|_| {
+        log!("Invalid slot data {:?}", connected.slot_data.d);
+        panic!()
+    }));
 
     let mut players = HashMap::new();
     for player in connected.players {

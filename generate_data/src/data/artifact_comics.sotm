@@ -36,6 +36,8 @@ name Artifact Comics: Realms Uncharted
 villain Anomalos
 name Anomalos
 from ArtifactComicsVillains
+challenge Counting on Countermeasures
+At the start of the villain turn, if The Chronoplast is not a target, either add a token to The Anomaly or play the top card of the villain deck.
 
 villain Blockbuster
 name Blockbuster
@@ -48,10 +50,20 @@ from ArtifactComicsVillains
 villain LouGarou
 name Lou Garou
 from ArtifactComicsVillains
+challenge Bayou Brew Grew Lou
+Lou Garou's max HP for this game is 150.
 
 villain Tombstone
 name Tombstone
 from ArtifactComicsVillains
+challenge Shoot 'N' Plunder
+Whenever a villain target enters play after setup, activate its "start of turn" effect. Whenever a card is moved from under Tombstone to a non-villain deck, Tombstone regains 2 HP.
+
+villain HighRoller
+name High Roller
+from ArtifactComicsVillains
+challenge Mammon's House Rules
+At the start of each hero turn, each player with more than 4 cards in their hand discards 1 card, then each player with more than 3 non-character cards in play destroys 1 of their non-character cards.
 
 hero Antiquarian
 name Antiquarian
@@ -248,3 +260,58 @@ from ArtifactComicsEnvironments
 environment TimelessCity
 name Timeless City
 from ArtifactComicsEnvironments
+
+variant TheAdventurousAntiquarian
+name The Adventurous Antiquarian
+base Antiquarian
+from ArtifactComicsAdventures
+
+variant DarkestAntiquarian
+name Darkest Antiquarian
+base Antiquarian
+from ArtifactComicsAdventures
+
+variant ProfessorAntiquarian
+name Professor Antiquarian
+base Antiquarian
+from ArtifactComicsAdventures
+
+variant TheAmazingAntiquarian
+name The Amazing Antiquarian
+base Antiquarian
+from ArtifactComicsAdventures
+
+variant TacticatCantrip
+name Tacticat Cantrip
+base Cantrip
+from ArtifactComicsSocietyOfSorceries
+
+variant ChronanTheEnvironmentalist
+name Chronan the Environmentalist
+base Chronan
+from ArtifactComicsAdventures
+
+variant ChronanSavesChristmas
+name Chronan Saves Christmas
+base Chronan
+from ArtifactComicsAdventures
+
+variant PharaohessEnigma
+name Pharaohess Enigma
+base Enigma
+from ArtifactComicsRealmsUncharted
+
+variant PerilousExpeditionRook
+name Perilous Expedition Rook
+base Rook
+from ArtifactComicsOtherworldlyThreatTacticalResponse
+
+variant TheProdigalSirocco
+name The Prodigal Sirocco
+base Sirocco
+from ArtifactComicsSocietyOfSorceries
+
+variant PerilousExpeditionTwitch
+name Perilous Expedition Twitch
+base Twitch
+from ArtifactComicsOtherworldlyThreatTacticalResponse

@@ -29,6 +29,10 @@ variant OmnitronTechnoTerror
 name Omnitron: Techno Terror
 from AdelphophagesVillainPromos
 base Omnitron
+unlock Be defeated by regular Baron Blade in Omnitron IV. Baron Blade must be on his "Vengeful Mad Scientist" side and Partial Omni-Drone must have been destroyed while Resource Recycler is in play.
+requires BaronBlade OmnitronIV
+challenge Masterful Craft
+Increase damage dealt by villain devices by the number of Gun Drones and villain components in play.
 
 variant GrandWarlordVossGeneBoundGeneral
 name Grand Warlord Voss: Gene-Bound General
@@ -49,6 +53,8 @@ variant AkashBhutaPrimordialCreator
 name Akash'Bhuta: Primordial Creator
 from AdelphophagesVillainPromos InfernalRelics
 base AkashBhuta
+unlock Defeat Akash'Bhuta in Insula Primalis by damage dealt by Volcanic Eruption.
+requires AkashBhuta? InsulaPrimalis
 challenge Unstoppable Force
 The first time Akash'Bhuta deals damage each turn, that damage is irreducable and doubled.
 
@@ -139,6 +145,8 @@ variant MissInformationSubtleSaboteur
 name Miss Information: Subtle Saboteur
 from AdelphophagesVillainPromos MissInformation
 base MissInformation
+challenge Hopelessly Clueless
+Only destroy the oldest clue when there are already 3 in play.
 
 variant WagerMasterOmnipotentAnnoyance
 name Wager Master: Omnipotent Annoyance
@@ -337,6 +345,8 @@ from TheVentureBrothers
 villain Legion
 name Legion
 from AdelphophagesCustomVillains
+challenge Omnipotent Possession
+Always use the possessed side of lunatics, they still count as lunatics.
 
 villain Heretic
 name Heretic

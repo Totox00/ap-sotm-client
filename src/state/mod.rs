@@ -52,16 +52,28 @@ impl State {
     pub fn goal_progress(&self) -> GoalProgress {
         GoalProgress {
             scions: self.items.scions,
-            required_scions: self.slot_data.required_scions,
-            villains: self
+            required_scions: self.slot_data.required_scions as u32,
+            villains: (self
                 .checked_locations
                 .villains
                 .iter()
-                .map(|bitfield| (0..4).map(move |b| (*bitfield & (1 << b)) as u32 * self.slot_data.villain_difficulty_points[b]).sum::<u32>())
-                .sum::<u32>(),
-            required_villains: self.slot_data.required_villains,
+                .map(|bitfield| (0..4).map(move |b| ((*bitfield >> b) & 1) as i32 * self.slot_data.villain_difficulty_points[b]).sum::<i32>())
+                .sum::<i32>()
+                + self
+                    .checked_locations
+                    .team_villains
+                    .iter()
+                    .map(|bitfield| (0..4).map(move |b| ((*bitfield >> b) & 1) as i32 * self.slot_data.villain_difficulty_points[b]).sum::<i32>())
+                    .sum::<i32>()
+                + self
+                    .checked_locations
+                    .gladiators
+                    .iter()
+                    .map(|bitfield| (0..4).map(move |b| ((*bitfield >> b) & 1) as i32 * self.slot_data.villain_difficulty_points[b]).sum::<i32>())
+                    .sum::<i32>()) as u32,
+            required_villains: self.slot_data.required_villains as u32,
             variants: self.checked_locations.variant_unlocks.iter().map(|b| b.count_ones()).sum::<u32>(),
-            required_variants: self.slot_data.required_variants,
+            required_variants: self.slot_data.required_variants as u32,
         }
     }
 

@@ -170,7 +170,7 @@ name Skinwalker GloomWeaver
 from InfernalRelics
 base Gloomweaver
 unlock Defeat standard Spite and GloomWeaver. Then, do one of the following:\\1)_Defeat Spite: Agent of Gloom in Rook City on his "Broken Vessel" side with zero cards under the Safe House and at least five Victims in play. \OR\2)_Be defeated by Spite: Agent of Gloom in Rook City on his "Agent_of_Gloom" side with no more than two Drug cardsface up. Spite must have destroyed at least five Victims.
-requires Spite Gloomweaver SpiteAgentOfGloom
+requires Spite Gloomweaver SpiteAgentOfGloom RookCity
 challengereq SpiteAgentOfGloom SkinwalkerGloomweaver
 challenge Summoner and Overlord
 The game begins against Spite: Agent of Gloom. After Spite is defeated, he is immediately replaced by Skinwalker Gloomweaver without altering the environment or any of the heroes or hero cards. Heroes do not regain HP or draw cards. The game resumes at the start of Gloomweaver's turn.

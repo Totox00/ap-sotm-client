@@ -11,17 +11,21 @@ variant AnorLondoGuardiansOfGwynevere
 name Anor Londo: Guardians of Gwynevere
 from DarkSouls
 base AnorLondo
-challenge Unyielding Defenders
-Tokens cannot be removed from Anor Londo.
+challenge Hollowing
+The first time each hero is dealt damage each turn, that hero deals itself 2 psychic damage or discards a card.
 
 villain Lordran
 name Lordran
 from DarkSouls
+challenge Hollowing
+The first time each hero is dealt damage each turn, that hero deals itself 2 psychic damage or discards a card.
 
 variant LordranTheUndeadAsylum
 name Lordran: The Undead Asylum
 from DarkSouls
 base Lordran
+challenge Hollowing
+The first time each hero is dealt damage each turn, that hero deals itself 2 psychic damage or discards a card.
 
 environment Blighttown
 name Blighttown

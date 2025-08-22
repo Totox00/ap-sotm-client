@@ -1,3 +1,5 @@
+use num::FromPrimitive;
+use num_derive::FromPrimitive;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use serde_repr::{Deserialize_repr, Serialize_repr};
@@ -201,28 +203,55 @@ pub struct Connected {
     pub players: Vec<NetworkPlayer>,
     pub missing_locations: Vec<i64>,
     pub checked_locations: Vec<i64>,
-    pub slot_data: SlotData,
+    pub slot_data: RawSlotData,
     pub slot_info: HashMap<String, NetworkSlot>,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy)]
 pub struct SlotData {
-    pub required_scions: u32,
-    pub required_villains: u32,
-    pub required_variants: u32,
-    pub villain_difficulty_points: [u32; 4],
-    pub locations_per: [u8; 7],
+    pub required_scions: i32,
+    pub required_villains: i32,
+    pub required_variants: i32,
+    pub villain_difficulty_points: [i32; 4],
+    pub locations_per: [i32; 7],
     pub filler_duration: i32,
     pub death_link: DeathlinkType,
 }
 
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize_repr, Serialize_repr)]
-#[repr(u8)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct RawSlotData {
+    pub d: [i32; 16],
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, FromPrimitive)]
 pub enum DeathlinkType {
-    #[default]
     None = 0,
     Individual = 1,
     Team = 2,
+}
+
+impl TryFrom<RawSlotData> for SlotData {
+    fn try_from(value: RawSlotData) -> Result<Self, ()> {
+        let Some(death_link) = DeathlinkType::from_i32(value.d[15]) else {
+            return Err(());
+        };
+        let mut villain_difficulty_points = [0; 4];
+        villain_difficulty_points.copy_from_slice(&value.d[3..7]);
+        let mut locations_per = [0; 7];
+        locations_per.copy_from_slice(&value.d[7..14]);
+
+        Ok(Self {
+            required_scions: value.d[0],
+            required_variants: value.d[1],
+            required_villains: value.d[2],
+            villain_difficulty_points,
+            locations_per,
+            filler_duration: value.d[14],
+            death_link,
+        })
+    }
+
+    type Error = ();
 }
 
 #[derive(Debug, Serialize, Deserialize)]

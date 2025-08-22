@@ -781,7 +781,7 @@ impl Variant {
                     Button::freedom_five(state),
                     vec![
                         Button::restricted_toggle(
-                            format!("Research: {}", state.temporary_variant_progress.freedom_five_bunker.0 & 0x3),
+                            format!("Recharge: {}", state.temporary_variant_progress.freedom_five_bunker.0 & 0x3),
                             state.persistent_variant_progress.freedom_five > 2,
                             state.temporary_variant_progress.freedom_five_bunker.0 & 0x3 >= 2,
                             "counter-FreedomFiveBunker-0",
