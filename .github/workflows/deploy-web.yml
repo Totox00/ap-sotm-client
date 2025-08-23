@@ -30,6 +30,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Install dependencies
         run: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh"
+      - name: Set to nightly
+        run: rustup toolchain install nightly && rustup default nightly
       - name: Build
         run: ./build.sh
       - name: Setup Pages
