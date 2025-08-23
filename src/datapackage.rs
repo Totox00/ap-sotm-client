@@ -160,13 +160,13 @@ pub fn new_datapackage_store(room_info: &str) -> DatapackageStore {
 }
 
 fn create_dir() -> FileSystemGetDirectoryOptions {
-    let mut options = FileSystemGetDirectoryOptions::new();
-    options.create(true);
+    let options = FileSystemGetDirectoryOptions::new();
+    options.set_create(true);
     options
 }
 
 fn create_file() -> FileSystemGetFileOptions {
-    let mut options = FileSystemGetFileOptions::new();
-    options.create(true);
+    let options = FileSystemGetFileOptions::new();
+    options.set_create(true);
     options
 }
