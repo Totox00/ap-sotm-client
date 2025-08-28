@@ -149,8 +149,9 @@ from CauldronBase CauldronPromos
 base Tiamat
 challenge Resiliance
 villain ongoings are indestructible as long as 2 or more heads are not decapitated.
-unlock Have The Knight, Necro, and Echelon on the team. Each of base Tiamat's heads must be defeated by its nemesis hero.
+
 requires Tiamat TheKnight? Necro? Echelon?
+unlock Have The Knight, Necro, and Echelon on the team. Each of base Tiamat's heads must be defeated by its nemesis hero.
 
 variant Tiamat2199
 name Tiamat 2199
