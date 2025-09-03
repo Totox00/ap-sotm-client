@@ -272,6 +272,10 @@ pub fn on_click(target: &str, state: &mut State, game: &CurrentGame) -> Option<V
         "toggle-FirstResponseVanish-1" => flip_bit!(first_response_vanish, 1),
         "toggle-FirstResponseVanish-2" => flip_bit!(first_response_vanish, 2),
         "toggle-FirstResponseVanish-3" => flip_bit!(first_response_vanish, 3),
+        "toggle-OmnitronTechTerrorVengefulMadScientist" => flip_bit!(omnitron_tech_terror, 0),
+        "toggle-OmnitronTechTerrorPartialOmniDrone" => flip_bit!(omnitron_tech_terror, 1),
+        "counter-BaronBladeBlackHoleGenerator" => incr!(baron_blade_black_hole_generator, 0, 2, 3),
+        "toggle-AkashBhutaPrimordialCreator" => flip_bool!(akash_bhuta_primordial_creator),
         _ => (),
     };
 

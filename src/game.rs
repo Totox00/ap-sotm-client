@@ -125,6 +125,14 @@ impl CurrentGame {
         self.is_classic(Villain::BaronBlade) || self.is_classic(Villain::MadBomberBaronBlade) || self.is_classic(Villain::BaronBladeBlackHoleGenerator) || self.has_team(TeamVillain::TeamBaronBlade)
     }
 
+    pub fn any_akash_bhuta(&self) -> bool {
+        self.is_classic(Villain::AkashBhuta) || self.is_classic(Villain::AkashBhutaPrimordialCreator)
+    }
+
+    pub fn any_kismet(&self) -> bool {
+        self.is_classic(Villain::Kismet) || self.is_classic(Villain::TricksterKismet) || self.is_classic(Villain::KismetTwistOfFate)
+    }
+
     pub fn freedom_five(&self, progress: u8) -> bool {
         self.is_classic(Villain::Progeny)
             && match progress {

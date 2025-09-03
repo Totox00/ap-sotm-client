@@ -15,6 +15,7 @@ pub struct PersistentVariantProgress {
     pub first_response_echelon: u8,
     pub necro_last_of_the_forgotten_order: bool,
     pub first_response_vanish: bool,
+    pub baron_blade_black_hole_generator: bool,
 }
 
 #[derive(Debug, Clone, Copy, Default)]
@@ -85,11 +86,14 @@ pub struct TemporaryVariantProgress {
     pub first_response_echelon: bool,
     pub necro_last_of_the_forgotten_order: bool,
     pub first_response_vanish: u8,
+    pub omnitron_tech_terror: u8,
+    pub baron_blade_black_hole_generator: u8,
+    pub akash_bhuta_primordial_creator: bool,
 }
 
 impl PersistentVariantProgress {
     pub const fn size() -> usize {
-        13
+        14
     }
 
     pub fn as_bytes(&self) -> [u8; Self::size()] {
@@ -107,6 +111,7 @@ impl PersistentVariantProgress {
             self.first_response_echelon,
             if self.necro_last_of_the_forgotten_order { 1 } else { 0 },
             if self.first_response_vanish { 1 } else { 0 },
+            if self.baron_blade_black_hole_generator { 1 } else { 0 },
         ]
     }
 
@@ -124,6 +129,7 @@ impl PersistentVariantProgress {
         self.first_response_echelon |= other.first_response_echelon;
         self.necro_last_of_the_forgotten_order |= other.necro_last_of_the_forgotten_order;
         self.first_response_vanish |= other.first_response_vanish;
+        self.baron_blade_black_hole_generator |= other.baron_blade_black_hole_generator;
     }
 }
 
@@ -143,6 +149,7 @@ impl From<&[u8]> for PersistentVariantProgress {
             first_response_echelon: value.get(10).copied().unwrap_or_default(),
             necro_last_of_the_forgotten_order: value.get(11).copied().unwrap_or_default() > 0,
             first_response_vanish: value.get(12).copied().unwrap_or_default() > 0,
+            baron_blade_black_hole_generator: value.get(13).copied().unwrap_or_default() > 0
         }
     }
 }

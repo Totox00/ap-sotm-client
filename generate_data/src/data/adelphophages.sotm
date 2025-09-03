@@ -43,6 +43,10 @@ variant BaronBladeBlackHoleGenerator
 name Baron Blade: Black Hole Generator
 from AdelphophagesVillainPromos
 base BaronBlade
+unlock Defeat regular Baron Blade in The Block. Then, be defeated by Kismet in The Block. During the game, at least 3 agents must be destroyed by damage dealt by Kismet.
+requires BaronBlade Kismet? TheBlock
+challenge Weakened by Gravity
+Increase damage taken by hero targets by 1.
 
 variant CitizenDawnSolarEmpress
 name Citizen Dawn: Solar Empress

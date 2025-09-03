@@ -1060,6 +1060,32 @@ impl Variant {
                     state.persistent_variant_progress.first_response_vanish,
                 ),
             ],
+            Variant::OmnitronTechnoTerror => vec![
+                vec![Button::toggle(
+                    "Vengeful Mad Scientist",
+                    state.temporary_variant_progress.omnitron_tech_terror & 0x1 > 0,
+                    "toggle-OmnitronTechTerrorVengefulMadScientist",
+                )],
+                vec![Button::toggle(
+                    "Partial Omni-Drone",
+                    state.temporary_variant_progress.omnitron_tech_terror & 0x2 > 0,
+                    "toggle-OmnitronTechTerrorPartialOmniDrone",
+                )],
+            ],
+            Variant::BaronBladeBlackHoleGenerator => vec![vec![
+                Button::auto("Baron Blade", state.persistent_variant_progress.baron_blade_black_hole_generator),
+                Button::restricted_toggle(
+                    format!("Agents: {}", state.temporary_variant_progress.baron_blade_black_hole_generator),
+                    state.persistent_variant_progress.baron_blade_black_hole_generator,
+                    state.temporary_variant_progress.baron_blade_black_hole_generator == 3,
+                    "counter-BaronBladeBlackHoleGenerator",
+                ),
+            ]],
+            Variant::AkashBhutaPrimordialCreator => vec![vec![Button::toggle(
+                "Volcanic Eruption",
+                state.temporary_variant_progress.akash_bhuta_primordial_creator,
+                "toggle-AkashBhutaPrimordialCreator",
+            )]],
             _ => vec![],
         }
     }

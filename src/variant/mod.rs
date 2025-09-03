@@ -273,6 +273,16 @@ impl Variant {
                     game.environment(Environment::WindmillCity) && (game.is_classic(Villain::Gray) || game.is_classic(Villain::GrayRadioactiveDecay)) && game.has_hero_all_variants(Hero::Vanish)
                 }
             }
+            Variant::OmnitronTechnoTerror => game.is_classic(Villain::BaronBlade) && game.environment(Environment::OmnitronIV),
+            Variant::BaronBladeBlackHoleGenerator => {
+                game.environment(Environment::TheBlock)
+                    && if state.persistent_variant_progress.baron_blade_black_hole_generator {
+                        game.any_kismet()
+                    } else {
+                        game.is_classic(Villain::BaronBlade)
+                    }
+            }
+            Variant::AkashBhutaPrimordialCreator => game.any_akash_bhuta() && game.environment(Environment::InsulaPrimalis),
             _ => false,
         }
     }

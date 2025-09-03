@@ -275,6 +275,18 @@ impl Variant {
                     false
                 }
             }
+            Variant::OmnitronTechnoTerror => victory && state.temporary_variant_progress.omnitron_tech_terror == 0x3,
+            Variant::BaronBladeBlackHoleGenerator => {
+                if state.persistent_variant_progress.baron_blade_black_hole_generator {
+                    !victory && state.temporary_variant_progress.baron_blade_black_hole_generator == 0x3
+                } else {
+                    if victory {
+                        state.persistent_variant_progress.baron_blade_black_hole_generator = true;
+                    }
+                    false
+                }
+            }
+            Variant::AkashBhutaPrimordialCreator => victory && state.temporary_variant_progress.akash_bhuta_primordial_creator,
             _ => false,
         }
     }
