@@ -68,6 +68,8 @@ from CustomTeamVillains
 teamvillain TeamGalacticCommander
 name Galactic Commander
 from CustomTeamVillains
+challenge Hastened Manufacturing
+The first time a villain construct enters play each turn, reveal cards from the top of Galactic Commander's villain deck until a construct is revealed and put it into play in the same play area. Discard the other revealed cards.
 
 teamvillain TeamFolie
 name Folie
