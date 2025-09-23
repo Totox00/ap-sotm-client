@@ -83,20 +83,104 @@ impl LogicTerm {
             LogicTerm::Environment(enum_data) => format!("items.has_environment(Environment::{})", enum_data.enum_name),
             LogicTerm::Or(terms) => terms.iter().map(|term| term.as_rust_expr()).collect::<Vec<_>>().join("||"),
             LogicTerm::And(terms) => terms.iter().map(|term| format!("({})", term.as_rust_expr())).collect::<Vec<_>>().join("&&"),
-            LogicTerm::True => String::from("true"),
+            LogicTerm::True => String::from("True"),
         }
     }
 
     pub fn as_py_expr(&self) -> String {
+        let mut requires_team_villains = false;
+
+        let expr = match self {
+            LogicTerm::AnyHero(enum_data) => format!("state.prog_items[player].get(\"Any {}\",False)", enum_data.display_name),
+            LogicTerm::TeamVillain(enum_data) => {
+                requires_team_villains = true;
+                format!("state.prog_items[player].get(\"{}\",False)", enum_data.display_name)
+            }
+            LogicTerm::Villain(enum_data) => format!("state.prog_items[player].get(\"{}\",False)", enum_data.display_name),
+            LogicTerm::Hero(enum_data) | LogicTerm::Environment(enum_data) => format!("state.prog_items[player].get(\"{}\",False)", enum_data.display_name),
+            LogicTerm::Variant(variant_data) => format!("state.prog_items[player].get(\"{}\",False)", variant_data.display_name),
+            LogicTerm::Or(terms) => {
+                let mut required_items = vec![];
+                let mut required_items_team_villains = vec![];
+                let mut additional_exprs = vec![];
+
+                for term in terms {
+                    if let Some((item, rtv)) = term.try_py_required_item() {
+                        if rtv {
+                            required_items_team_villains.push(item);
+                        } else {
+                            required_items.push(item);
+                        }
+                    } else {
+                        additional_exprs.push(term.as_py_expr());
+                    }
+                }
+
+                let items_part = match required_items.len() {
+                    0 => String::new(),
+                    1 => format!("state.prog_items[player].get(\"{}\",False)", required_items[0]),
+                    2.. => format!("state.has_any(({}),player)", required_items.into_iter().map(|item| format!("\"{item}\"")).collect::<Vec<_>>().join(",")),
+                };
+                let rtv_items_part = match required_items_team_villains.len() {
+                    0 => String::new(),
+                    1 => format!(
+                        "state.prog_items[player][\"Team Villains\"] >= 3 and state.prog_items[player].get(\"{}\",False)",
+                        required_items_team_villains[0]
+                    ),
+                    2.. => format!(
+                        "state.prog_items[player][\"Team Villains\"] >= 3 and state.has_any(({}),player)",
+                        required_items_team_villains.into_iter().map(|item| format!("\"{item}\"")).collect::<Vec<_>>().join(",")
+                    ),
+                };
+                let additional_part = if additional_exprs.is_empty() { String::new() } else { additional_exprs.join(" or ") };
+
+                return [items_part, rtv_items_part, additional_part]
+                    .into_iter()
+                    .filter(|part| !part.is_empty())
+                    .collect::<Vec<_>>()
+                    .join(" or ");
+            }
+            LogicTerm::And(terms) => {
+                let mut required_items = vec![];
+                let mut additional_exprs = vec![];
+
+                for term in terms {
+                    if let Some((item, rtv)) = term.try_py_required_item() {
+                        required_items.push(item);
+                        requires_team_villains |= rtv;
+                    } else {
+                        additional_exprs.push(format!("({})", term.as_py_expr()));
+                    }
+                }
+
+                let rtv_part = if requires_team_villains { "state.prog_items[player][\"Team Villains\"] >= 3" } else { "" };
+                let items_part = match required_items.len() {
+                    0 => String::new(),
+                    1 => format!("state.prog_items[player].get(\"{}\",False)", required_items[0]),
+                    2.. => format!("state.has_all(({}),player)", required_items.into_iter().map(|item| format!("\"{item}\"")).collect::<Vec<_>>().join(",")),
+                };
+                let additional_part = if additional_exprs.is_empty() { String::new() } else { additional_exprs.join(" and ") };
+
+                return [rtv_part, &items_part, &additional_part].into_iter().filter(|part| !part.is_empty()).collect::<Vec<_>>().join(" and ");
+            }
+            LogicTerm::True => return String::from("True"),
+        };
+
+        if requires_team_villains {
+            format!("state.prog_items[player][\"Team Villains\"] >= 3 and {expr}")
+        } else {
+            expr
+        }
+    }
+
+    fn try_py_required_item(&self) -> Option<(String, bool)> {
         match self {
-            LogicTerm::AnyHero(enum_data) => format!("state.has(\"Any {}\",player)", enum_data.display_name),
-            LogicTerm::TeamVillain(enum_data) => format!("state.has(\"{}\",player) and state.has(\"Team Villains\",player,3)", enum_data.display_name),
-            LogicTerm::Villain(enum_data) => format!("state.has(\"{}\",player)", enum_data.display_name),
-            LogicTerm::Hero(enum_data) | LogicTerm::Environment(enum_data) => format!("state.has(\"{}\",player)", enum_data.display_name),
-            LogicTerm::Variant(variant_data) => format!("state.has(\"{}\",player)", variant_data.display_name),
-            LogicTerm::Or(terms) => terms.iter().map(|term| term.as_py_expr()).collect::<Vec<_>>().join(" or "),
-            LogicTerm::And(terms) => terms.iter().map(|term| format!("({})", term.as_py_expr())).collect::<Vec<_>>().join(" and "),
-            LogicTerm::True => String::from("True"),
+            LogicTerm::AnyHero(enum_data) => Some((format!("Any {}", enum_data.display_name), false)),
+            LogicTerm::TeamVillain(enum_data) => Some((enum_data.display_name.to_owned(), true)),
+            LogicTerm::Villain(enum_data) => Some((enum_data.display_name.to_owned(), false)),
+            LogicTerm::Hero(enum_data) | LogicTerm::Environment(enum_data) => Some((enum_data.display_name.to_owned(), false)),
+            LogicTerm::Variant(variant_data) => Some((variant_data.display_name.to_owned(), false)),
+            LogicTerm::Or(_) | LogicTerm::And(_) | LogicTerm::True => None,
         }
     }
 
