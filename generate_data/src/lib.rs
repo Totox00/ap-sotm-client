@@ -13,7 +13,7 @@ use id_py::generate_id_py;
 use logic::LogicTerm;
 use proc_macro::TokenStream;
 
-const MAX_LOCATION_DENSITY: i64 = 5;
+const MAX_LOCATION_DENSITY: i64 = 64;
 
 #[derive(Debug)]
 struct Data {
