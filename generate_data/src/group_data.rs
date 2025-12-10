@@ -1,6 +1,7 @@
 use std::{
     fs::File,
     io::{BufRead, BufReader},
+    iter::once,
     path::Path,
 };
 
@@ -171,6 +172,7 @@ pub fn group_data() -> Data {
             .lines()
             .zip(1..)
             .map(move |(line, i)| (line.unwrap_or_else(|_| panic!("Failed to read line {i}")), i, file_name))
+            .chain(once((String::new(), 0, file_name)))
     });
 
     while let Some((line, i, file)) = lines.next() {
