@@ -219,7 +219,7 @@ impl Interface {
                                 return;
                             }
                         }
-                        if current.len() >= 5 {
+                        if current.len() >= 3 {
                             let (first_gladiator, _, elem) = current.first().unwrap();
                             deselect_gladiator(&self.document, first_gladiator);
                             elem.remove();
