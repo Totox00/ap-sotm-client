@@ -118,7 +118,7 @@ impl Location {
                     | if let Some(h) = v.as_normal() {
                         h as i64 | (v.as_i() as i64) << 24
                     } else {
-                        v.as_i() as i64 | 0b10 << 22
+                        v.as_i() as i64 | 0b01 << 22
                     }
             }
             Location::Hero(v) => (0b0010 << 48) | *v as i64 | 0b10 << 22,
