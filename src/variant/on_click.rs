@@ -249,7 +249,7 @@ pub fn on_click(target: &str, state: &mut State, game: &CurrentGame) -> Option<V
         "toggle-HydraTiamat-1" => flip_bit!(hydra_tiamat, 1),
         "toggle-HydraTiamat-2" => flip_bit!(hydra_tiamat, 2),
         "toggle-FirstResponseCricket" => flip_bit!(first_response_cricket, 0),
-        "counter-FirstResponseCricket" => incr!(first_response_cricket, 0, 1, 4, 10),
+        "counter-FirstResponseCricket" => incr!(first_response_cricket, 1, 4, 10),
         "toggle-TheCricketRenegade-python" => flip_bit!(the_cricket_renegade, 0),
         "toggle-TheCricketRenegade-responder" => flip_bit!(the_cricket_renegade, 1),
         "toggle-FirstResponseCypher-0" => flip_bit!(first_response_cypher, 0),
@@ -276,6 +276,27 @@ pub fn on_click(target: &str, state: &mut State, game: &CurrentGame) -> Option<V
         "toggle-OmnitronTechTerrorPartialOmniDrone" => flip_bit!(omnitron_tech_terror, 1),
         "counter-BaronBladeBlackHoleGenerator" => incr!(baron_blade_black_hole_generator, 0, 2, 3),
         "toggle-AkashBhutaPrimordialCreator" => flip_bool!(akash_bhuta_primordial_creator),
+        "counter-GloomweaverRitualOfGnophos" => incr!(gloomweaver_ritual_of_gnophos, 0, 2, 3),
+        "toggle-GloomweaverRitualOfGnophos-cultist" => flip_bit!(gloomweaver_ritual_of_gnophos, 2),
+        "toggle-GloomweaverRitualOfGnophos-pin" => flip_bit!(gloomweaver_ritual_of_gnophos, 3),
+        "counter-OmnitronVIHunterKiller" => incr!(omnitron_vi_hunter_killer, 0, 4, 10),
+        "toggle-BerserkHaka-0" => flip_bit!(berserk_haka, 0),
+        "toggle-BerserkHaka-1" => flip_bit!(berserk_haka, 1),
+        "toggle-CitizenDawnSolarEmpress-citizens" => flip_bit!(citizen_dawn_solar_empress, 0),
+        "toggle-CitizenDawnSolarEmpress-flipped" => flip_bit!(citizen_dawn_solar_empress, 1),
+        "toggle-DeadlineAngelOfExtinction" => flip_bool!(deadline_angel_of_extinction),
+        "toggle-WoundedShapeAnathema-0" => flip_bit!(wounded_shape_anathema, 0),
+        "toggle-WoundedShapeAnathema-1" => flip_bit!(wounded_shape_anathema, 1),
+        "toggle-WoundedShapeAnathema-2" => flip_bit!(wounded_shape_anathema, 2),
+        "toggle-WoundedShapeAnathema-3" => flip_bit!(wounded_shape_anathema, 3),
+        "toggle-WoundedShapeAnathema-4" => flip_bit!(wounded_shape_anathema, 4),
+        "toggle-WoundedShapeAnathema-5" => flip_bit!(wounded_shape_anathema, 5),
+        "toggle-WoundedShapeAnathema-6" => flip_bit!(wounded_shape_anathema, 6),
+        "toggle-WoundedShapeAnathema-7" => flip_bit!(wounded_shape_anathema, 7),
+        "toggle-WoundedShapeAnathema-8" => flip_bit!(wounded_shape_anathema, 8),
+        "toggle-WoundedShapeAnathema-9" => flip_bit!(wounded_shape_anathema, 9),
+        "counter-TheThaumaturgyScholar" => incr!(the_thaumaturgy_scholar, 0, 2, 3),
+        "reset-TheThaumaturgyScholar" => state.temporary_variant_progress.the_thaumaturgy_scholar = 0,
         _ => (),
     };
 
@@ -294,6 +315,7 @@ pub fn on_click(target: &str, state: &mut State, game: &CurrentGame) -> Option<V
         "toggle-CypherSwarmingProtocol-0" | "toggle-CypherSwarmingProtocol-1" | "toggle-CypherSwarmingProtocol-2" | "toggle-CypherSwarmingProtocol-3" | "toggle-CypherSwarmingProtocol-4" => {
             multi_click_unlock(state.temporary_variant_progress.cypher_swarming_protocol == 0x1F, Variant::CypherSwarmingProtocol)
         }
+        "counter-TheThaumaturgyScholar" => multi_click_unlock(state.temporary_variant_progress.the_thaumaturgy_scholar == 0x3, Variant::TheThaumaturgyScholar),
         _ => None,
     }
 }

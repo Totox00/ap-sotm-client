@@ -226,6 +226,8 @@ When a villain target is destroyed, Heliod deals each hero target 1 radiant dama
 villain Nghathrod
 name N'ghathrod
 from MagicTheGathering
+challenge Brain Drain
+Whenever a villain card effect would cause a player to draw cards, that player draws half as many cards instead.
 
 villain NicolBolas
 name Nicol Bolas
@@ -237,10 +239,15 @@ variant NicolBolasRavagingTwin
 name Nicol Bolas: Ravaging Twin
 from MagicTheGathering
 base NicolBolas
+challenge Because I Have Willed It
+Damage dealt by villain targets cannot be reduced or prevented.
+Hero card effects cannot prevent villain cards from being played.
 
 villain ObNixilis
 name Ob Nixilis
 from MagicTheGathering
+challenge Too Late
+At the start of the game, remove Implanted Hedron from the game and play the top 2 cards of the environment deck.
 
 variant ObNixilisDemonicKingpin
 name Ob Nixilis: Demonic Kingpin
@@ -286,6 +293,8 @@ The First time a vampire enters play each turn, play the top card of the villain
 villain Yawgmoth
 name Yawgmoth
 from MagicTheGathering
+challenge Nothing Holy
+If a hero card effect would deal radiant damage to a villain target, the hero that card belongs to must discard a card or the damage is prevented.
 
 environment Ixalan
 name Ixalan

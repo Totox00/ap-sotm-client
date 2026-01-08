@@ -4,18 +4,29 @@ name Warhammer 40K
 villain ChaosLord
 name Chaos Lord
 from Warhammer
+challenge Undeniable
+Reduce damage dealt to Chaos Lord by 2.
+Mark cards are indestructible.
 
 villain GorgutzEadUnter
 name Gorgutz 'Ead 'Unter
 from Warhammer
+challenge Control of the Ranks
+Da Big Bannah is indestructible and immune to damage.
+While at most 1 Nob is in play, Nobs are indestructible and immune to damage.
 
 villain Inquisitor
 name Inquisitor
 from Warhammer
+challenge Unquestioned Judgement
+After setup, for each player, reveal cards from the top of the villain deck until a heresy is revealed and put it in that player's hand. Then, shuffle the villain deck.
 
 villain NecronTomb
 name Necron Tomb
 from Warhammer
+challenge No Weakness
+During setup, reveal cards from the top of the villain deck until an ongoing is revealed. Put it into play and shuffle the other revealed cards back into the villain deck.
+Villain ongoing cards are indestructible.
 
 hero UrsakarECreed
 name Ursakar E. Creed

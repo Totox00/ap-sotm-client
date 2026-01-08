@@ -8,9 +8,6 @@ class SotmState:
     prog_items:dict[int,Counter[str]]
     def __init__(self):self.prog_items={0:Counter()}
     def has(self,item:str,_player:int,_count:int=1)->bool:
-        if item.startswith("Any "):
-            base=item[4:]
-            return base in self.prog_items[0] or any(self.prog_items[0].get(variant, False) for variant in base_to_variants[base])
         return item in self.prog_items[0]
     def has_any(self,items:Iterable[str],_player:int)->bool:return any(self.prog_items[0].get(item, False) for item in items)
     def has_all(self,items:Iterable[str],_player:int)->bool:return all(self.prog_items[0].get(item, False) for item in items)

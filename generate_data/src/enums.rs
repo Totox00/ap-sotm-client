@@ -34,7 +34,7 @@ where
     let _ = write!(str, "}}}}}}");
 }
 
-pub fn push_villain_defs<T>(str: &mut T, ident: &str, enum_data: &[VillainData])
+pub fn push_villain_defs<T>(str: &mut T, ident: &str, enum_data: &[VillainData], villain_variant_data: &[&VariantData])
 where
     T: Write,
 {
@@ -87,7 +87,21 @@ where
         }
     }
 
-    let _ = write!(str, "_=>true}}}}}}");
+    let _ = write!(str, "_=>true}}}}pub fn variants(&self) -> &[Self] {{match self {{");
+
+    for data in enum_data {
+        let enum_name = &data.enum_name;
+
+        let variants: Vec<_> = villain_variant_data
+            .iter()
+            .filter(|variant_data| variant_data.base == data.enum_name)
+            .map(|data| format!("{ident}::{}", data.enum_name))
+            .collect();
+
+        let _ = write!(str, "{ident}::{enum_name} => &[{ident}::{enum_name},{}],", variants.join(","));
+    }
+
+    let _ = write!(str, "}}}}}}");
 }
 
 pub fn push_variant_defs<T>(str: &mut T, variant_data: &[VariantData])
@@ -222,7 +236,10 @@ where
     let _ = write!(str, "}}}}}}");
 }
 
-pub fn push_villain_variants<T>(str: &mut T, data: &Data) where T: Write {
+pub fn push_villain_variants<T>(str: &mut T, data: &Data)
+where
+    T: Write,
+{
     let _ = write!(str, "impl Villain {{pub fn variant(&self) -> Option<Variant> {{match self {{");
 
     for variant in data.villain_variants() {
@@ -230,5 +247,4 @@ pub fn push_villain_variants<T>(str: &mut T, data: &Data) where T: Write {
     }
 
     let _ = write!(str, "_ => None}}}}}}");
-
 }

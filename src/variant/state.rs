@@ -89,6 +89,13 @@ pub struct TemporaryVariantProgress {
     pub omnitron_tech_terror: u8,
     pub baron_blade_black_hole_generator: u8,
     pub akash_bhuta_primordial_creator: bool,
+    pub gloomweaver_ritual_of_gnophos: u8,
+    pub omnitron_vi_hunter_killer: u8,
+    pub berserk_haka: u8,
+    pub citizen_dawn_solar_empress: u8,
+    pub deadline_angel_of_extinction: bool,
+    pub wounded_shape_anathema: u16,
+    pub the_thaumaturgy_scholar: u8,
 }
 
 impl PersistentVariantProgress {

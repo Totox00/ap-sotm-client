@@ -105,9 +105,11 @@ pub fn generate_data(_stream: TokenStream) -> TokenStream {
 
     let mut str = String::new();
 
-    push_villain_defs(&mut str, "Villain", &data.villains);
-    push_villain_defs(&mut str, "TeamVillain", &data.team_villains);
-    push_villain_defs(&mut str, "Gladiator", &data.gladiators);
+    let villain_variants: Vec<_> = data.villain_variants().collect();
+
+    push_villain_defs(&mut str, "Villain", &data.villains, &villain_variants);
+    push_villain_defs(&mut str, "TeamVillain", &data.team_villains, &villain_variants);
+    push_villain_defs(&mut str, "Gladiator", &data.gladiators, &villain_variants);
     push_enum_defs(&mut str, "Hero", &data.heroes);
     push_enum_defs(&mut str, "Contender", &data.contenders);
     push_enum_defs(&mut str, "Environment", &data.environments);

@@ -1060,18 +1060,18 @@ impl Variant {
                     state.persistent_variant_progress.first_response_vanish,
                 ),
             ],
-            Variant::OmnitronTechnoTerror => vec![
-                vec![Button::toggle(
+            Variant::OmnitronTechnoTerror => vec![vec![
+                Button::toggle(
                     "Vengeful Mad Scientist",
                     state.temporary_variant_progress.omnitron_tech_terror & 0x1 > 0,
                     "toggle-OmnitronTechTerrorVengefulMadScientist",
-                )],
-                vec![Button::toggle(
+                ),
+                Button::toggle(
                     "Partial Omni-Drone",
                     state.temporary_variant_progress.omnitron_tech_terror & 0x2 > 0,
                     "toggle-OmnitronTechTerrorPartialOmniDrone",
-                )],
-            ],
+                ),
+            ]],
             Variant::BaronBladeBlackHoleGenerator => vec![vec![
                 Button::auto("Baron Blade", state.persistent_variant_progress.baron_blade_black_hole_generator),
                 Button::restricted_toggle(
@@ -1086,6 +1086,90 @@ impl Variant {
                 state.temporary_variant_progress.akash_bhuta_primordial_creator,
                 "toggle-AkashBhutaPrimordialCreator",
             )]],
+            Variant::GloomweaverRitualOfGnophos => vec![vec![
+                Button::toggle(
+                    format!("Zombies: {}", state.temporary_variant_progress.gloomweaver_ritual_of_gnophos & 0x3),
+                    state.temporary_variant_progress.gloomweaver_ritual_of_gnophos & 0x3 == 3,
+                    "counter-GloomweaverRitualOfGnophos",
+                ),
+                Button::toggle(
+                    "Cultist",
+                    state.temporary_variant_progress.gloomweaver_ritual_of_gnophos & 0x4 > 0,
+                    "toggle-GloomweaverRitualOfGnophos-cultist",
+                ),
+                Button::toggle("Pin", state.temporary_variant_progress.gloomweaver_ritual_of_gnophos & 0x8 > 0, "toggle-GloomweaverRitualOfGnophos-pin"),
+            ]],
+            Variant::OmnitronVIHunterKiller => vec![vec![
+                Button::auto("Iron Legacy", state.persistent_variant_progress.freedom_six & 0x40 > 0),
+                Button::restricted_toggle(
+                    format!("Components: {}", state.temporary_variant_progress.omnitron_vi_hunter_killer),
+                    state.persistent_variant_progress.freedom_six & 0x40 > 0,
+                    state.temporary_variant_progress.omnitron_vi_hunter_killer >= 10,
+                    "toggle-OmnitronVIHunterKiller",
+                ),
+            ]],
+            Variant::BerserkHaka => vec![Button::buttons(
+                &[("Only non-Incapacitated", "toggle-BerserkHaka-0"), ("1 HP", "toggle-BerserkHaka-1")],
+                state.temporary_variant_progress.berserk_haka,
+            )],
+            Variant::CitizenDawnSolarEmpress => vec![vec![
+                Button::toggle(
+                    "Never Fewer",
+                    state.temporary_variant_progress.citizen_dawn_solar_empress & 0x1 == 0,
+                    "toggle-CitizenDawnSolarEmpress-citizens",
+                ),
+                Button::toggle(
+                    "Flipped",
+                    state.temporary_variant_progress.citizen_dawn_solar_empress & 0x2 > 0,
+                    "toggle-CitizenDawnSolarEmpress-flipped",
+                ),
+            ]],
+            Variant::DeadlineAngelOfExtinction => vec![vec![Button::toggle(
+                "No removed",
+                !state.temporary_variant_progress.deadline_angel_of_extinction,
+                "toggle-DeadlineAngelOfExtinction",
+            )]],
+            Variant::WoundedShapeAnathema => {
+                let mut buttons: Vec<_> = Button::buttons(
+                    &[
+                        ("Bone Cleaver", "toggle-WoundedShapeAnathema-0"),
+                        ("Thresher Claw", "toggle-WoundedShapeAnathema-1"),
+                        ("Knuckle Dragger", "toggle-WoundedShapeAnathema-2"),
+                        ("Whip Tendril", "toggle-WoundedShapeAnathema-3"),
+                    ],
+                    state.temporary_variant_progress.wounded_shape_anathema,
+                )
+                .chunks(2)
+                .map(Vec::from)
+                .collect();
+
+                buttons.extend(
+                    Button::buttons(
+                        &[
+                            ("Heavy Carapace", "toggle-WoundedShapeAnathema-4"),
+                            ("Razor Scales", "toggle-WoundedShapeAnathema-5"),
+                            ("Metabolic Armor", "toggle-WoundedShapeAnathema-6"),
+                            ("Enhanced Senses", "toggle-WoundedShapeAnathema-7"),
+                            ("Carapace Helmet", "toggle-WoundedShapeAnathema-8"),
+                            ("Reflex Booster", "toggle-WoundedShapeAnathema-9"),
+                        ],
+                        state.temporary_variant_progress.wounded_shape_anathema,
+                    )
+                    .chunks(3)
+                    .map(Vec::from),
+                );
+
+                buttons
+            }
+            Variant::WagerMasterOmnipotentAnnoyance => Button::unlock_single("unlock-WagerMasterOmnipotentAnnoyance"),
+            Variant::TheThaumaturgyScholar => vec![vec![
+                Button::toggle(
+                    format!("Rounds: {}", state.temporary_variant_progress.the_thaumaturgy_scholar),
+                    state.temporary_variant_progress.the_thaumaturgy_scholar >= 3,
+                    "counter-TheThaumaturgyScholar",
+                ),
+                Button::reset("reset-TheThaumaturgyScholar"),
+            ]],
             _ => vec![],
         }
     }

@@ -27,6 +27,13 @@ impl CurrentGame {
         }
     }
 
+    pub fn is_classic_any_variant(&self, base: Villain) -> bool {
+        match &self.villains {
+            CurrentVillains::Classic((v, _, _)) => base.variants().contains(v),
+            _ => false,
+        }
+    }
+
     pub fn has_team(&self, villain: TeamVillain) -> bool {
         match &self.villains {
             CurrentVillains::Team(villains) => villains.iter().any(|(v, _, _)| *v == villain),
@@ -118,23 +125,15 @@ impl CurrentGame {
     }
 
     pub fn any_ambuscade(&self) -> bool {
-        self.is_classic(Villain::Ambuscade) || self.is_classic(Villain::AmbuscadeThrillOfTheHunt) || self.has_team(TeamVillain::TeamAmbuscade)
+        self.is_classic_any_variant(Villain::Ambuscade) || self.has_team(TeamVillain::TeamAmbuscade)
     }
 
     pub fn any_baron_blade(&self) -> bool {
-        self.is_classic(Villain::BaronBlade) || self.is_classic(Villain::MadBomberBaronBlade) || self.is_classic(Villain::BaronBladeBlackHoleGenerator) || self.has_team(TeamVillain::TeamBaronBlade)
-    }
-
-    pub fn any_akash_bhuta(&self) -> bool {
-        self.is_classic(Villain::AkashBhuta) || self.is_classic(Villain::AkashBhutaPrimordialCreator)
-    }
-
-    pub fn any_kismet(&self) -> bool {
-        self.is_classic(Villain::Kismet) || self.is_classic(Villain::TricksterKismet) || self.is_classic(Villain::KismetTwistOfFate)
+        self.is_classic_any_variant(Villain::BaronBlade) || self.has_team(TeamVillain::TeamBaronBlade)
     }
 
     pub fn freedom_five(&self, progress: u8) -> bool {
-        self.is_classic(Villain::Progeny)
+        self.is_classic_any_variant(Villain::Progeny)
             && match progress {
                 0 => {
                     !self.environment(Environment::RookCity)

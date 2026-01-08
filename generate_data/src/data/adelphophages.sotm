@@ -38,6 +38,8 @@ variant GrandWarlordVossGeneBoundGeneral
 name Grand Warlord Voss: Gene-Bound General
 from AdelphophagesVillainPromos
 base GrandWarlordVoss
+challenge Superior Leaders
+Reduce damage dealt to Thorathians by 2.
 
 variant BaronBladeBlackHoleGenerator
 name Baron Blade: Black Hole Generator
@@ -52,6 +54,11 @@ variant CitizenDawnSolarEmpress
 name Citizen Dawn: Solar Empress
 from AdelphophagesVillainPromos
 base CitizenDawn
+unlock Defeat regular Citizen Dawn without there ever being fewer than H_-_1 citizens in play. Citizen Dawn must have flipped at some point in the game.
+requires CitizenDawn
+challenge Blindingly Bright
+During setup, also place a Sunshield counter on Citizen Dawn.
+Increase damage dealt by targets by 1 per Sunshield on them.
 
 variant AkashBhutaPrimordialCreator
 name Akash'Bhuta: Primordial Creator
@@ -66,11 +73,18 @@ variant TheEnneadWrathOfTheGods
 name The Ennead: Wrath of the Gods
 from AdelphophagesVillainPromos InfernalRelics
 base TheEnnead
+challenge Immortals
+Reduce damage dealt to villain targets by 1.
 
 variant GloomweaverRitualOfGnophos
 name GloomWeaver: Ritual of Gnophos
 from AdelphophagesVillainPromos InfernalRelics
 base Gloomweaver
+unlock Defeat Gloomweaver after removing at least 3_zombies, 1_cultist, and 1_voodoo pin from the game.
+requires Gloomweaver? Haka?|TheFinalWasteland
+challenge Unending Chant
+Gloomweaver's end of turn effect also puts cards matching relics removed from the game into play.
+Villain Relics can only be destroyed by being reduced to 0 HP.
 
 variant ApostateDarkAngel
 name Apostate: Dark Angel
@@ -84,11 +98,16 @@ variant SpiteDeathAddict
 name Spite: Death Addict
 from AdelphophagesVillainPromos RookCity
 base Spite
+challenge Uncontrollable
+If a card in the villain deck would be revealed by a hero card effect, it is instead put into play.
 
 variant PlagueRatTheNewBreed
 name Plague Rat: The New Breed
 from AdelphophagesVillainPromos RookCity
 base PlagueRat
+challenge His Home
+Reduce damage dealt to Plague Rat by 2 while Plague Locus is in play.
+Increase damage dealt by Plague Rat by 2 while Plague Locus is not in play.
 
 variant TheMatriarchRavenQueen
 name The Matriarch: Raven Queen
@@ -101,36 +120,52 @@ variant TheChairmanKingpin
 name The Chairman: Kingpin
 from AdelphophagesVillainPromos RookCity
 base TheChairman
+challenge Hunted Down
+At the end of the villain turn, move a random underboss card from under The Chairman into play.
 
 variant IronLegacyJusticeForAll
 name Iron Legacy: Justice For All
 from AdelphophagesVillainPromos ShatteredTimelines
 base IronLegacy
+challenge No Weakness
+Villain ongoings are indestructible while there are fewer than H-1 in play.
 
 variant TheDreamerMindOfAChild
 name The Dreamer: Mind of a Child
 from AdelphophagesVillainPromos ShatteredTimelines
 base TheDreamer
+challenge Frail Child
+Increase damage dealt to The Dreamer by 5.
 
 variant LaCapitanParadoxicalPirate
 name La Capitan: Paradoxical Pirate
 from AdelphophagesVillainPromos ShatteredTimelines
 base LaCapitan
+challenge Alert Crew
+Reduce damage dealt to La Capitan by 1 for each crew in play.
 
 variant KismetTwistOfFate
 name Kismet: Twist of Fate
 from AdelphophagesVillainPromos ShatteredTimelines
 base Kismet
+challenge Jinxed Onslaught
+At the end of the villain turn, Kismet deals each hero target 0 psychic damage.
 
 variant DeadlineAngelOfExtinction
 name Deadline: Angel of Extinction
 from AdelphophagesVillainPromos WrathOfTheCosmos
 base Deadline
+unlock Defeat regular Deadline without any environment cards being removed from the game.
+requires Deadline
+challenge Essence of Annihilation
+Whenever environment cards would be removed from the game, remove twice as many.
 
 variant ProgenyTheMessenger
 name Progeny: The Messenger
 from AdelphophagesVillainPromos WrathOfTheCosmos
 base Progeny
+challenge Ultimate Scion
+Ignore the "When a scion card enters play" effect on Progeny.
 
 variant KaargraWarfangRulerOfThePit
 name Kaargra Warfang: Ruler of the Pit
@@ -144,6 +179,9 @@ variant ChokepointRuthlessTechnopath
 name Chokepoint: Ruthless Technopath
 from AdelphophagesVillainPromos Chokepoint
 base Chokepoint
+challenge Storm of Metal
+Increase damage dealt by Chokepoint to hero targets by 1 for each absorbed card from that deck.
+At the end of the villain turn, Chokepoint deals each hero target 1 projectile damage.
 
 variant MissInformationSubtleSaboteur
 name Miss Information: Subtle Saboteur
@@ -156,6 +194,8 @@ variant WagerMasterOmnipotentAnnoyance
 name Wager Master: Omnipotent Annoyance
 from AdelphophagesVillainPromos WagerMaster
 base WagerMaster
+unlock In a game against regular Wager Master, have all 6_ongoing condition cards in play face-up at the same time.
+requires WagerMaster
 challenge Double Trouble
 Instead of removing the second copy of What do you really know? from the game, put it into play as well.
 
@@ -208,6 +248,8 @@ variant OmnitronVIHunterKiller
 name Omnitron-VI: Hunter-Killer
 from AdelphophagesHeroPromos ShatteredTimelines
 base OmnitronX
+unlock Lose a game to Iron Legacy with regular Omnitron-X on the team. Then, defeat any villain with regular Omnitron-X and without a Legacy on the team. At least 10_hero components must be destroyed due to damage dealt to Omnitron-X.
+requires IronLegacy OmnitronX
 
 variant TheSentinelsAsOne
 name The Sentinels As One
@@ -218,6 +260,8 @@ variant TheThaumaturgyScholar
 name The Thaumaturgy Scholar
 from AdelphophagesHeroPromos TheScholar
 base TheScholar
+unlock For 3_consequtive rounds, The Scholar must have at least one copy of each elemental card in play at the start of his turn.
+requires TheScholar?
 
 variant UnityGirlsBestFriend
 name Unity: Girl's Best Friend
@@ -238,6 +282,8 @@ variant BerserkHaka
 name Berserk Haka
 from AdelphophagesHeroPromos
 base Haka
+unlock Defeat any villain with Haka on the team. At the end of the game, Haka must be the only non-incapacitated hero, and must be at 1 HP.
+requires Haka?
 
 variant ZenMisterFixer
 name Zen Mister Fixer
@@ -337,6 +383,8 @@ Whenever Dr Girlfriend flips to her "Temporarily Indisposed" side, The Monarch d
 villain TheRevengeSociety
 name The Revenge Society
 from TheVentureBrothers
+challenge It Only Makes Them Angrier
+For each Revenge token removed from The Revenge Society, increase damage taken by hero targets by 1.
 
 villain Molotov
 name Molotov
@@ -345,6 +393,8 @@ from TheVentureBrothers
 villain TheSovereign
 name The Sovereign
 from TheVentureBrothers
+challenge Fueled by Vengenace
+Increase damage dealt by villain targets by 1 for each supervillain that has been removed from the game.
 
 villain Legion
 name Legion

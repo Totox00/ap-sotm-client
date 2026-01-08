@@ -5,6 +5,9 @@ variant StandUserVector
 name Stand User Vector
 from CauldronExperimental ExtraVillainVariants
 base Vector
+challenge Silent Plague
+At the start of the game, put Supervirus under Vector. It does not count as being in play.
+The first time Vector would be destroyed each game, instead set him to 10 HP and put Supervirus from under him into play.
 
 variant DapperVector
 name Dapper Vector
@@ -15,6 +18,8 @@ variant TheMatriarchPanickedEmployee
 name The Matriarch: Panicked Employee
 from RookCity ExtraVillainVariants
 base TheMatriarch
+challenge Covered by Ravens
+Reduce damage dealt to The Matriarch by 2.
 
 variant MoonflowCitizenDawn
 name Moonflow Citizen Dawn
@@ -26,10 +31,14 @@ name Moonflow The Dreamer
 from ShatteredTimelines ExtraVillainVariants
 base TheDreamer
 
-variant AdkAnathema
-name Adk Anathema
+variant WoundedShapeAnathema
+name Wounded Shape Anathema
 from CauldronBase ExtraVillainVariants
 base Anathema
+unlock Defeat Anathema in Halberd E.R.C. after destroying each unique arm, body, and head at least once using hero card effects.
+requires Anathema? HalberdERC
+challenge Hyper-regeneration
+Whenever a target is put into the villain trash, Anathema regains HP equal to that target's printed HP.
 
 variant AdirondackGloomweaver
 name Adirondack Gloomweaver
@@ -105,6 +114,8 @@ variant GrayRadioactiveDecay
 name Gray: Radioactive Decay
 from CauldronBase ExtraVillainVariants
 base Gray
+challenge Chain Reaction
+If a hero has more than 4 irradiated cards in hand, irradiate all cards in that hero's hand.
 
 variant PhaseOnTheRun
 name Phase: On the Run
@@ -120,6 +131,8 @@ variant MoonflowDendron
 name Moonflow Dendron
 from CauldronBase ExtraVillainVariants
 base Dendron
+challenge Thick Bark
+Reduce damage dealt to Dendron by 1 for every 3 cards below Dendron.
 
 variant OutlanderFinalDays
 name Outlander: Final Days

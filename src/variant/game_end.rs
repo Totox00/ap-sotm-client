@@ -287,6 +287,22 @@ impl Variant {
                 }
             }
             Variant::AkashBhutaPrimordialCreator => victory && state.temporary_variant_progress.akash_bhuta_primordial_creator,
+            Variant::GloomweaverRitualOfGnophos => victory && state.temporary_variant_progress.gloomweaver_ritual_of_gnophos == 0xF,
+            Variant::OmnitronVIHunterKiller => {
+                if state.persistent_variant_progress.freedom_six & 0x40 > 0 {
+                    victory && state.temporary_variant_progress.omnitron_vi_hunter_killer == 10
+                } else {
+                    if !victory && state.persistent_variant_progress.freedom_six & 0x40 == 0 {
+                        *push = true;
+                        state.persistent_variant_progress.freedom_six |= 0x40;
+                    }
+                    false
+                }
+            }
+            Variant::BerserkHaka => victory && state.temporary_variant_progress.berserk_haka == 0x3,
+            Variant::CitizenDawnSolarEmpress => victory && state.temporary_variant_progress.citizen_dawn_solar_empress == 0x2,
+            Variant::DeadlineAngelOfExtinction => victory && !state.temporary_variant_progress.deadline_angel_of_extinction,
+            Variant::WoundedShapeAnathema => victory && state.temporary_variant_progress.wounded_shape_anathema == 0xFF3,
             _ => false,
         }
     }

@@ -281,6 +281,11 @@ name The Amazing Antiquarian
 base Antiquarian
 from ArtifactComicsAdventures
 
+variant AntiquarianIsOnVacation
+name Antiquarian Is On Vacation, Masudi Will Handle This
+base Antiquarian
+from ArtifactComicsAdventures
+
 variant TacticatCantrip
 name Tacticat Cantrip
 base Cantrip

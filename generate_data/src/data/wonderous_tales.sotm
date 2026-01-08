@@ -4,19 +4,27 @@ name Wonderous Tales
 villain Kagmorath
 name Kagmorath
 from WonderousTales
+challenge A Hoard Worth Fighting For
+For every card under the hoard, reduce all damage dealt to Kagmorath by 1.
 
 variant KagmorathTheHoarder
 name Kagmorath the Hoarder
 from WonderousTales
 base Kagmorath
+challenge A Hoard Worth Fighting For
+The hoard cannot be removed from the game. For every 5 cards under it, reduce all damage dealt to Kagmorath by 1.
 
 villain Chronomancer
 name Chronomancer
 from WonderousTales
+challenge Chronal Echo
+At the start of the villain turn, if the top card of the villain deck is a one-shot, play it.
 
 villain DarkGelatina
 name Dark Gelatina
 from WonderousTales
+challenge Biologial Assimilation
+Whenever a villain slime deals toxic damage to a target, that slime regains HP equal to the damage dealt.
 
 hero Eldritch
 name Eldritch
