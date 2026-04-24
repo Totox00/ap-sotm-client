@@ -255,7 +255,7 @@ impl Variant {
             Variant::GloomweaverRitualOfGnophos => game.is_classic_any_variant(Villain::Gloomweaver),
             Variant::OmnitronVIHunterKiller => {
                 game.has_hero(Hero::OmnitronX)
-                    && ((state.persistent_variant_progress.freedom_six & 1 > 0 && !game.has_hero_all_variants(Hero::Legacy)) || game.is_classic_any_variant(Villain::IronLegacy))
+                    && ((state.persistent_variant_progress.freedom_six >> 6 & 1 > 0 && !game.has_hero_all_variants(Hero::Legacy)) || game.is_classic_any_variant(Villain::IronLegacy))
             }
             Variant::BerserkHaka => game.has_hero_all_variants(Hero::Haka),
             Variant::CitizenDawnSolarEmpress => game.is_classic(Villain::CitizenDawn),
