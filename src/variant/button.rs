@@ -961,11 +961,11 @@ impl Variant {
             Variant::FirstResponseCypher => vec![
                 Button::buttons(
                     &[("The Cricket", "toggle-FirstResponseCypher-0"), ("The Stranger", "toggle-FirstResponseCypher-1")],
-                    state.temporary_variant_progress.first_response_cricket,
+                    state.temporary_variant_progress.first_response_cypher,
                 ),
                 Button::buttons(
                     &[("Echelon", "toggle-FirstResponseCypher-2"), ("Vanish", "toggle-FirstResponseCypher-3")],
-                    state.temporary_variant_progress.first_response_cricket >> 2,
+                    state.temporary_variant_progress.first_response_cypher >> 2,
                 ),
             ],
             Variant::CypherSwarmingProtocol => vec![
