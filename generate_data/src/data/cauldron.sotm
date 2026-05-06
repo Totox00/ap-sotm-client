@@ -648,7 +648,7 @@ name First Response Vanish
 from CauldronBase CauldronPromos
 base Vanish
 unlock First, be defeated by Gray in Windmill City with Vanish on the team in which Gray destroys Gray Pharmaceutical Building. Then, defeat Gray in Windmill City with Vanish, Echelon, Doc Havoc, The Cricket, and Cypher on the team. Vanish must cause each other hero to deal damage to Gray during this game.
-requires Gray? Vanish? Echelon? DocHavoc? TheCricket? Cypher? WindmillCity
+requires Gray? Vanish Echelon? DocHavoc? TheCricket? Cypher? WindmillCity
 
 variant Vanish1929
 name Vanish 1929

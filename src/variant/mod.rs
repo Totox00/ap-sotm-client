@@ -237,7 +237,8 @@ impl Variant {
                 if state.persistent_variant_progress.first_response_vanish {
                     game.environment(Environment::WindmillCity)
                         && game.is_classic_any_variant(Villain::Gray)
-                        && game.has_all_any_variants(&[Hero::Vanish, Hero::Echelon, Hero::DocHavoc, Hero::TheCricket, Hero::Cypher])
+                        && game.has_hero(Hero::Vanish)
+                        && game.has_all_any_variants(&[Hero::Echelon, Hero::DocHavoc, Hero::TheCricket, Hero::Cypher])
                 } else {
                     game.environment(Environment::WindmillCity) && game.is_classic_any_variant(Villain::Gray) && game.has_hero_all_variants(Hero::Vanish)
                 }
