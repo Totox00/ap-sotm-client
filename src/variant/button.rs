@@ -960,11 +960,11 @@ impl Variant {
             Variant::TheCricketWastelandRonin => Button::unlock_single("unlock-TheCricketWastelandRonin"),
             Variant::FirstResponseCypher => vec![
                 Button::buttons(
-                    &[("The Cricket", "toggle-FirstResponseCypher-0"), ("The Stranger", "toggle-FirstResponseCypher-1")],
+                    &[("The Cricket", "toggle-FirstResponseCypher-0"), ("Echelon", "toggle-FirstResponseCypher-1")],
                     state.temporary_variant_progress.first_response_cypher,
                 ),
                 Button::buttons(
-                    &[("Echelon", "toggle-FirstResponseCypher-2"), ("Vanish", "toggle-FirstResponseCypher-3")],
+                    &[("Vanish", "toggle-FirstResponseCypher-2"), ("Doc Havoc", "toggle-FirstResponseCypher-3")],
                     state.temporary_variant_progress.first_response_cypher >> 2,
                 ),
             ],
