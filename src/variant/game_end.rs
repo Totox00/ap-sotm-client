@@ -260,6 +260,7 @@ impl Variant {
                     victory && state.temporary_variant_progress.necro_last_of_the_forgotten_order
                 } else {
                     if !victory && state.temporary_variant_progress.necro_last_of_the_forgotten_order {
+                        *push = true;
                         state.persistent_variant_progress.necro_last_of_the_forgotten_order = true;
                     }
                     false
@@ -270,6 +271,7 @@ impl Variant {
                     victory && state.temporary_variant_progress.first_response_vanish == 0xF
                 } else {
                     if !victory && state.temporary_variant_progress.first_response_vanish > 0 {
+                        *push = true;
                         state.persistent_variant_progress.first_response_vanish = true;
                     }
                     false
