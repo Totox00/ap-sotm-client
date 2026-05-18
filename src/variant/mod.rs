@@ -192,7 +192,7 @@ impl Variant {
             Variant::RoadWarriorMainstay => game.has_hero_all_variants(Hero::Mainstay),
             Variant::HydraTiamat => game.is_classic(Villain::Tiamat) && game.has_all_any_variants(&[Hero::TheKnight, Hero::Necro, Hero::Echelon]),
             Variant::FirstResponseCricket => game.environment(Environment::WindmillCity) && game.has_all_any_variants(&[Hero::TheCricket, Hero::Echelon]),
-            Variant::TheCricketRenegade => game.environment(Environment::WindmillCity) && game.is_classic_any_variant(Villain::Dynamo) && game.first_hero(Hero::TheCricket),
+            Variant::TheCricketRenegade => game.environment(Environment::WindmillCity) && game.is_classic_any_variant(Villain::Dynamo) && game.first_hero_any_variant(Hero::TheCricket),
             Variant::TheCricketWastelandRonin => {
                 game.environment(Environment::FSCContinuanceWanderer) && game.has_all_any_variants(&[Hero::Pyre, Hero::TheCricket, Hero::TheStranger, Hero::Impact, Hero::Gargoyle])
             }
