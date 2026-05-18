@@ -954,8 +954,8 @@ impl Variant {
                 ),
             ]],
             Variant::TheCricketRenegade => vec![vec![
-                Button::toggle("Python", state.temporary_variant_progress.first_response_cricket & 0x1 > 0, "toggle-TheCricketRenegade-python"),
-                Button::toggle("Responder", state.temporary_variant_progress.first_response_cricket & 0x2 > 0, "toggle-TheCricketRenegade-responder"),
+                Button::toggle("Python", state.temporary_variant_progress.the_cricket_renegade & 0x1 > 0, "toggle-TheCricketRenegade-python"),
+                Button::toggle("Responder", state.temporary_variant_progress.the_cricket_renegade & 0x2 > 0, "toggle-TheCricketRenegade-responder"),
             ]],
             Variant::TheCricketWastelandRonin => Button::unlock_single("unlock-TheCricketWastelandRonin"),
             Variant::FirstResponseCypher => vec![
