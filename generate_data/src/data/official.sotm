@@ -856,7 +856,7 @@ name Dark Watch Mister Fixer
 from RookCity
 base MisterFixer
 unlock The Operative herself deals damage that incapacitates Mr. Fixer in Rook City. Bloody Knuckles, any one Style, and no Tool must be in play.
-requires TheChairman? MisterFixer?
+requires TheChairman? MisterFixer? RookCity
 
 variant DarkWatchNightmist
 name Dark Watch Nightmist
