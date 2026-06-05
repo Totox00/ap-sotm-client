@@ -313,14 +313,14 @@ name Brock Samson: Combat Instincts
 from TheVentureBrothers
 base BrockSamson
 
-hero DeffersonTwilight
-name Defferson Twilight
+hero JeffersonTwilight
+name Jefferson Twilight
 from TheVentureBrothers
 
-variant DeffersonTwilightTasteForBlood
-name Defferson Twilight: Taste For Blood
+variant JeffersonTwilightTasteForBlood
+name Jefferson Twilight: Taste For Blood
 from TheVentureBrothers
-base DeffersonTwilight
+base JeffersonTwilight
 
 hero HunterGathers
 name Hunter Gathers
