@@ -1,322 +1,503 @@
-pack ArtifactComics
+source ArtifactComics
 name Artifact Comics
-contains ArtifactComicsVillains ArtifactComicsEnvironments
-contains ArtifactComicsAdventures ArtifactComicsSocietyOfSorceries ArtifactComicsOtherworldlyThreatTacticalResponse ArtifactComicsTwilightVigil ArtifactComicsWardensOfThePeak ArtifactComicsAWorldBeyond ArtifactComicsFutureShock ArtifactComicsRealmsUncharted
-
-source ArtifactComicsVillains
-name Artifact Comics Villains
-
-source ArtifactComicsEnvironments
-name Artifact Comics Environments
-
-source ArtifactComicsAdventures
-name Artifact Comics: Adventures
-
-source ArtifactComicsSocietyOfSorceries
-name Artifact Comics: Society of Sorceries
-
-source ArtifactComicsOtherworldlyThreatTacticalResponse
-name Artifact Comics: Otherworldly Threat Tactical Response
-
-source ArtifactComicsTwilightVigil
-name Artifact Comics: Twilight Vigil
-
-source ArtifactComicsWardensOfThePeak
-name Artifact Comics: Wardens of the Peak
-
-source ArtifactComicsAWorldBeyond
-name Artifact Comics: A World Beyond
-
-source ArtifactComicsFutureShock
-name Artifact Comics: Future Shock
-
-source ArtifactComicsRealmsUncharted
-name Artifact Comics: Realms Uncharted
 
 villain Anomalos
 name Anomalos
-from ArtifactComicsVillains
+from ArtifactComics
 challenge Counting on Countermeasures
 At the start of the villain turn, if The Chronoplast is not a target, either add a token to The Anomaly or play the top card of the villain deck.
 
 villain Blockbuster
 name Blockbuster
-from ArtifactComicsVillains
+from ArtifactComics
 
 villain Hexterminator
 name Hexterminator
-from ArtifactComicsVillains
+from ArtifactComics
 
 villain LouGarou
 name Lou Garou
-from ArtifactComicsVillains
+from ArtifactComics
 challenge Bayou Brew Grew Lou
 Lou Garou's max HP for this game is 150.
 
 villain Tombstone
 name Tombstone
-from ArtifactComicsVillains
+from ArtifactComics
 challenge Shoot 'N' Plunder
 Whenever a villain target enters play after setup, activate its "start of turn" effect. Whenever a card is moved from under Tombstone to a non-villain deck, Tombstone regains 2 HP.
 
+variant Tombstone1883
+name Tombstone 1883
+from ArtifactComics
+base Tombstone
+challenge Rattle 'Em, Boys!
+Whenever a villain target is destroyed, either the hero with the highest HP destroys one of their ongoing or equipment cards, or Tombstone deals that hero (H) minus 2 projectile damage.
+
 villain HighRoller
 name High Roller
-from ArtifactComicsVillains
+from ArtifactComics
 challenge Mammon's House Rules
 At the start of each hero turn, each player with more than 4 cards in their hand discards 1 card, then each player with more than 3 non-character cards in play destroys 1 of their non-character cards.
 
+villain Gozu
+name Gozu
+from ArtifactComics
+challenge Year of the Boar
+At the start of the villain turn, each villain target regains 3 HP.
+
+villain Gutterback
+name Gutterback
+from ArtifactComics
+challenge A Bowling League of Their Own
+At the start of the game, search the villain deck for both copies of Gutterball. Remove one from the game, and put the other into play. Gutterball is always indestructible. At the start of the villain turn, if Gutterball has 0 or fewer HP, restore it to 10 HP, then Gutterback flips. Otherwise, discard the top 3 cards of each non-villain deck.
+
+villain Jormungandr
+name Jormungandr
+from ArtifactComics
+challenge Catastrophic Colossus
+Set Jormungandr's HP to 200. * on villain exoskeleton cards = (H) times 5 instead.
+
+villain Khazanax
+name Khazanax
+from ArtifactComics
+challenge Unyielding Army
+The first time each turn a non-character villain target is destroyed, flip it face-down. At the start of the villain turn, flip each face-down villain card face up, treating it as if it were just put into play.
+
+villain MissCalculate
+name Miss Calculate
+from ArtifactComics
+challenge Calculated Risks
+Miss Calculate's max HP for this game is 1.
+
+villain SubjectX
+name Subject-X
+from ArtifactComics
+challenge Method Madness
+When there are 8 or more tokens on Subject-X, the heroes lose the game!
+
 hero Antiquarian
 name Antiquarian
-from ArtifactComicsAdventures
+from ArtifactComics
 
 hero Chronan
 name Chronan
-from ArtifactComicsAdventures
+from ArtifactComics
 
 hero Duelist
 name Duelist
-from ArtifactComicsAdventures
+from ArtifactComics
 
 hero Fshh
 name Fshh
-from ArtifactComicsAdventures
+from ArtifactComics
 
 hero Sundown
 name Sundown
-from ArtifactComicsAdventures
+from ArtifactComics
 
 hero Archivist
 name Archivist
-from ArtifactComicsSocietyOfSorceries
+from ArtifactComics
 
 hero Cantrip
 name Cantrip
-from ArtifactComicsSocietyOfSorceries
+from ArtifactComics
 
 hero Nemo
 name Nemo
-from ArtifactComicsSocietyOfSorceries
+from ArtifactComics
 
 hero Sirocco
 name Sirocco
-from ArtifactComicsSocietyOfSorceries
+from ArtifactComics
 
 hero Whisper
 name Whisper
-from ArtifactComicsSocietyOfSorceries
+from ArtifactComics
 
 hero Flashbang
 name Flashbang
-from ArtifactComicsOtherworldlyThreatTacticalResponse
+from ArtifactComics
 
 hero Rampart
 name Rampart
-from ArtifactComicsOtherworldlyThreatTacticalResponse
+from ArtifactComics
 
 hero Rook
 name Rook
-from ArtifactComicsOtherworldlyThreatTacticalResponse
+from ArtifactComics
 
 hero Tripwire
 name Tripwire
-from ArtifactComicsOtherworldlyThreatTacticalResponse
+from ArtifactComics
 
 hero Twitch
 name Twitch
-from ArtifactComicsOtherworldlyThreatTacticalResponse
+from ArtifactComics
 
 hero Backlash
 name Backlash
-from ArtifactComicsTwilightVigil
+from ArtifactComics
 
 hero Lalin
 name Lalin
-from ArtifactComicsTwilightVigil
+from ArtifactComics
 
 hero Omen
 name Omen
-from ArtifactComicsTwilightVigil
+from ArtifactComics
 
 hero Primrose
 name Primrose
-from ArtifactComicsTwilightVigil
+from ArtifactComics
 
 hero Remnant
 name Remnant
-from ArtifactComicsTwilightVigil
+from ArtifactComics
 
 hero Akanami
 name Akanami
-from ArtifactComicsWardensOfThePeak
+from ArtifactComics
 
 hero Inari
 name Inari
-from ArtifactComicsWardensOfThePeak
+from ArtifactComics
 
 hero Kain
 name Kain
-from ArtifactComicsWardensOfThePeak
+from ArtifactComics
 
 hero LaoFeng
 name Lao Feng
-from ArtifactComicsWardensOfThePeak
+from ArtifactComics
 
 hero Maki
 name Maki
-from ArtifactComicsWardensOfThePeak
+from ArtifactComics
 
 hero Esper
 name Esper
-from ArtifactComicsAWorldBeyond
+from ArtifactComics
 
 hero Fable
 name Fable
-from ArtifactComicsAWorldBeyond
+from ArtifactComics
 
 hero Noir
 name Noir
-from ArtifactComicsAWorldBeyond
+from ArtifactComics
 
 hero Serenity
 name Serenity
-from ArtifactComicsAWorldBeyond
+from ArtifactComics
 
 hero Stitch
 name Stitch
-from ArtifactComicsAWorldBeyond
+from ArtifactComics
 
 hero Bedlam
 name Bedlam
-from ArtifactComicsFutureShock
+from ArtifactComics
 
 hero Coyote
 name Coyote
-from ArtifactComicsFutureShock
+from ArtifactComics
 
 hero Punchline
 name Punchline
-from ArtifactComicsFutureShock
+from ArtifactComics
 
 hero Scrat
 name Scrat
-from ArtifactComicsFutureShock
+from ArtifactComics
 
 hero Wren
 name Wren
-from ArtifactComicsFutureShock
+from ArtifactComics
 
 hero ValWhalen
 name Val Whalen
-from ArtifactComicsRealmsUncharted
+from ArtifactComics
 
 hero TheEmpress
 name The Empress
-from ArtifactComicsRealmsUncharted
+from ArtifactComics
 
 hero Enigma
 name Enigma
-from ArtifactComicsRealmsUncharted
+from ArtifactComics
 
 hero MadamEden
 name Madam Eden
-from ArtifactComicsRealmsUncharted
+from ArtifactComics
 
 hero Wavelength
 name Wavelength
-from ArtifactComicsRealmsUncharted
+from ArtifactComics
+
+hero Avatar
+name Avatar
+from ArtifactComics
+
+hero Gatorback
+name Gatorback
+from ArtifactComics
+
+hero Haze
+name Haze
+from ArtifactComics
+
+hero Hush
+name Hush
+from ArtifactComics
+
+hero Icarus
+name Icarus
+from ArtifactComics
+
+hero Inkwell
+name Inkwell
+from ArtifactComics
+
+hero Karma
+name Karma
+from ArtifactComics
+
+hero LaoFens
+name Lao Fens
+from ArtifactComics
+
+hero Vanguard
+name Vanguard
+from ArtifactComics
+
+hero Vessel
+name Vessel
+from ArtifactComics
 
 environment BadlandsBayou
 name Badlands Bayou
-from ArtifactComicsEnvironments
+from ArtifactComics
 
 environment ContainmentBreach
 name Containment Breach
-from ArtifactComicsEnvironments
+from ArtifactComics
 
 environment FathomlessDeep
 name Fathomless Deep
-from ArtifactComicsEnvironments
+from ArtifactComics
 
 environment FestivalOfFate
 name Festival of Fate
-from ArtifactComicsEnvironments
+from ArtifactComics
 
 environment GhostTown
 name Ghost Town
-from ArtifactComicsEnvironments
+from ArtifactComics
 
 environment Gloomshire
 name Gloomshire
-from ArtifactComicsEnvironments
+from ArtifactComics
 
 environment JunkyardJunction
 name Junkyard Junction
-from ArtifactComicsEnvironments
+from ArtifactComics
 
 environment TempleOfTrials
 name Temple of Trials
-from ArtifactComicsEnvironments
+from ArtifactComics
 
 environment TimelessCity
 name Timeless City
-from ArtifactComicsEnvironments
+from ArtifactComics
+
+environment DuskveilFalls
+name DuskveilFalls
+from ArtifactComics
+
+environment ForsakenSands
+name Forsaken Sands
+from ArtifactComics
+
+environment GardenOfBabylon
+name Garden of Babylon
+from ArtifactComics
+
+environment NeoRio
+name Neo Rio
+from ArtifactComics
+
+environment PolarPeril
+name Polar Peril
+from ArtifactComics
 
 variant TheAdventurousAntiquarian
 name The Adventurous Antiquarian
 base Antiquarian
-from ArtifactComicsAdventures
+from ArtifactComics
 
 variant DarkestAntiquarian
 name Darkest Antiquarian
 base Antiquarian
-from ArtifactComicsAdventures
+from ArtifactComics
 
 variant ProfessorAntiquarian
 name Professor Antiquarian
 base Antiquarian
-from ArtifactComicsAdventures
+from ArtifactComics
 
 variant TheAmazingAntiquarian
 name The Amazing Antiquarian
 base Antiquarian
-from ArtifactComicsAdventures
+from ArtifactComics
 
 variant AntiquarianIsOnVacation
 name Antiquarian Is On Vacation, Masudi Will Handle This
 base Antiquarian
-from ArtifactComicsAdventures
+from ArtifactComics
 
 variant TacticatCantrip
 name Tacticat Cantrip
 base Cantrip
-from ArtifactComicsSocietyOfSorceries
+from ArtifactComics
 
 variant ChronanTheEnvironmentalist
 name Chronan the Environmentalist
 base Chronan
-from ArtifactComicsAdventures
+from ArtifactComics
 
 variant ChronanSavesChristmas
 name Chronan Saves Christmas
 base Chronan
-from ArtifactComicsAdventures
+from ArtifactComics
 
 variant PharaohessEnigma
 name Pharaohess Enigma
 base Enigma
-from ArtifactComicsRealmsUncharted
+from ArtifactComics
 
 variant PerilousExpeditionRook
 name Perilous Expedition Rook
 base Rook
-from ArtifactComicsOtherworldlyThreatTacticalResponse
+from ArtifactComics
 
 variant TheProdigalSirocco
 name The Prodigal Sirocco
 base Sirocco
-from ArtifactComicsSocietyOfSorceries
+from ArtifactComics
 
 variant PerilousExpeditionTwitch
 name Perilous Expedition Twitch
 base Twitch
-from ArtifactComicsOtherworldlyThreatTacticalResponse
+from ArtifactComics
+
+variant CyberOniAkanami
+name Cyber-Oni Akanami
+base Akanami
+from ArtifactComics
+
+variant Archivist1883
+name Archivist 1883
+base Archivist
+from ArtifactComics
+
+variant TheAmazingAvatar
+name The Amazing Avatar
+base Avatar
+from ArtifactComics
+
+variant Cantrip1929
+name Cantrip 1929
+base Cantrip
+from ArtifactComics
+
+variant Duelist1929
+name Duelist 1929
+base Duelist
+from ArtifactComics
+
+variant TheEmpressOfJustice
+name The Empress of Justice
+base TheEmpress
+from ArtifactComics
+
+variant TheEmpressOfTemperance1929
+name The Empress of Temperance 1929
+base TheEmpress
+from ArtifactComics
+
+variant EnigmaOnBass
+name Enigma On Bass
+base Enigma
+from ArtifactComics
+
+variant RamRiotFlashbang
+name Ram-Riot Flashbang
+base Flashbang
+from ArtifactComics
+
+variant ContainmentCorpFlashbang
+name Containment Corp. Flashbang
+base Flashbang
+from ArtifactComics
+
+variant FateUnboundHush
+name Fate Unbound Hush
+base Hush
+from ArtifactComics
+
+variant FateUnboundInari
+name Fate Unbound Inari
+base Inari
+from ArtifactComics
+
+variant Kain1929
+name Kain 1929
+base Kain
+from ArtifactComics
+
+variant JestingJokerNoir
+name Jesting Joker Noir
+base Noir
+from ArtifactComics
+
+variant TheAstonishingOmen
+name The Astonishing Omen
+base Omen
+from ArtifactComics
+
+variant Omen1929
+name Omen 1929
+base Omen
+from ArtifactComics
+
+variant TheAstonishingPunchline
+name The Astonishing Punchline
+base Punchline
+from ArtifactComics
+
+variant ProfessorRemnant
+name Professor Remnant
+base Remnant
+from ArtifactComics
+
+variant Scrat1929
+name Scrat 1929
+base Scrat
+from ArtifactComics
+
+variant ShadowRunnerTwitch
+name Shadow Runner Twitch
+base Twitch
+from ArtifactComics
+
+variant TheRoyalVessel
+name The Royal Vessel
+base Vessel
+from ArtifactComics
+
+variant TheValiantVessel
+name The Valiant Vessel
+base Vessel
+from ArtifactComics
