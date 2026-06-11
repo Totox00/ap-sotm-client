@@ -798,7 +798,7 @@ variant TermiNationAbsoluteZero
 name Termi-Nation Absolute Zero
 base AbsoluteZero
 unlock In a single non-hero turn, regular Absolute Zero must take over 10_damage, regain over 10_HP, and deal over 10_damage to a single non-hero target (in_one_shot). These three things can happen in any sequence, but all must occur on the same turn.
-requires AbsoluteZero
+requires AbsoluteZero MadBomberBaronBlade|TheEnnead?|Deadline|CaptainCosmic?|Guise?|Stuntman?|Mainstay?|AkashThriya?|InsulaPrimalis|RuinsOfAtlantis|Magmaria|TheTempleOfZhuLong|TheCelestialTribunal
 
 variant TermiNationUnity
 name Termi-Nation Unity
