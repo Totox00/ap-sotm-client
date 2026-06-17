@@ -1105,7 +1105,7 @@ impl Variant {
                     format!("Components: {}", state.temporary_variant_progress.omnitron_vi_hunter_killer),
                     state.persistent_variant_progress.freedom_six & 0x40 > 0,
                     state.temporary_variant_progress.omnitron_vi_hunter_killer >= 10,
-                    "toggle-OmnitronVIHunterKiller",
+                    "counter-OmnitronVIHunterKiller",
                 ),
             ]],
             Variant::BerserkHaka => vec![Button::buttons(
