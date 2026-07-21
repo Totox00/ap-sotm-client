@@ -304,7 +304,7 @@ impl Variant {
             Variant::BerserkHaka => victory && state.temporary_variant_progress.berserk_haka == 0x3,
             Variant::CitizenDawnSolarEmpress => victory && state.temporary_variant_progress.citizen_dawn_solar_empress == 0x2,
             Variant::DeadlineAngelOfExtinction => victory && !state.temporary_variant_progress.deadline_angel_of_extinction,
-            Variant::WoundedShapeAnathema => victory && state.temporary_variant_progress.wounded_shape_anathema == 0xFF3,
+            Variant::WoundedShapeAnathema => victory && state.temporary_variant_progress.wounded_shape_anathema == 0x3FF,
             _ => false,
         }
     }

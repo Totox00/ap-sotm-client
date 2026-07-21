@@ -1153,7 +1153,7 @@ impl Variant {
                             ("Carapace Helmet", "toggle-WoundedShapeAnathema-8"),
                             ("Reflex Booster", "toggle-WoundedShapeAnathema-9"),
                         ],
-                        state.temporary_variant_progress.wounded_shape_anathema,
+                        state.temporary_variant_progress.wounded_shape_anathema >> 4,
                     )
                     .chunks(3)
                     .map(Vec::from),
