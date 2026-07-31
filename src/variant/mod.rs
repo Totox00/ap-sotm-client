@@ -117,9 +117,11 @@ impl Variant {
                     && ((state.persistent_variant_progress.freedom_six >> 3 & 1 > 0 && !game.has_hero_all_variants(Hero::Legacy)) || game.is_classic_any_variant(Villain::IronLegacy))
             }
             Variant::FreedomSixWraith => {
-                game.first_hero_any_variant(Hero::Wraith)
-                    && ((state.persistent_variant_progress.freedom_six >> 4 & 1 > 0 && game.is_classic_any_variant(Villain::TheChairman) && !game.has_hero_all_variants(Hero::Legacy))
-                        || game.is_classic_any_variant(Villain::IronLegacy))
+                if state.persistent_variant_progress.freedom_six >> 4 & 1 > 0 {
+                    game.first_hero_any_variant(Hero::Wraith) && game.is_classic_any_variant(Villain::TheChairman) && !game.has_hero_all_variants(Hero::Legacy)
+                } else {
+                    game.has_hero(Hero::Wraith) && game.is_classic_any_variant(Villain::IronLegacy)
+                }
             }
             Variant::FreedomSixUnity => {
                 game.has_hero(Hero::Unity)
